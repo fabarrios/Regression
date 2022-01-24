@@ -1,28 +1,19 @@
 ---
-title: "Exampl_t_ANOVA.Rmd"
-author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
+title: "t-Test and Anova"
+author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  html_document:
-    toc: yes
-    toc_depth: 3
-    number_sections: true
-    toc_float:
-      collapsed: false
-    cod_folding: hide
-    theme: cerulean
+  rmdformats::robobook:
+    self_contained: true
+    thumbnails: true
+    lightbox: true
+    gallery: false
+    highlight: tango  
   pdf_document: default
 description: "to prepare Regression presentations"
 ---
 
 ---
-```{r setup, echo=FALSE}
-require(Hmisc)
-knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
-# If using blogdown: knitrSet(lang='blogdown')
-# knitr::opts_chunk$set(echo = TRUE)
-```
-`r hidingTOC(buttonLabel="Outline")`
 # Examples Chap03 (Vittinghoff et al. book)
 
 The examples for chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
@@ -37,14 +28,16 @@ And some information of the distribution “form” (skewness)
 
 This last point bears further explanation. If the median is located toward the bottom of the box, then the data are right-skewed toward larger values. That is, the distance between the median and the 75th percentile is greater than that between the median and the 25th percentile. Likewise, right-skewness will be indicated if the upper whisker is longer than the lower whisker or if there are more outliers in the upper range. Both the boxplot and the histogram show evidence for right-skewness in the SBP data.
 
-```{r}
+```{r, ech0=TRUE}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
 library(car)
 library(emmeans)
+```
 
+```{r, ech0=TRUE, fig.width=10}
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 # Loading the HERS database in hers variable
 summary(hers)
@@ -53,12 +46,15 @@ boxplot(glucose ~ diabetes, data=hers)
 boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
 t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
 ```
+
 ## t-test examles
 Examples of t-test from the exercises of the Daniel's book, Chap 7, section 3 number 3. Data can be downloaded from the WEB page of the Daniel's book
+
 ```{r}
 setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Daniel's chap 7 t-test examples
 # EXR_C07_S03_03
+
 Ex733 = read.csv(file="DataOther/EXR_C07_S03_03.csv", header=TRUE)
 names(Ex733)
 summary(Ex733)
