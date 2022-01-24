@@ -12,8 +12,6 @@ output:
   pdf_document: default
 description: "to prepare Regression presentations"
 ---
-
----
 # Examples Chap03 (Vittinghoff et al. book)
 
 The examples for chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
@@ -29,7 +27,6 @@ And some information of the distribution “form” (skewness)
 This last point bears further explanation. If the median is located toward the bottom of the box, then the data are right-skewed toward larger values. That is, the distance between the median and the 75th percentile is greater than that between the median and the 25th percentile. Likewise, right-skewness will be indicated if the upper whisker is longer than the lower whisker or if there are more outliers in the upper range. Both the boxplot and the histogram show evidence for right-skewness in the SBP data.
 
 ```{r, ech0=TRUE}
-setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # To set the working directory at the user dir
 library(tidyverse)
 library(multcomp)
@@ -37,49 +34,56 @@ library(car)
 library(emmeans)
 ```
 
-```{r, ech0=TRUE, fig.width=10}
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
-# Loading the HERS database in hers variable
-summary(hers)
-boxplot(glucose ~ diabetes, data=hers)
+```{r, echo=TRUE}
+HERS <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap3/hersdata.csv", show_col_types = FALSE)
+# Loading the HERS database in HERS variable
+names(HERS)
+summary(HERS)
+boxplot(glucose ~ diabetes, data=HERS)
+
 # Some graphical description of the glucose state
-boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
-t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
+boxplot(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], data=HERS)
+
+t.test(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], data=HERS, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
 ```
 
 ## t-test examles
 Examples of t-test from the exercises of the Daniel's book, Chap 7, section 3 number 3. Data can be downloaded from the WEB page of the Daniel's book
 
 ```{r}
-setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
 # Daniel's chap 7 t-test examples
 # EXR_C07_S03_03
 
-Ex733 = read.csv(file="DataOther/EXR_C07_S03_03.csv", header=TRUE)
+Ex733 = read_csv(file="https://raw.githubusercontent.com/fabarrios/Regression/master/DataSets/ch07_all/EXR_C07_S03_03.csv", show_col_types = FALSE)
 names(Ex733)
 summary(Ex733)
+
 # In parts
 NoOSAS = Ex733$Length[Ex733$Group == 1]
 OSAS = Ex733$Length[Ex733$Group == 2]
 # 
-boxplot(NoOSAS,OSAS)
+boxplot(NoOSAS, OSAS)
 var.test(OSAS, NoOSAS)
-t.test(NoOSAS, OSAS, alternative="less", conf.level=0.99)
+t.test(NoOSAS, OSAS, alternative="less", conf.level = 0.99)
 #
 # Shorter and direct
-boxplot(Length ~ Group, data=Ex733)
-t.test(Length ~ Group, data=Ex733, alternative="less", conf.level=0.99)
+boxplot(Length ~ Group, data = Ex733)
+t.test(Length ~ Group, data = Ex733, alternative = "less", conf.level = 0.99)
 ```
 
 How it looks for several variables an ANOVA example using the HERS data refering to the diabetic participants.
 ```{r}
 #  Example of the HERS data for diabetic participants
-hers_yesdi <- filter(hers, diabetes == "yes")
-hers_yesdi <- mutate(hers_yesdi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+# hers_yesdi <- filter(HERS, diabetes == "yes")
+hers_yesdi <- HERS %>% 
+  filter(diabetes == "yes") %>% 
+  mutate(physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
 
 #  Example of ANOVA with HERS data for diabetic participants
 #
-ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + 
+  geom_boxplot(na.rm = TRUE)
+
 glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
 Anova(glucose_yesdi_act, type="II")
 #
@@ -106,12 +110,13 @@ df<-rbind(df1,df2,df3,df4)
 df$Var<-as.factor(df$Var)
 df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
 ```
+
 ## The ANOVA (taken from R-bloggers)
 ANOVA (ANalysis Of VAriance) is a statistical test used to compare two or more groups to see if they are significantly different. The ANOVA model and some examples. The null hypothesis in ANOVA is that there is no difference between means and the alternative is that the means are not all equal. This means that when we are dealing with many groups, we cannot compare them pairwise. We can simply answer if the means between groups can be considered as equal or not.
 
 ```{r}
 # ANOVA
-model1<-lm(Value~Var, data=df)
+model1<-aov(Value ~ Var, data=df)
 anova(model1)
 ```
 
