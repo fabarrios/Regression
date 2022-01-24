@@ -12,7 +12,7 @@ output:
     cod_folding: hide
     theme: cerulean
   pdf_document: default
-description: "to prepare Class2020 presentations"
+description: "to prepare Regression presentations"
 ---
 
 ---
