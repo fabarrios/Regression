@@ -1,0 +1,127 @@
+---
+title: "Exampl_t_ANOVA.Rmd"
+author: "F. A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  html_document:
+    toc: yes
+    toc_depth: 3
+    number_sections: true
+    toc_float:
+      collapsed: false
+    cod_folding: hide
+    theme: cerulean
+  pdf_document: default
+description: "to prepare Class2020 presentations"
+---
+
+---
+```{r setup, echo=FALSE}
+require(Hmisc)
+knitrSet(lang='markdown', fig.path='png/', fig.align='left', w=6.5, h=4.5, cache=TRUE)
+# If using blogdown: knitrSet(lang='blogdown')
+# knitr::opts_chunk$set(echo = TRUE)
+```
+`r hidingTOC(buttonLabel="Outline")`
+# Examples Chap03 (Vittinghoff et al. book)
+
+The examples for chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD)
+
+## Introduction
+t-Test example presented in Table 3.1 of the t-Test of difference in average glucose by exercise for the women that are not diabetic. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a Boxplot gives a good amount of information about a numerical variable:
+Centering described by the median
+Dispersion, measured by the hight of the box (interquartil distance).
+Observation range
+The presence of extreme values (outliers)
+And some information of the distribution “form” (skewness)
+
+This last point bears further explanation. If the median is located toward the bottom of the box, then the data are right-skewed toward larger values. That is, the distance between the median and the 75th percentile is greater than that between the median and the 25th percentile. Likewise, right-skewness will be indicated if the upper whisker is longer than the lower whisker or if there are more outliers in the upper range. Both the boxplot and the histogram show evidence for right-skewness in the SBP data.
+
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# To set the working directory at the user dir
+library(tidyverse)
+library(multcomp)
+library(car)
+library(emmeans)
+
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+# Loading the HERS database in hers variable
+summary(hers)
+boxplot(glucose ~ diabetes, data=hers)
+# Some graphical description of the glucose state
+boxplot(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], alternative="two.sided", data=hers)
+t.test(glucose[hers$diabetes == "no"] ~ exercise[hers$diabetes == "no"], data=hers, alternative="two.sided", mu=0, paired=FALSE, var.equal=TRUE)
+```
+## t-test examles
+Examples of t-test from the exercises of the Daniel's book, Chap 7, section 3 number 3. Data can be downloaded from the WEB page of the Daniel's book
+```{r}
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# Daniel's chap 7 t-test examples
+# EXR_C07_S03_03
+Ex733 = read.csv(file="DataOther/EXR_C07_S03_03.csv", header=TRUE)
+names(Ex733)
+summary(Ex733)
+# In parts
+NoOSAS = Ex733$Length[Ex733$Group == 1]
+OSAS = Ex733$Length[Ex733$Group == 2]
+# 
+boxplot(NoOSAS,OSAS)
+var.test(OSAS, NoOSAS)
+t.test(NoOSAS, OSAS, alternative="less", conf.level=0.99)
+#
+# Shorter and direct
+boxplot(Length ~ Group, data=Ex733)
+t.test(Length ~ Group, data=Ex733, alternative="less", conf.level=0.99)
+```
+
+How it looks for several variables an ANOVA example using the HERS data refering to the diabetic participants.
+```{r}
+#  Example of the HERS data for diabetic participants
+hers_yesdi <- filter(hers, diabetes == "yes")
+hers_yesdi <- mutate(hers_yesdi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+
+#  Example of ANOVA with HERS data for diabetic participants
+#
+ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
+Anova(glucose_yesdi_act, type="II")
+#
+S(glucose_yesdi_act)
+glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
+contrast(glucose_emmeans, adjust="sidak")
+```
+
+# Example from R-bloggers
+First we build four random variables with two different distributions.
+
+```{r}
+# Create the four groups
+set.seed(10) 
+df1 <- data.frame(Var="a", Value=rnorm(100,10,5))
+df2 <- data.frame(Var="b", Value=rnorm(100,10,5))
+df3 <- data.frame(Var="c", Value=rnorm(100,11,6))
+df4 <- data.frame(Var="d", Value=rnorm(100,11,6))
+
+# merge them in one data frame
+df<-rbind(df1,df2,df3,df4)
+
+# convert Var to a factor
+df$Var<-as.factor(df$Var)
+df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
+```
+## The ANOVA (taken from R-bloggers)
+ANOVA (ANalysis Of VAriance) is a statistical test used to compare two or more groups to see if they are significantly different. The ANOVA model and some examples. The null hypothesis in ANOVA is that there is no difference between means and the alternative is that the means are not all equal. This means that when we are dealing with many groups, we cannot compare them pairwise. We can simply answer if the means between groups can be considered as equal or not.
+
+```{r}
+# ANOVA
+model1<-lm(Value~Var, data=df)
+anova(model1)
+```
+
+## Tukey multiple comparisons
+What about if we want to compare all the groups pairwise? In this case, we can apply the Tukey’s HSD which is a single-step multiple comparison procedure and statistical test, Tukey's Honest Significant Difference (Tukey's HSD). It can be used to find means that are significantly different from each other.
+
+```{r}
+summary(glht(model1, mcp(Var="Tukey")))
+```
