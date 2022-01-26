@@ -1,6 +1,6 @@
 # Regression in Biostatistics  
-## Michael C. Jeziorski, PhD. & Fernando A. Barrios, PhD.  
 ## Universidad Nacional Autónoma de México, Instituto de Neurobiología  
+### Michael C. Jeziorski, PhD. & Fernando A. Barrios, PhD.  
 #### contact: jeziorsk@unam.mx & barrios@inb.unam.mx     
 
 ## Introduction  
@@ -28,7 +28,7 @@ VI Clustering (Jeziorski)
 VII Maximum Likelihood Estimation (Barrios)  
 
 
-## Data manipulation and visualization  
+## Data wrangling and visualization  
 After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
 different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.  
 
