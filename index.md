@@ -7,28 +7,28 @@
 This is the repository for the materials, homework and other files for the Regression class, almost all the examples that I will deposit here are examples using R and you can find some in my GitHub account and some Rmarkdown versions of them. These pages contain some solved problems and advanced examples from statistics and different regression models, many examples are taken from the Daniel's Biostatistics for the first subjects, nevertheless the problems for different regression models are taken from the more advanced books. All the examples are solved using R ([CRAN](https://cran.r-project.org/))and different R packages, running over [RStudio](https://rstudio.com/products/rstudio/), the idea is to use this site as support of the course I teach at UNAM. If you need a refreshment in general statistics you can check my undergraduate [statistics course](https://fabarrios.github.io/ProbEstad/) in the WEB.  I also have some [notes](https://fabarrios.github.io/AdvExamples/Notes/Notes) that have links to different pages and very useful material in particuar a list of useful [R packages](https://fabarrios.github.io/Regression/Libraries). For the problems presented here we will start with data manipulation and some t-test, ANOVA and regression examples. Then we will continue with more complex ideas.  
 
 ## Program  
-I Data manipulation (data wrangling and visualisation in R (Jeziorski)  
+### I Data manipulation (data wrangling and visualisation in R (Jeziorski)  
 After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
 different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.
 1. Tidyverse, tibbles  
 3. Pipe, filters, functions (on tibbles)  
 4. ggplot. Data wrangling and visualization  
 
-II Introduction (Barrios)  
+### II Introduction (Barrios)  
 Revisiting some concepts of classical statistics  
 We will cover some examples of t-Test problem solving with R, using some of the R libraries and then we will cover different ANOVA models in R too, to finish the refresh of statistics we will solve some simple linear regression examples, in R.
 1. [t-Test and ANOVA](https://fabarrios.github.io/Regression/Exampl_t_ANOVA.html)  
 2. Regression  
 
-III Multiple Linear Regression (Barrios)  
+### III Multiple Linear Regression (Barrios)  
 
-IV Logistic Regression (Barrios)  
+### IV Logistic Regression (Barrios)  
 
-V Survival Analysis (Barrios)  
+### V Survival Analysis (Barrios)  
 
-VI Clustering (Jeziorski)  
+### VI Clustering (Jeziorski)  
 
-VII Maximum Likelihood Estimation (Barrios)  
+### VII Maximum Likelihood Estimation (Barrios)  
 
 
 ## Bibliography  
