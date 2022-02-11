@@ -8,14 +8,17 @@ This is the repository for the materials, homework and other files for the Regre
 
 ## Program  
 I Data manipulation (data wrangling and visualisation in R (Jeziorski)  
+After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
+different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.  
 1. Tidyverse, tibbles  
 3. Pipe, filters, functions (on tibbles)  
-4. ggplot  
+4. ggplot. Data wrangling and visualization  
 
 II Introduction (Barrios)  
-1. t-Test  
-2. ANOVA  
-3. Regression  
+Revisiting some concepts of classical statistics  
+We will cover some examples of t-Test problem solving with R, using some of the R libraries and then we will cover different ANOVA models in R too, to finish the refresh of statistics we will solve some simple linear regression examples, in R.  
+1. [t-Test and ANOVA](https://fabarrios.github.io/Regression/Exampl_t_ANOVA.html)  
+2. Regression  
 
 III Multiple Linear Regression (Barrios)  
 
@@ -27,13 +30,6 @@ VI Clustering (Jeziorski)
 
 VII Maximum Likelihood Estimation (Barrios)  
 
-
-## Data wrangling and visualization  
-After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
-different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.  
-
-## Revisiting some concepts of classical statistics  
-We will cover some examples of t-Test problem solving with R, using some of the R libraries and then we will cover different ANOVA models in R too, to finish the refresh of statistics we will solve some simple linear regression examples, in R.  
 
 ## Bibliography  
 1. Harrell, F.E. (2015) Regression Modeling Strategies (2nd edition), Springer Series in Statistics, Springer.  
