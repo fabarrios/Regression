@@ -18,3 +18,5 @@ multcomp
 carData
 car
 emmeans
+knitr
+rmdformats
