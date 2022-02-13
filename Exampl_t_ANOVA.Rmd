@@ -95,11 +95,13 @@ hers_yesdi <- HERS %>%
 ggplot(data = hers_yesdi, mapping = aes(x = physact, y = glucose)) + 
   geom_boxplot(na.rm = TRUE)
 
-glucose_yesdi_act <- lm(glucose ~ physact, data = hers_yesdi)
-Anova(glucose_yesdi_act, type="II")
+glucose_yesdi_activ <- aov(glucose ~ physact, data = hers_yesdi)
+glucose_yesdi_activ
+# Or print the anova table using the car package function
+Anova(glucose_yesdi_activ, type="II")
 #
-S(glucose_yesdi_act)
-glucose_emmeans <- emmeans(glucose_yesdi_act, "physact")
+S(glucose_yesdi_activ)
+glucose_emmeans <- emmeans(glucose_yesdi_activ, "physact")
 contrast(glucose_emmeans, adjust="sidak")
 ```
 
@@ -118,8 +120,8 @@ df4 <- data.frame(Var="d", Value=rnorm(100,11,6))
 df<-rbind(df1,df2,df3,df4)
 
 # convert Var to a factor
-df$Var<-as.factor(df$Var)
-df%>%ggplot(aes(x=Value, fill=Var))+geom_density(alpha=0.5)
+df$Var <- as.factor(df$Var)
+df %>% ggplot(aes(x=Value, fill=Var)) + geom_density(alpha=0.5)
 ```
 
 ## The ANOVA (taken from R-bloggers)
@@ -127,7 +129,7 @@ ANOVA (ANalysis Of VAriance) is a statistical test used to compare two or more g
 
 ```{r}
 # ANOVA
-model1<-aov(Value ~ Var, data=df)
+model1 <- aov(Value ~ Var, data=df)
 anova(model1)
 ```
 
