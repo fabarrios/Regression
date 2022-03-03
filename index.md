@@ -30,6 +30,9 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 
 ### VII Maximum Likelihood Estimation (Barrios)  
 
+### Homework  
+1. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)
+
 
 ## Bibliography  
 1. Harrell, F.E. (2015) Regression Modeling Strategies (2nd edition), Springer Series in Statistics, Springer.  
