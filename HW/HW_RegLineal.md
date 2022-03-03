@@ -1,6 +1,6 @@
-# Tarea Probabilidad y Estadística  
-## Lic. Tecnología ENES Juriquilla, 2021  
-## F.A. Barrios  
+# Ejercicios de repaso regresión  
+##  Curso Reregresión en Bioestadística  
+## F.A. Barrios   
 ### Regresión y Correlación. En todos los problemas explique sus resultados y discuta los niveles de confianza estadística, e intervalos de confianza.  
 
 1.	Metadona es comúnmente usada en el tratamiento de adicción a opiáceos y dolor crónico. Krantz et al. estudiaron la relación entre dosis de metadona y el intervalo QT corregido (QTc) de 17 pacientes que desarrollaron taquicardia ventricular en repuesta a los medicamentos. QTc se calcula a partir del electrocardiograma y se mide en mm/s. Un valor mayor de QTc indica un riesgo mayor de mortalidad cardiovascular. Una pregunta de interés es saber si se puede predecir y estimar el valor de QTc a partir de la dosis de metadona. Por lo que se considerará la variable repuesta los datos de QTc y dosis de metadona como la variable independiente de los datos en EXR_C09_S03_03.csv.  
