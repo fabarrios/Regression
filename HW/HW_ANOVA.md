@@ -1,4 +1,4 @@
-# Ejercicios de repaso regresión  
+# Ejercicios de repaso de ANOVA  
 ##  Curso Reregresión en Bioestadística  
 ## F.A. Barrios  
 ### ANOVA.  Problemas del libro de Daniel. En todos los problemas explique sus resultados y discuta los niveles de confianza estadística, e intervalos de confianza.  
