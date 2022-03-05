@@ -1,0 +1,148 @@
+---
+title: "General Linear Model"
+author: "F.A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  rmdformats::readthedown:
+    highlight: kate
+  pdf_document: default
+description: "to prepare Class2020 presentations"
+---
+
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=FALSE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+```{r message = FALSE}
+library(tidyverse)
+library(here)
+library(wesanderson)
+library(rstatix)
+library(HSAUR2)
+library(car)
+library(multcomp)
+
+setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+```
+
+# General Linear Model (GLM)
+
+## Linear Regression
+
+The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
+
+## Examples for "simple" linear regression
+
+The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
+$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
+
+Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
+$$Y_j (j=1, . . . , J)$$
+for a set of $x_jl$ predictor variables (or independent variables) defined as vectors for each $j$
+$$ x_jl (l=1, . . . , L)$$
+with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be expressed:
+$$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
+with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
+$$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
+
+## Linear Regresion (Chap 4, Vittinghoff et all.)
+
+Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk.
+Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
+
+```{r}
+# hers data structure
+hers_nodi <- filter(hers, diabetes == "no")
+hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
+# the linear model results can be printed using summary
+summary(hers_nodi_Fit)
+```
+
+Simple linear regression model shows coefficient estimate ($\beta_1$) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
+
+## For a multiple linear model
+
+There are models to regress several predictor variables to relate several random independent variables.
+
+$$y_i = E[y_i|x_i] + \epsilon_i$$
+$$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
+Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinkany + BMI.
+
+In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.
+
+```{r}
+hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
+# the linear model results can be printed using summary
+summary(hers_nodi_multFit)
+```
+## Multiple linear model, with interactions
+
+In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:
+
+$$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
+
+# Multiple Linear Model, HSAUR2 example
+
+This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR
+
+```{r}
+library(wordcloud)
+data(clouds)
+head(clouds)
+
+# looking the data for rainfall
+boxplot(rainfall~seeding, data=clouds)
+# boxplot(rainfall~echomotion, data=clouds)
+layout(matrix(1:2, ncol = 2))
+boxplot(rainfall ~ seeding, data = clouds, ylab = "Rainfall", xlab = "Seeding")
+boxplot(rainfall ~ echomotion, data = clouds, ylab = "Rainfall", xlab = "Echo Motion")
+# 
+layout(matrix(1:4, nrow = 2))
+plot(rainfall ~ time, data = clouds)
+plot(rainfall ~ cloudcover, data = clouds)
+plot(rainfall ~ sne, data = clouds, xlab="S-Ne criterion")
+plot(rainfall ~ prewetness, data = clouds)
+#
+clouds_formula <- rainfall ~ seeding + seeding:(sne+cloudcover+prewetness+echomotion) + time
+Xstar <- model.matrix(clouds_formula, data = clouds)
+attr(Xstar, "contrasts")
+clouds_lm <- lm(clouds_formula, data = clouds)
+summary(clouds_lm)
+layout(matrix(1:1, nrow = 1))
+# to list the betas* with the:
+betaStar <- coef(clouds_lm)
+betaStar
+# to understand the relation of seeding and sne
+psymb <- as.numeric(clouds$seeding)
+plot(rainfall ~ sne, data = clouds, pch = psymb, xlab = "S-Ne criterion")
+abline(lm(rainfall ~ sne, data = clouds, subset = seeding == "no"))
+abline(lm(rainfall ~ sne, data = clouds, subset = seeding == "yes"), lty = 2)
+legend("topright", legend = c("No seeding", "Seeding"), pch = 1:2, lty = 1:2, bty = "n")
+#
+# and the Covariant matrix Cov(beta*) with:
+VbetaStar <- vcov(clouds_lm)
+# Where the square roots of the diagonal elements are the standart errors 
+sqrt(diag(VbetaStar))
+clouds_resid <- residuals(clouds_lm)
+clouds_fitted <- fitted(clouds_lm)
+# residuals and the fitted values can be used to construct diagnostic plot
+plot(clouds_fitted, clouds_resid, xlab = "Fitted values", ylab = "Residuals", type = "n", ylim = max(abs(clouds_resid)) * c(-1, 1))
+abline(h = 0, lty = 2)
+textplot(clouds_fitted, clouds_resid, words = rownames(clouds), new = FALSE)
+qqnorm(clouds_resid, ylab = "Residuals")
+qqline(clouds_resid)
+```
