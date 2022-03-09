@@ -32,11 +32,8 @@ library(here)
 library(wesanderson)
 library(rstatix)
 library(HSAUR2)
-library(car)
 library(multcomp)
 
-# ~/Dropbox/GitHub/Regression
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 
 # General Linear Model (GLM)
@@ -49,12 +46,38 @@ The term "regression" was introduced by Francis Galton (Darwin's nephew) during 
 
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
+## Example of linear regression  
 
+**From the chap 9 Daniel** Després et al. point out that the topography of adipose tissue (AT) is associated with metabolic complications considered as risk factors for cardiovascular disease. It is important, they state, to measure the amount of intraabdominal AT as part of the evaluation of the cardiovascular disease risk of an individual. Computed tomography (CT), the only available technique that precisely and reliably measures the amount of deep abdominal AT, however, is costly and requires irradiation of the subject. In addition, the technique is not available to many physicians. Després et al. conducted a study to develop equations to predict the amount of deep abdominal AT from simple anthropometric measurements. Their subjects were men between the ages of 18 and 42 years who were free from metabolic disease that would require treatment. Among the measurements taken on each subject were deep abdominal AT obtained by CT and waist circumference as shown in EXA_C09_S03_01.csv A question of interest is how well one can predict and estimate deep abdominal AT from knowledge of the waist circumference. This question is typical of those that can be answered by means of regression analysis. Since deep abdominal AT is the variable about which we wish to make predictions and estimations, it is the dependent variable. The variable waist measurement, knowledge of which will be used to make the predictions and estimations, is the independent variable.
+
+```{r}
+# load the data file
+Exa9.3 = read_csv("~/Dropbox/GitHub/Regression/DataSets/ch09_all/EXA_C09_S03_01.csv",
+         show_col_types = FALSE)
+         
+names(Exa9.3)
+
+plot(Y ~ X, data = Exa9.3, pch = 20)
+
+# horizontal line and vertical line
+Ybar=mean(Exa9.3$Y)
+Xbar=mean(Exa9.3$X)
+
+abline(h=Ybar, col = 2, lty = 2)
+abline(v=Xbar, col = 2, lty = 2)
+
+# simple linear model
+Lin9.3 = lm(Y ~ X, data=Exa9.3)
+summary(Lin9.3)
+
+# linear model plot
+abline(Lin9.3, col=2)
+```
 Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
 $$Y_j (j=1, . . . , J)$$
-for a set of $x_jl$ predictor variables (or independent variables) defined as vectors for each $j$
-$$ x_jl (l=1, . . . , L)$$
-with $L(L<J$, a general linear model with an error function $\epsilon_j$ can be expressed:
+for a set of $x_{jl}$ predictor variables (or independent variables) defined as vectors for each $j$
+$$ x_{jl} (l=1, . . . , L)$$
+with $L(L<J)$, a general linear model with an error function $\epsilon_j$ can be expressed:
 $$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
 with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
 $$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
@@ -65,6 +88,9 @@ Example of simple linear regression: exercise and glucose Glucose levels above 1
 Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
 
 ```{r}
+# ~/Dropbox/GitHub/Regression
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+
 # hers data structure
 hers_nodi <- filter(hers, diabetes == "no")
 hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
@@ -89,6 +115,8 @@ hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_n
 # the linear model results can be printed using summary
 summary(hers_nodi_multFit)
 ```
+
+
 ## Multiple linear model, with interactions
 
 In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:
