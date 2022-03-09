@@ -3,7 +3,7 @@ title: "General Linear Model"
 author: "F.A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  rmdformats::readthedown:
+  rmdformats::robobook:
     highlight: kate
   pdf_document: default
 description: "to prepare Class2020 presentations"
@@ -35,7 +35,7 @@ library(HSAUR2)
 library(car)
 library(multcomp)
 
-setwd("~/Dropbox/Fdo/ClaseStats/RegressionClass/RegressionR_code")
+# ~/Dropbox/GitHub/Regression
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 
@@ -97,7 +97,7 @@ $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
 
 # Multiple Linear Model, HSAUR2 example
 
-This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR
+This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR books.
 
 ```{r}
 library(wordcloud)
@@ -105,8 +105,8 @@ data(clouds)
 head(clouds)
 
 # looking the data for rainfall
-boxplot(rainfall~seeding, data=clouds)
-# boxplot(rainfall~echomotion, data=clouds)
+boxplot(rainfall ~ seeding, data = clouds)
+# boxplot(rainfall ~ echomotion, data=clouds)
 layout(matrix(1:2, ncol = 2))
 boxplot(rainfall ~ seeding, data = clouds, ylab = "Rainfall", xlab = "Seeding")
 boxplot(rainfall ~ echomotion, data = clouds, ylab = "Rainfall", xlab = "Echo Motion")
@@ -116,12 +116,14 @@ plot(rainfall ~ time, data = clouds)
 plot(rainfall ~ cloudcover, data = clouds)
 plot(rainfall ~ sne, data = clouds, xlab="S-Ne criterion")
 plot(rainfall ~ prewetness, data = clouds)
+
 #
 clouds_formula <- rainfall ~ seeding + seeding:(sne+cloudcover+prewetness+echomotion) + time
 Xstar <- model.matrix(clouds_formula, data = clouds)
 attr(Xstar, "contrasts")
 clouds_lm <- lm(clouds_formula, data = clouds)
 summary(clouds_lm)
+
 layout(matrix(1:1, nrow = 1))
 # to list the betas* with the:
 betaStar <- coef(clouds_lm)
