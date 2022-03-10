@@ -1,0 +1,194 @@
+---
+title: "Multipredictor Regrgession with Interaction"
+author: "F.A. Barrios"
+date: "<small>`r Sys.Date()`</small>"
+output:
+  rmdformats::material:
+    highlight: kate
+  pdf_document: default
+description: "to prepare classes 20202 and homework"
+---
+
+```{r setup, echo=FALSE, cache=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="75")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=75)
+```
+
+```{r message = FALSE}
+# Multilevel categorical predictors Chap 4 Vittinghoff
+# Interaction
+#
+library(tidyverse)
+library(emmeans)
+library(multcomp)
+library(MASS)
+library(car)
+#
+setwd("~/Dropbox/GitHub/Class2020")
+# loading the HERS data set from Vittinghoff's data
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+```
+
+# Interaction[^1]
+[^1]: All notes are taken from the Regression methods in biostatistics: linear, logistic, survival, and repeated measures models, Chap 4, Vitinghoff et al.
+
+So far, we have made the assumption that causal effect of the primary predictor was the same within strata defined by the covariates. However, this may not hold. In this section,
+we show how to use regression to model the resulting interaction, so that we can estimate causal effects that differ according to the level of a covariate. Interaction is also referred to as effect modification or moderation, and must be distinguished from both confounding and mediation
+
+## Example: Hormone Therapy and statin Use
+
+As an example of interaction, we examine whether the effect of HT on LDL cholesterol differs according to baseline statin use, using data from HERS. To do this, a constructed interaction variable is useful. Suppose both assignment to HT and use of statins at baseline are coded using indicator variables. Then, the product of these two variables is also an indicator, equal to one only for the subgroup of women who reported using statins at baseline and were randomly assigned to HT, and zero for everyone else. Now, consider the regression model $E[LDL | x] = \beta_0 + \beta_1 HT + \beta_2 statins + \beta_3 HT:statins$ where $HT$ is the indicator of assignment to HT, $statins$ the indicator of
+baseline statin use, and $HT:statins$ the interaction term. In R the model $LDL \sim HT + statins + HT:statins$ can be written like $LDL \sim HT * statins$
+
+
+```{r}
+# Now for the group with Hormone Therapy the complete HERS cohort
+# Model of cholesterol LDL and the effect of Hormone Therapy (HT) and
+# Statin use model is at the one year visit (to se the HT effect)
+
+hers <- mutate(hers, HT = factor(HT))
+hers <- hers %>% mutate(HT = relevel(HT, ref = "placebo"))
+
+# For the first year visit LDL levels at one year LDL1
+LDL1_model <- lm(LDL1 ~ HT * statins, data = hers)
+summary(LDL1_model)
+confint(LDL1_model)
+
+# For the table 4.15 of the book, to test for the linear combination of the coefficients for the interaction to
+# TEST the combination of the coefficients, HT, statin and HT and statin interaction b1, b2, and b3.
+
+coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL1_model$coefficients))
+colnames(coefeq) <- names(LDL1_model$coefficients)
+coefeq
+coefeq[1, "HThormone therapy"] <- 1
+coefeq[1, "statinsyes"] <- 1
+coefeq[1, "HThormone therapy:statinsyes"] <- 1
+coefeq %*% LDL1_model$coefficients
+
+coeftestAll <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
+summary(coeftestAll)
+
+# TEST the combination of the coefficients for HT and the statin interaction b1 and b3 the third part of table 4.15
+coefeq[1, "statinsyes"] <- 0
+coefeq %*% LDL1_model$coefficients
+coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
+summary(coeftest)
+```
+
+The full model is:
+$$ E[LDL | x] = \beta_0 + \beta_1 HT + \beta_2 statins + \beta_3 HT:statins $$
+The coefficient for HT, $\hat \beta_1$, shoes that women who did not report stati use at baseline, the average LDL at one year was almost 18 mg/dL lower that placebo. And for the group of HT among statin users is $\beta_1 + \beta_3$ so $\beta_3$ the interaction term gives the difference between the HT and statin users group.
+
+
+
+```{r}
+# Example of LDL after one year of HT and physact
+# This is the table 4.16 of the book, effect of the hormone therapy
+# combined with effects of physical activity at the one year visit
+# now to estimate the linear combination of the coefficients
+hers <- mutate(hers, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+LDL1phys_model <- lm(LDL1 ~ HT * physact, data = hers)
+S(LDL1phys_model)
+
+# The coefficients test for interaction
+# can be done with glht()
+
+coef_LDL1phys <- matrix(data=0, nrow = 1, ncol = length(LDL1phys_model$coefficients))
+colnames(coef_LDL1phys) <- names(LDL1phys_model$coefficients)
+
+# E[LDL|x] = b0 + b1 HT + b2 physact + b3 HT:physact
+# we will look at slope = b3 BMIc; coeff = 0, 0, 0, 0, 0, 1, 1, 1, 1
+# to test of significance
+
+coef_LDL1phys[1, "HThormone therapy:physactsomewhat less active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactabout as active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactsomewhat more active"] <- 1
+coef_LDL1phys[1, "HThormone therapy:physactmuch more active"] <- 1
+coef_LDL1phys %*% LDL1phys_model$coefficients
+coef_LDL1phys
+coef_LDL1phystest <- glht(model= LDL1phys_model, linfct= coef_LDL1phys, rhs= 0)
+S(coef_LDL1phystest)
+
+```
+
+
+Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretacion fro statin use easier. We compute BMIc, statins is a parameter coded 1 fro users and 0 for nonusers . So the multipredictor general model is
+$$ E[LDL|x] = \beta_0 + \beta_1 statins + \beta_2 BMIc + \beta_3 statins:BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+the slopeasociated with BMIc in this case is $\beta_2$, for women who do notuse statins (statins is 0)
+$$ E[LDL|x] = \beta_0  + \beta_2 BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+and statins users 
+$$ E[LDL|x] = \beta_0 + \beta_1 + (\beta_2 + \beta_3) BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
+So for the group of women 
+```{r}
+# Example of BMI and statins, with interaction
+# Model of LDL and BMI*statins whith age nonwhite smoking drinkany
+# For the table 4.17 of the book, to test for the linear 
+# combination of the coefficients for the interaction
+hers <- mutate(hers, statins = factor(statins))
+hers <- mutate(hers, nonwhite = factor(nonwhite))
+hers <- mutate(hers, smoking = factor(smoking))
+hers <- mutate(hers, drinkany = factor(drinkany))
+hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
+LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany, data = hers)
+summary(LDLbmi_model)
+confint(LDLbmi_model)
+```
+
+```{r}
+# Interaction model for HT effects on absolute change in LDL
+# TEST the linear combination of the coefficients for LDL ~ statins*BMIc
+
+coef_LDLbmi <- matrix(data=0, nrow = 1, ncol = length(LDLbmi_model$coefficients))
+colnames(coef_LDLbmi) <- names(LDLbmi_model$coefficients)
+
+# E[LDL|x] = b0 + b1 statins + b2 BMIc + b3 statins:BMIc + b4 age
+#           + b5 nonwhite + b6 smoking + b7 drinkany
+# we will look at slope = b2 + b3 BMIc; coeff = 0, 0, 1, 1, 0, 0, 0, 0
+
+coef_LDLbmi[1, "statinsyes"] <- 0
+coef_LDLbmi[1, "BMIc"] <- 1
+coef_LDLbmi[1, "statinsyes:BMIc"] <- 1
+coef_LDLbmi %*% LDLbmi_model$coefficients
+coef_LDLbmi
+coef_LDLbmitest <- glht(model= LDLbmi_model, linfct= coef_LDLbmi, rhs= 0)
+summary(coef_LDLbmitest)
+
+# Comp of regular linear model and robust and some standard error handling
+# LDLbmi_model
+
+ggplot(data = hers, mapping=aes(x=BMI, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Interaction") + geom_point(shape=20, color=2) + geom_smooth(method="lm", formula=y~x)
+ggplot(data = hers, mapping=aes(x=statins, y=LDL)) + labs(x="Body Mass Index kg/m^2", y= "LDL Cholesteron mg/dL", title = "Interaction") + geom_point(shape=20, color=2) + geom_smooth(method="lm", formula=y~x)
+```
+## Interaction and scale
+
+The The effect of HT on LDL cholesterol in the HERS trial was dependent on baseline values of LDL, with larger reductions seen among women with higher baseline values. An interaction model for absolute change in LDL from baseline to the first annual visit. Note that baseline LDL is centered in this model in order to make the coefficient for hormone therapy (HT) easier to interpret.
+The coefficients in the model have the following interpretations:
+
+* HT: Among women with the average baseline LDL level of 135mg/dL, the effect of HT is to lower LDL an average of 15.5mg/dL over the first year of the study.
+* cLDL0: Among women assigned to placebo, each mg/dL increase in baseline LDL is associated with a 0.35mg/dL greater decrease in LDL over the first year. That is, women with higher baseline LDL experience greater decreases in the absence of treatment; this is in part due to regression to the mean and in part to greater likelihood of starting use of statins.
+* HT * cLDL0: The effect of HT is to lower LDL an additional 0.08mg/dL for each additional mg/dL in baseline LDL. In short, larger treatment effects are seen among women with higher baseline values. The interaction is statistically significant (P = 0:013).
+```{r}
+# Results for Table 4.18
+hers <- mutate(hers, LDLch = LDL1 - LDL)
+hers <- mutate(hers, cLDL0 = LDL - mean(LDL, na.rm = TRUE))
+LDLch_model <- lm(LDLch ~ HT * cLDL0, data = hers)
+summary(LDLch_model)
+confint(LDLch_model)
+
+# Percent change Tabel 4.19
+hers <- mutate(hers, LDLpctch = ((LDL1-LDL)/LDL)*100)
+LDLpctch_model <- lm(LDLpctch ~ HT * cLDL0, data = hers)
+summary(LDLpctch_model)
+confint(LDLpctch_model)
+```
