@@ -10,20 +10,20 @@ description: "to prepare Class2020 presentations"
 ---
 
 
-```{r setup, echo=FALSE, cache=FALSE}
+```{r setup, cache=FALSE}
 library(knitr)
 library(rmdformats)
 
 ## Global options
-options(max.print="75")
-opts_chunk$set(echo=FALSE,
+options(max.print="80")
+opts_chunk$set(echo=TRUE,
 	             cache=TRUE,
                prompt=FALSE,
                tidy=TRUE,
                comment=NA,
                message=FALSE,
                warning=FALSE)
-opts_knit$set(width=75)
+opts_knit$set(width=80)
 ```
 
 ```{r message = FALSE}
@@ -35,19 +35,18 @@ library(emmeans)
 
 ```
 
-# General Linear Model (GLM)
+## Linear Regression  
 
-## Linear Regression
+The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)  
 
-The term "regression" was introduced by Francis Galton (Darwin's nephew) during the XIX century to describe a biological phenomenon.  The heights of the descendants of tall ancestors have the tendency to "return", come back, to the normal average high in the population, known as the regression to the media. (Mr. Galton was an Eugenics supporter)
+## Examples for "simple" linear regression  
 
-## Examples for "simple" linear regression
+The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:  
+$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$  
 
-The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:
-$$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)}$$
 ## Example of linear regression  
 
-**From the chap 9 Daniel** Després et al. point out that the topography of adipose tissue (AT) is associated with metabolic complications considered as risk factors for cardiovascular disease. It is important, they state, to measure the amount of intraabdominal AT as part of the evaluation of the cardiovascular disease risk of an individual. Computed tomography (CT), the only available technique that precisely and reliably measures the amount of deep abdominal AT, however, is costly and requires irradiation of the subject. In addition, the technique is not available to many physicians. Després et al. conducted a study to develop equations to predict the amount of deep abdominal AT from simple anthropometric measurements. Their subjects were men between the ages of 18 and 42 years who were free from metabolic disease that would require treatment. Among the measurements taken on each subject were deep abdominal AT obtained by CT and waist circumference as shown in EXA_C09_S03_01.csv A question of interest is how well one can predict and estimate deep abdominal AT from knowledge of the waist circumference. This question is typical of those that can be answered by means of regression analysis. Since deep abdominal AT is the variable about which we wish to make predictions and estimations, it is the dependent variable. The variable waist measurement, knowledge of which will be used to make the predictions and estimations, is the independent variable.
+**From the chap 9 Daniel** Després et al. pointed out that the topography of adipose tissue (AT) is associated with metabolic complications considered as risk factors for cardiovascular disease. It is important, they stated, to measure the amount of intraabdominal AT as part of the evaluation of the cardiovascular disease risk of an individual's Computed Tomography (CT), the only available technique that precisely and reliably measures the amount of deep abdominal (AT), however, is costly and requires irradiation of the subject. In addition, the technique is not available to many physicians. Després et al. conducted a study to develop equations to predict the amount of deep abdominal AT from simple anthropometric measurements. Their subjects were men between the ages of 18 and 42 years who were free from metabolic disease that would require treatment. Among the measurements taken on each subject were deep abdominal AT obtained by CT and waist circumference as shown in EXA_C09_S03_01.csv. A question of interest is how well one can predict and estimate deep abdominal AT from knowledge of the waist circumference. This question is typical of those that can be answered by means of regression analysis. Since deep abdominal AT is the variable about which we wish to make predictions and estimations, it is the dependent variable. The variable waist measurement, knowledge of which will be used to make the predictions and estimations, is the independent variable.  
 
 ```{r}
 # load the data file
@@ -72,19 +71,18 @@ summary(Lin9.3)
 # linear model plot
 abline(Lin9.3, col=2)
 ```
-Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.
-$$Y_j (j=1, . . . , J)$$
-for a set of $x_{jl}$ predictor variables (or independent variables) defined as vectors for each $j$
-$$ x_{jl} (l=1, . . . , L)$$
-with $L(L<J)$, a general linear model with an error function $\epsilon_j$ can be expressed:
-$$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$
-with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.
-$$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
+Response variable $Y$ is a random variable that is measured and has a distribution with expected value $E(Y|x)$ given a set of independent variables $x$.  
+$$Y_j (j=1, . . . , J)$$  
+for a set of $x_{jl}$ predictor variables (or independent variables) defined as vectors for each $j$  
+$$ x_{jl} (l=1, . . . , L)$$  
+with $L(L<J)$, a general linear model with an error function $\epsilon_j$ can be expressed:  
+$$Y_j = x_{j1}\beta_1 + x_{j2}\beta_2 + x_{j3}\beta_3 + . . . + x_{jL}\beta_L + \epsilon_j$$  
+with $\epsilon_j$ an independent variable identically distributed to the Normal with mean equal to zero.  
+$$\epsilon_j \approx N(0,\sigma^2)_{iid}$$  
 
-## Linear Regresion (Chap 4, Vittinghoff et all.)
+## Linear Regresion (Chap 4, Vittinghoff)  
 
-Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk.
-Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.
+Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk. Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.  
 
 ```{r}
 # ~/Dropbox/GitHub/Regression
@@ -97,37 +95,42 @@ hers_nodi_Fit <- lm(glucose ~ exercise, data = hers_nodi)
 summary(hers_nodi_Fit)
 ```
 
-Simple linear regression model shows coefficient estimate ($\beta_1$) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.
+Simple linear regression model shows coefficient estimate ($\beta_1$) for exercise shows that average baseline glucose levels were about 1.7mg/dL lower among women who exercised at least three times a week than among women who exercised less.  
 
-## For a multiple linear model
+## For a multiple linear model  
 
-There are models to regress several predictor variables to relate several random independent variables.
+There are models to regress several predictor variables to relate several random independent variables.  
 
-$$y_i = E[y_i|x_i] + \epsilon_i$$
-$$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$
-Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  glucose ~ exercise + age + drinkany + BMI.
-
-In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.
+$$y_i = E[y_i|x_i] + \epsilon_i$$  
+$$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$  
+Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  `glucose ~ exercise + age + drinkany + BMI`.  
+In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.  
 
 ```{r}
-hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
+hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI,
+                        data = hers_nodi)
+
 # the linear model results can be printed using summary
 summary(hers_nodi_multFit)
 ```
 
-# The multiple regression model (4.2)
+# The multiple regression model (4.2)  
 
-In the multiple regression model the expected value $E[y \mid x]$ (expected value of the response function y given the vector x) is
-$$E[y \mid x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \cdots + \beta_p x_p$$
+In the multiple regression model the expected value $E[y \mid x]$ (expected value of the response function y given the vector x) is  
+$$E[y \mid x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \cdots + \beta_p x_p$$  
 
-where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in the model, and the $\beta$ are the corresponding regression coefficients.
+where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in the model, and the $\beta$ are the corresponding regression coefficients.  
 
 ```{r}
 # Chap 4 4.2 Multiple linear regresor model and to obtain the table 4.2 with multiple linear model
 
-hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
+hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, 
+                     data = hers_nodi)
+
 S(hers_nodi_Fit2)
+
 confint(hers_nodi_Fit2)
+
 #
 ```
 
@@ -139,7 +142,7 @@ The coefficient $\beta_j, j=1, \ldots ,p$ gives the change in $E[y \mid x]$ for 
 
 ## Generalization of R-squared and r  
 
-The coefficient of determination $R^2$ is the proportion of the total variability of the outcome that can be accounted for by the predictors. And the multiple correlatio coefficient $r = \sqrt{R^2}$  represents the correlation between the outcome $y$ and the fitted values $\hat{y}$.  
+The coefficient of determination $R^2$ is the proportion of the total variability of the outcome that can be accounted for by the predictors. And the multiple correlation coefficient $r = \sqrt{R^2}$ represents the correlation between the outcome $y$ and the fitted values $\hat{y}$.  
 
 # Categorical Predictors  
 
@@ -147,11 +150,11 @@ Predictors in both simple and multiple predictor regression models can be binary
 
 ## Binary Predictors  
 
-Binary predictors, a group with a characteristic and other group with out the characteristic, can be coded with a dummy variable, an indicator or dummy variable that can take value "1" for the group with the chracteristic and "0" for the group without the characteristic. With this coding, the regression coefficient corresponding to this variable has a straightforward interpretation as the increase or decrease in average outcome levels in the group with the characteristic, with respect to the reference group. With this coding for binary variables 1 = yes and 0 = no $\beta_0$ is the average of the baseline variable and $\beta_0 + \beta_1$ is related to the value for the "yes" condition ("yes" + average).  
+Binary predictors, a group with a characteristic and other group with out the characteristic, can be coded with a dummy variable, an indicator or dummy variable that can take value "1" for the group with the characteristic and "0" for the group without the characteristic. With this coding, the regression coefficient corresponding to this variable has a straightforward interpretation as the increase or decrease in average outcome levels in the group with the characteristic, with respect to the reference group. With this coding for binary variables `1 = yes` and `0 = no` $\beta_0$ is the average of the baseline variable and $\beta_0 + \beta_1$ is related to the value for the "yes" condition ("yes" + average).  
 
 ## Multilevel Categorical Predictors (4.3)  
 
-The 2,763 women in the HERS cohort also responded to a question about how physically active they considered themselves compared to other women their age. The five-level response variable "physact" ranged from “much less active” to “much more active,” and was coded in order from 1 to 5. This is an example of an ordinal variable. Multilevel categorical variables can also be nominal, in the sense that there is no intrinsic ordering in the categories. Examples include ethnicity, marital status, occupation, and geographic region. With nominal variables, it is even clearer that the numeric codes often used to represent the variable in the database cannot be treated like the values of a numeric variable.  
+The 2,763 women in the HERS cohort also responded to a question about how physically active they considered themselves compared to other women their age. The five-level response variable `physact` ranged from *much less active* to *much more active*, and was coded in order from 1 to 5. This is an example of an ordinal variable. Multilevel categorical variables can also be nominal, in the sense that there is no intrinsic ordering in the categories. Examples include ethnicity, marital status, occupation, and geographic region. With nominal variables, it is even clearer that the numeric codes often used to represent the variable in the database cannot be treated like the values of a numeric variable.  
 Categorical variables are easily accommodated in multipredictor linear and other regression models, using indicator or dummy variables. As with binary variables, where two categories are represented in the model by a single indicator variable, categorical variables with $K \leq 2$ levels are represented by $K - 1$ indicators, one for each of level of the variable except a baseline or reference level.  
 
 ```{r}
@@ -162,7 +165,9 @@ Categorical variables are easily accommodated in multipredictor linear and other
 
 hers_nodi <- mutate(hers_nodi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
 levels(hers_nodi$physact)
-ggplot(data = hers_nodi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+ggplot(data = hers_nodi, mapping = aes(x = physact, y = glucose)) + 
+  geom_boxplot(na.rm = TRUE)
+
 glucose_fit_act <- lm(glucose ~ physact, data = hers_nodi)
 #
 Anova(glucose_fit_act, type="II")
@@ -177,15 +182,14 @@ summary(glucose_emmeans)
 #
 ```
 
-the corresponding $\beta_i$ have a straightforward interpretation. For the moment, consider a simple regression model in which the five levels of "physact" are the only predictors:  
+the corresponding $\beta_i$ have a straightforward interpretation. For the moment, consider a simple regression model in which the five levels of `physact` are the only predictors:  
 $$E[glucose \mid x] = \beta_0 + \beta_2 SomewhatLessActive + \beta_3 AboutAsActive + \beta_4 SomewhatMoreActive + \beta_5 MuchMoreActive$$  
-Without other predictors, or covariates, the model is equivalent to a one-way ANOVA.
-The parameters of the model can be manipulated to give the estimated mean in any group, or to give the estimated differences between any two groups. Estimated differences are the contrasts.  
+Without other predictors, or covariates, the model is equivalent to a one-way ANOVA. The parameters of the model can be manipulated to give the estimated mean in any group, or to give the estimated differences between any two groups. Estimated differences are the contrasts.  
 
 ## Multiple Pairwise Comparisons Between Categories  
 
 It is frequently of interest to examine multiple pairwise differences between levels of a categorical predictor, especially when the overall F -test is statistically significant, and in some cases even when it is not.  
-For this case, various methods are available for controlling the familywise error rate (FER) for the wider set of comparisons being made. These methods differ in the trade-off made between power and the breadth of the circumstances under which the type-I error rate is protected. One of the most straightforward is Fisher’s least significant difference (LSD) procedure, in which the pairwise comparisons are carried out using t -tests at the nominal type-I error rate, but only if the overall F-test is statistically significant.  
+For this case, various methods are available for controlling the family wise error rate (FER) for the wider set of comparisons being made. These methods differ in the trade-off made between power and the breadth of the circumstances under which the type-I error rate is protected. One of the most straightforward is Fisher’s least significant difference (LSD) procedure, in which the pairwise comparisons are carried out using t -tests at the nominal type-I error rate, but only if the overall F-test is statistically significant.  
 More conservative procedures that protect the FER (FWE) under partial null hypotheses include setting the level of the pairwise tests required to declare statistical significance equal to $\alpha/k$ (Bonferroni) or$1-(1-\alpha)^{1/k}$ (Sidak), where $\alpha$ is the desired FER and $k$ is the number of preplanned comparisons to be made. The Sidak correction is slightly more liberal for small values of $k$, but otherwise equivalent.  
 
 ```{r}
@@ -210,7 +214,7 @@ contrast(glucose_emmeans, Contrast_Table4.6, adjust="bonferroni")
 
 ## Testing for Trend Across Categories  
 
-The coefficient estimates for the categories of physact from last section, decrease in order, suggesting that mean glucose levels are characterized by a linear trend across the levels of physact. Tests for linear trend are best performed using a contrast in the coefficients corresponding to the various levels of the categorical predictor.
+The coefficient estimates for the categories of physact from last section, decrease in order, suggesting that mean glucose levels are characterized by a linear trend across the levels of `physact`. Tests for linear trend are best performed using a contrast in the coefficients corresponding to the vari`ous levels of the categorical predictor.
 Definition: A contrast is a weighted sum of the regression coefficients of the form $a_1\beta_1 + a_2\beta_2 + \cdots + a_p\beta_p$ in which the weights, or contrast coefficients, sum to zero: that is, $a_1 + a_2 + \cdots + a_p = 0$  
 
 
@@ -289,7 +293,8 @@ However, age, ethnicity (nonwhite), smoking, and alcohol use (drinkany) may conf
 # second half of Table 4.12
 # example of LDL modeled with BMI and other factors
 
-LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, data = hers)
+LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, 
+                  data = hers)
 S(LDL_fit_all)
 
 confint(LDL_fit_all)
@@ -317,11 +322,15 @@ We examined the extent to which the effects of BMI on glucose levels might be me
 ```{r}
 # second half of Table 4.13
 # example of LDL modeled with BMI and other factors
-Gluc_fit_BMIall <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair, data = hers_nodi)
+Gluc_fit_BMIall <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair, 
+                      data = hers_nodi)
+
 summary(Gluc_fit_BMIall)
 confint(Gluc_fit_BMIall)
 # and the second model
-Gluc_fit_BMIexer <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair + exercise, data = hers_nodi)
+Gluc_fit_BMIexer <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair + exercise, 
+                       data = hers_nodi)
+
 summary(Gluc_fit_BMIexer)
 confint(Gluc_fit_BMIexer)
 ```
