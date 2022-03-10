@@ -22,3 +22,4 @@ TH.data
 multcomp
 RColorBrewer
 wordcloud
+emmeans

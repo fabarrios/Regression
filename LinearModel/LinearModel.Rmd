@@ -33,6 +33,7 @@ library(wesanderson)
 library(rstatix)
 library(HSAUR2)
 library(multcomp)
+library(emmeans)
 
 ```
 
@@ -115,6 +116,71 @@ hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_n
 # the linear model results can be printed using summary
 summary(hers_nodi_multFit)
 ```
+
+# The multiple regression model (4.2)
+
+In the multiple regression model the expected value $E[y \mid x]$ (expected value of the response function y given the vector x) is
+$$E[y \mid x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \cdots + \beta_p x_p$$
+
+where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in the model, and the $\beta$ are the corresponding regression coefficients.
+
+```{r}
+# Chap 4 4.2 Multiple linear regresor model and to obtain the table 4.2 with multiple linear model
+
+hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, data = hers_nodi)
+S(hers_nodi_Fit2)
+confint(hers_nodi_Fit2)
+#
+```
+
+in a multiple regression model that also includes —that is, adjusts for—age, alcohol use (drinkany), and BMI, average glucose is estimated to be only about 1 mg/dL lower among women who exercise, holding the other three factors constant. The multipredictor model also shows that average glucose levels are about 0.7 mg/dL higher among alcohol users than among nonusers. Average levels also increase by about 0.5 mg/dL per unit increase in BMI, and by 0.06 mg/dL for each additional year of age. Each of these associations is statistically significant after adjustment for the other predictors in the model.  
+
+## Interpretation of Adjusted Regression Coefficients  
+
+The coefficient $\beta_j, j=1, \ldots ,p$ gives the change in $E[y \mid x]$ for an increase of one unit in predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model, the intercept $\beta_0$ gives the value of $E[y \mid x]$ when all the predictors are equal to zero.  
+
+## Generalization of R-squared and r  
+
+The coefficient of determination $R^2$ is the proportion of the total variability of the outcome that can be accounted for by the predictors. And the multiple correlatio coefficient $r = \sqrt{R^2}$  represents the correlation between the outcome $y$ and the fitted values $\hat{y}$.  
+
+# Categorical Predictors  
+
+Predictors in both simple and multiple predictor regression models can be binary, categorical, or discrete numeric, as well as continuous numeric.  
+
+## Binary Predictors  
+
+Binary predictors, a group with a characteristic and other group with out the characteristic, can be coded with a dummy variable, an indicator or dummy variable that can take value "1" for the group with the chracteristic and "0" for the group without the characteristic. With this coding, the regression coefficient corresponding to this variable has a straightforward interpretation as the increase or decrease in average outcome levels in the group with the characteristic, with respect to the reference group. With this coding for binary variables 1 = yes and 0 = no $\beta_0$ is the average of the baseline variable and $\beta_0 + \beta_1$ is related to the value for the "yes" condition ("yes" + average).  
+
+## Multilevel Categorical Predictors (4.3)  
+
+The 2,763 women in the HERS cohort also responded to a question about how physically active they considered themselves compared to other women their age. The five-level response variable "physact" ranged from “much less active” to “much more active,” and was coded in order from 1 to 5. This is an example of an ordinal variable. Multilevel categorical variables can also be nominal, in the sense that there is no intrinsic ordering in the categories. Examples include ethnicity, marital status, occupation, and geographic region. With nominal variables, it is even clearer that the numeric codes often used to represent the variable in the database cannot be treated like the values of a numeric variable.  
+Categorical variables are easily accommodated in multipredictor linear and other regression models, using indicator or dummy variables. As with binary variables, where two categories are represented in the model by a single indicator variable, categorical variables with $K \leq 2$ levels are represented by $K - 1$ indicators, one for each of level of the variable except a baseline or reference level.  
+
+```{r}
+# Chap 4  4.3 Categorical predictors
+# we are using the same file hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+# Multilevel categorical predictors using the linear model for women without diebetes
+# IMPORTANT compare with table 4.4 Regression of physical activity on glucose
+
+hers_nodi <- mutate(hers_nodi, physact = factor(physact, levels=c("much less active","somewhat less active","about as active","somewhat more active","much more active")))
+levels(hers_nodi$physact)
+ggplot(data = hers_nodi, mapping = aes(x = physact, y = glucose)) + geom_boxplot(na.rm = TRUE)
+glucose_fit_act <- lm(glucose ~ physact, data = hers_nodi)
+#
+Anova(glucose_fit_act, type="II")
+S(glucose_fit_act)
+layout(matrix(1:4, nrow = 2))
+plot(glucose_fit_act)
+
+# To compute the estimates marginal means for specified factors or factor combinations in a linear model
+glucose_emmeans <- emmeans(glucose_fit_act, "physact")
+summary(glucose_emmeans)
+#
+```
+
+the corresponding $\beta_i$ have a straightforward interpretation. For the moment, consider a simple regression model in which the five levels of "physact"
+are the only predictors:
+$$E[glucose \mid x] = \beta_0 + \beta_2 SomewhatLessActive + \beta_3 AboutAsActive + \beta_4 SomewhatMoreActive + \beta_5 MuchMoreActive$$
 
 
 ## Multiple linear model, with interactions
