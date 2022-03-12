@@ -17,7 +17,7 @@ library(rmdformats)
 ## Global options
 options(max.print="80")
 opts_chunk$set(echo=TRUE,
-	             cache=TRUE,
+               cache=TRUE,
                prompt=FALSE,
                tidy=TRUE,
                comment=NA,
@@ -26,7 +26,7 @@ opts_chunk$set(echo=TRUE,
 opts_knit$set(width=80)
 ```
 
-```{r message = FALSE}
+```{r}
 library(tidyverse)
 library(here)
 library(wesanderson)
@@ -82,7 +82,7 @@ $$\epsilon_j \approx N(0,\sigma^2)_{iid}$$
 
 ## Linear Regresion (Chap 4, Vittinghoff)  
 
-Example of simple linear regression: exercise and glucose Glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk. Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.  
+Example of simple linear regression: exercise and glucose levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal increased risk. Data from HERS (public data) has baseline of glucose levels among 2,032 participants in a clinical trial of Hormone Therapy (HT). Women with diabetes are excluded, to study if the exercise might help prevent progression to diabetes.  
 
 ```{r}
 # ~/Dropbox/GitHub/Regression
@@ -104,7 +104,7 @@ There are models to regress several predictor variables to relate several random
 $$y_i = E[y_i|x_i] + \epsilon_i$$  
 $$Y = \beta_0 + \beta_1 x_{1} + \beta_2 x_{2} + \dots + \beta_p x_{p}$$  
 Multiple linear regression model coefficients, the betas, give the change in $E[Y|x]$ for an increase of one unit on the predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model the intercept $\beta_0$ (beta zero) gives the value $E[Y|x]$ when all the predictors are equal to zero. Example of multiple linear model estimate is done with:  `glucose ~ exercise + age + drinkany + BMI`.  
-In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regressors.  
+In general in R we can write:$Y = \beta_1 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4 variable_4$ for a multiple linear model, in this case four regresors.  
 
 ```{r}
 hers_nodi_multFit <- lm(glucose ~ exercise + age + drinkany + BMI,
@@ -122,7 +122,7 @@ $$E[y \mid x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \cdots + \be
 where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in the model, and the $\beta$ are the corresponding regression coefficients.  
 
 ```{r}
-# Chap 4 4.2 Multiple linear regresor model and to obtain the table 4.2 with multiple linear model
+# Chap 4 4.2 Multiple linear predictor model and to obtain the table 4.2 with multiple linear model
 
 hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, 
                      data = hers_nodi)

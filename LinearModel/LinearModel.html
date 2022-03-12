@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios Instituto de Neurobiología, UNAM " />
     
-        <meta name="date" content="2022-03-09" />
+        <meta name="date" content="2022-03-12" />
     
     <title>General Linear Model</title>
 
@@ -1900,7 +1900,7 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios<br><small>Instituto de Neurobiología,
 UNAM<br></small></span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> <small>2022-03-09</small></span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> <small>2022-03-12</small></span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -1927,7 +1927,7 @@ UNAM<br></small></span></li>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Global options</span></span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">options</span>(<span class="at">max.print=</span><span class="st">&quot;80&quot;</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>opts_chunk<span class="sc">$</span><span class="fu">set</span>(<span class="at">echo=</span><span class="cn">TRUE</span>,</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>                 <span class="at">cache=</span><span class="cn">TRUE</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>               <span class="at">cache=</span><span class="cn">TRUE</span>,</span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>               <span class="at">prompt=</span><span class="cn">FALSE</span>,</span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>               <span class="at">tidy=</span><span class="cn">TRUE</span>,</span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>               <span class="at">comment=</span><span class="cn">NA</span>,</span>
@@ -2041,12 +2041,12 @@ N(0,\sigma^2)_{iid}\]</span></p>
 </div>
 <div id="linear-regresion-chap-4-vittinghoff" class="section level2">
 <h2>Linear Regresion (Chap 4, Vittinghoff)</h2>
-<p>Example of simple linear regression: exercise and glucose Glucose
-levels above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL
-signal increased risk. Data from HERS (public data) has baseline of
-glucose levels among 2,032 participants in a clinical trial of Hormone
-Therapy (HT). Women with diabetes are excluded, to study if the exercise
-might help prevent progression to diabetes.</p>
+<p>Example of simple linear regression: exercise and glucose levels
+above 125 mg/dL are diagnostic of diabetes, while 100-125 mg/dL signal
+increased risk. Data from HERS (public data) has baseline of glucose
+levels among 2,032 participants in a clinical trial of Hormone Therapy
+(HT). Women with diabetes are excluded, to study if the exercise might
+help prevent progression to diabetes.</p>
 <div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ~/Dropbox/GitHub/Regression</span></span>
 <span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>hers <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;DataRegressBook/Chap3/hersdata.csv&quot;</span>)</span>
 <span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2099,7 +2099,7 @@ model estimate is done with:
 In general in R we can write:<span class="math inline">\(Y = \beta_1
 variable_1 + \beta_2 variable_2 + \beta_3 variable_3 + \beta_4
 variable_4\)</span> for a multiple linear model, in this case four
-regressors.</p>
+regresors.</p>
 <div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>hers_nodi_multFit <span class="ot">&lt;-</span> <span class="fu">lm</span>(glucose <span class="sc">~</span> exercise <span class="sc">+</span> age <span class="sc">+</span> drinkany <span class="sc">+</span> BMI,</span>
 <span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>                        <span class="at">data =</span> hers_nodi)</span>
 <span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -2138,7 +2138,7 @@ response function y given the vector x) is<br />
 collection of <span class="math inline">\(p\)</span> predictors <span class="math inline">\(x_1, x_2, \ldots x_p\)</span> in the model, and
 the <span class="math inline">\(\beta\)</span> are the corresponding
 regression coefficients.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chap 4 4.2 Multiple linear regresor model and to obtain the table 4.2 with multiple linear model</span></span>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Chap 4 4.2 Multiple linear predictor model and to obtain the table 4.2 with multiple linear model</span></span>
 <span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>hers_nodi_Fit2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(glucose <span class="sc">~</span> exercise <span class="sc">+</span> age <span class="sc">+</span> drinkany <span class="sc">+</span> BMI, </span>
 <span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>                     <span class="at">data =</span> hers_nodi)</span>
@@ -2466,14 +2466,14 @@ Fit: lm(formula = glucose ~ physact, data = hers_nodi)
 
 Linear Hypotheses:
                     Estimate Std. Error t value Pr(&gt;|t|)   
-MAvsLA == 0          -4.8531     1.2998  -3.734  0.00111 **
-MAvsLAforMuch == 0   -3.2777     1.1211  -2.924  0.02057 * 
-MAvsLAforSome == 0   -1.5754     0.6577  -2.395  0.08818 . 
-MLAvsC == 0          -1.2262     1.0111  -1.213  0.68330   
+MAvsLA == 0          -4.8531     1.2998  -3.734  0.00149 **
+MAvsLAforMuch == 0   -3.2777     1.1211  -2.924  0.02034 * 
+MAvsLAforSome == 0   -1.5754     0.6577  -2.395  0.08814 . 
+MLAvsC == 0          -1.2262     1.0111  -1.213  0.68331   
 SLAvsC == 0          -0.3677     0.6582  -0.559  0.97287   
-SMAvsC == 0          -1.2077     0.5287  -2.284  0.11476   
-MMAvsC == 0          -2.0515     0.7174  -2.860  0.02485 * 
-LinearTrending == 0  -8.1308     2.3366  -3.480  0.00343 **
+SMAvsC == 0          -1.2077     0.5287  -2.284  0.11473   
+MMAvsC == 0          -2.0515     0.7174  -2.860  0.02504 * 
+LinearTrending == 0  -8.1308     2.3366  -3.480  0.00326 **
 ---
 Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 (Adjusted p values reported -- single-step method)</code></pre>
