@@ -21,6 +21,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [Regression](https://fabarrios.github.io/Regression/LinearModel/LinearModel.html)  
 
 ### III Multiple Linear Regression (Barrios)  
+1. [Multiple Linear Regression](https://fabarrios.github.io/Regression/MultipleLinearRegression/MultipleLinearRegression.html)
 
 ### IV Logistic Regression (Barrios)  
 
