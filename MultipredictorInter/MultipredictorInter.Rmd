@@ -1,5 +1,5 @@
 ---
-title: "Multipredictor Regrgession with Interaction"
+title: "Multipredictor Regression with Interaction"
 author: "F.A. Barrios"
 date: "<small>`r Sys.Date()`</small>"
 output:
