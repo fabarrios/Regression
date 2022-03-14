@@ -3,7 +3,7 @@ title: "General Linear Model"
 author: "F.A. Barrios<br><small>Instituto de Neurobiología, UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  rmdformats::robobook:
+  rmdformats::html_clean:
     highlight: kate
   pdf_document: default
 description: "to prepare Class2020 presentations"
