@@ -21,7 +21,6 @@ library(here)
 library(tidyverse)
 library(emmeans)
 library(multcomp)
-# library(car)
 #
 # loading the HERS data set
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
