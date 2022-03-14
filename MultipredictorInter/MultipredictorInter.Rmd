@@ -3,40 +3,27 @@ title: "Multipredictor Regrgession with Interaction"
 author: "F.A. Barrios"
 date: "<small>`r Sys.Date()`</small>"
 output:
-  rmdformats::material:
+  rmdformats::robobook:
     highlight: kate
   pdf_document: default
 description: "to prepare classes 2022 and homework"
 ---
 
-```{r setup, echo=FALSE, cache=FALSE}
-library(knitr)
-library(rmdformats)
-
+```{r setup, include=FALSE}
 ## Global options
-options(max.print="75")
-opts_chunk$set(echo=TRUE,
-	             cache=TRUE,
-               prompt=FALSE,
-               tidy=TRUE,
-               comment=NA,
-               message=FALSE,
-               warning=FALSE)
-opts_knit$set(width=75)
+knitr::opts_chunk$set(cache = TRUE)
 ```
 
 ```{r message = FALSE}
-# Multilevel categorical predictors Chap 4 Vittinghoff
-# Interaction
+# Multilevel Linear Regression with Interaction
 #
+library(here)
 library(tidyverse)
 library(emmeans)
 library(multcomp)
-library(MASS)
 library(car)
 #
-setwd("~/Dropbox/GitHub/Class2020")
-# loading the HERS data set from Vittinghoff's data
+# loading the HERS data set
 hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
 ```
 
@@ -185,16 +172,16 @@ LDLch_model <- lm(LDLch ~ HT * cLDL0, data = hers)
 summary(LDLch_model)
 confint(LDLch_model)
 
-# Percent change Tabel 4.19
+# Percent change Table 4.19
 hers <- mutate(hers, LDLpctch = ((LDL1-LDL)/LDL)*100)
 LDLpctch_model <- lm(LDLpctch ~ HT * cLDL0, data = hers)
 summary(LDLpctch_model)
 confint(LDLpctch_model)
 ```
 
-# More Multiple linear model, with interactions  
+# More examples Multiple linear model with interactions  
 
-In general in R we can write the interaction term as the product of the regressors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:  
+In general in R we can write the interaction term as the product of the regresors that we are studying the interaction:$variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:  
 
 $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$  
 
@@ -203,6 +190,7 @@ $$Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2$$
 This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR books.  
 
 ```{r}
+library(HSAUR2)
 library(wordcloud)
 data(clouds)
 head(clouds)
