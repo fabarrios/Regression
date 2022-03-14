@@ -1,12 +1,261 @@
 ---
-title: ""
-date: "`r Sys.Date()`"
+title: "Multiple Linear Regression"
+author: "F.A. Barrios<br><small>Instituto de Neurobiología, UNAM</small>"
+date: "<small>`r Sys.Date()`<small>"
+
 output:
-  rmdformats::html_clean:
+  rmdformats::robobook:
+    lightbox: true
     highlight: kate
 ---
 ```{r setup, include=FALSE}
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(here)
+# tibbles
+library(tidyverse)
+# to estimate adjusted p
+library(multcomp)
+library(emmeans)
+```
+
+```{r}
+
+# Loading data
+# ~/Dropbox/GitHub/Regression
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv", show_col_types = FALSE)
+
+# hers data structure
+hers_nodi <- filter(hers, diabetes == "no")
+```
+
+# The multiple regression model (4.2)  
+
+In the multiple regression model the expected value $E[y \mid x]$ (expected value of the response function y given the vector x) is  
+$$E[y \mid x] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \cdots + \beta_p x_p$$  
+
+where $x$ represents the collection of $p$ predictors $x_1, x_2, \ldots x_p$ in the model, and the $\beta$ are the corresponding regression coefficients.  
+
+```{r}
+# Chap 4 4.2 Multiple linear predictor model and to obtain the table 4.2 with multiple linear model
+
+hers_nodi_Fit2 <- lm(glucose ~ exercise + age + drinkany + BMI, 
+                     data = hers_nodi)
+
+summary(hers_nodi_Fit2)
+
+confint(hers_nodi_Fit2)
+
+```
+
+in a multiple regression model that also includes —that is, adjusts for—age, alcohol use (drinkany), and BMI, average glucose is estimated to be only about 1 mg/dL lower among women who exercise, holding the other three factors constant. The multipredictor model also shows that average glucose levels are about 0.7 mg/dL higher among alcohol users than among nonusers. Average levels also increase by about 0.5 mg/dL per unit increase in BMI, and by 0.06 mg/dL for each additional year of age. Each of these associations is statistically significant after adjustment for the other predictors in the model.  
+
+## Interpretation of Adjusted Regression Coefficients  
+
+The coefficient $\beta_j, j=1, \ldots ,p$ gives the change in $E[y \mid x]$ for an increase of one unit in predictor $x_j$ , holding other factors in the model constant; each of the estimates is adjusted for the effects of all the other predictors. As in the simple linear model, the intercept $\beta_0$ gives the value of $E[y \mid x]$ when all the predictors are equal to zero.  
+
+## Generalization of R-squared and r  
+
+The coefficient of determination $R^2$ is the proportion of the total variability of the outcome that can be accounted for by the predictors. And the multiple correlation coefficient $r = \sqrt{R^2}$ represents the correlation between the outcome $y$ and the fitted values $\hat{y}$.  
+
+# Categorical Predictors  
+
+Predictors in both simple and multiple predictor regression models can be binary, categorical, or discrete numeric, as well as continuous numeric.  
+
+## Binary Predictors  
+
+Binary predictors, a group with a characteristic and other group with out the characteristic, can be coded with a dummy variable, an indicator or dummy variable that can take value "1" for the group with the characteristic and "0" for the group without the characteristic. With this coding, the regression coefficient corresponding to this variable has a straightforward interpretation as the increase or decrease in average outcome levels in the group with the characteristic, with respect to the reference group. With this coding for binary variables `1 = yes` and `0 = no` $\beta_0$ is the average of the baseline variable and $\beta_0 + \beta_1$ is related to the value for the "yes" condition ("yes" + average).  
+
+## Multilevel Categorical Predictors (4.3)  
+
+The 2,763 women in the HERS cohort also responded to a question about how physically active they considered themselves compared to other women their age. The five-level response variable `physact` ranged from *much less active* to *much more active*, and was coded in order from 1 to 5. This is an example of an ordinal variable. Multilevel categorical variables can also be nominal, in the sense that there is no intrinsic ordering in the categories. Examples include ethnicity, marital status, occupation, and geographic region. With nominal variables, it is even clearer that the numeric codes often used to represent the variable in the database cannot be treated like the values of a numeric variable.  
+Categorical variables are easily accommodated in multipredictor linear and other regression models, using indicator or dummy variables. As with binary variables, where two categories are represented in the model by a single indicator variable, categorical variables with $K \leq 2$ levels are represented by $K - 1$ indicators, one for each of level of the variable except a baseline or reference level.  
+
+```{r}
+# Chap 4.3 Categorical predictors
+# we are using the HERS data
+# Multilevel categorical predictors using the linear model for women without diabetes
+# IMPORTANT compare with table 4.4 Regression of physical activity on glucose
+
+hers_nodi <- mutate(hers_nodi, 
+                    physact = factor(physact, levels=c("much less active", 
+                                                       "somewhat less active", 
+                                                       "about as active", 
+                                                       "somewhat more active", 
+                                                       "much more active")))
+
+levels(hers_nodi$physact)
+
+ggplot(data = hers_nodi, mapping = aes(x = physact, y = glucose)) + 
+  geom_boxplot(na.rm = TRUE)
+
+glucose_fit_act <- lm(glucose ~ physact, data = hers_nodi)
+#
+anova(glucose_fit_act)
+summary(glucose_fit_act)
+layout(matrix(1:4, nrow = 2))
+plot(glucose_fit_act)
+
+# To compute the estimates marginal means for specified factors or factor combinations in a linear model
+glucose_emmeans <- emmeans(glucose_fit_act, "physact")
+
+summary(glucose_emmeans)
+#
+```
+
+the corresponding $\beta_i$ have a straightforward interpretation. For the moment, consider a simple regression model in which the five levels of `physact` are the only predictors:  
+$$E[glucose \mid x] = \beta_0 + \beta_2 SomewhatLessActive + \beta_3 AboutAsActive + \beta_4 SomewhatMoreActive + \beta_5 MuchMoreActive$$  
+Without other predictors, or covariates, the model is equivalent to a one-way ANOVA. The parameters of the model can be manipulated to give the estimated mean in any group, or to give the estimated differences between any two groups. Estimated differences are the contrasts.  
+
+## Multiple Pairwise Comparisons Between Categories  
+
+It is frequently of interest to examine multiple pairwise differences between levels of a categorical predictor, especially when the overall F -test is statistically significant, and in some cases even when it is not.  
+For this case, various methods are available for controlling the family wise error rate (FER) for the wider set of comparisons being made. These methods differ in the trade-off made between power and the breadth of the circumstances under which the type-I error rate is protected. One of the most straightforward is Fisher’s least significant difference (LSD) procedure, in which the pairwise comparisons are carried out using t -tests at the nominal type-I error rate, but only if the overall F-test is statistically significant.  
+More conservative procedures that protect the FER (FWE) under partial null hypotheses include setting the level of the pairwise tests required to declare statistical significance equal to $\alpha/k$ (Bonferroni) or$1-(1-\alpha)^{1/k}$ (Sidak), where $\alpha$ is the desired FER and $k$ is the number of preplanned comparisons to be made. The Sidak correction is slightly more liberal for small values of $k$, but otherwise equivalent.  
+
+```{r}
+# Contrasts
+# contrasts using the adjusted parameters for a categorical variable with several categories
+# or multiple ordinals
+# R call categorical variables factors and their categories levels so we have factors with different
+# levels in these cases we can estimate contrasts of the adjusted parameters.
+
+Contrast_Table4.6 <- list(gluc_b0 = c(1, 0, 0, 0, 0), 
+                         gluc_b2 = c(-1, 1, 0, 0, 0), 
+                         gluc_b3 = c(-1, 0, 1, 0, 0), 
+                         gluc_b4 = c(-1, 0, 0, 1, 0), 
+                         gluc_b5 = c(-1, 0, 0, 0, 1))
+# For the Bonferroni correction adjust "bonferroni" this is talbe 4.6
+contrast(glucose_emmeans, Contrast_Table4.6, adjust="sidak")
+contrast(glucose_emmeans, Contrast_Table4.6, adjust="bonferroni")
+
+# Same contrasts with multicomp library
+
+```
+
+## Testing for Trend Across Categories  
+
+The coefficient estimates for the categories of physact from last section, decrease in order, suggesting that mean glucose levels are characterized by a linear trend across the levels of `physact`. Tests for linear trend are best performed using a contrast in the coefficients corresponding to the vari`ous levels of the categorical predictor.
+Definition: A contrast is a weighted sum of the regression coefficients of the form $a_1\beta_1 + a_2\beta_2 + \cdots + a_p\beta_p$ in which the weights, or contrast coefficients, sum to zero: that is, $a_1 + a_2 + \cdots + a_p = 0$  
+
+
+```{r}
+# 
+Contrasts_glu <- list(MAvsLA          = c(-1, -1, 0,  1,  1),
+                     MAvsLAforMuch   = c(-1,  0, 0,  0,  1),
+                     MAvsLAforSome   = c( 0, -1, 0,  1,  0),
+                     MLAvsC          = c(-1,  0, 1,  0,  0),
+                     SLAvsC          = c( 0, -1, 1,  0,  0),
+                     SMAvsC          = c( 0,  0,-1,  1,  0),
+                     MMAvsC          = c( 0,  0,-1,  0,  1),
+                     LinTrend_phys   = c(-2, -1, 0,  1,  2))
+
+# compare the results with emmeans adjusted with Sidak, FWE.
+contrast(glucose_emmeans, Contrasts_glu, adjust="bonferroni")
+contrast(glucose_emmeans, Contrasts_glu, adjust="sidak")
+# With adjust="none", results will be the same as the aov method.
+
+# for other more general examples
+# Using the multcomp library
+
+ContrastGlucExa1 <- ("
+Contrast.Name     MLA SLA AAA SMA MMA
+ MAvsLA           -1  -1   0   1   1
+ MAvsLAforMuch    -1   0   0   0   1
+ MAvsLAforSome     0  -1   0   1   0
+ MLAvsC           -1   0   1   0   0
+ SLAvsC            0  -1   1   0   0
+ SMAvsC            0   0  -1   1   0
+ MMAvsC            0   0  -1   0   1
+ LinearTrending   -2  -1   0   1   2
+")
+
+ContrastGlucExa1_Matriz = as.matrix(read.table(textConnection(ContrastGlucExa1), header=TRUE, row.names=1))
+ContrastGlucExa1_Matriz
+
+#
+# glucose_fit_act came from lm(glucose ~ physact, data = hers_nodi)
+Gluc_GenLinHypoth = glht(glucose_fit_act, linfct = mcp(physact = ContrastGlucExa1_Matriz))
+
+#
+Gluc_GenLinHypoth$linfct
+summary(Gluc_GenLinHypoth, test=adjusted("single-step"))
+
+```
+
+# Confounding  
+
+The model $\tt lm(glucose \sim exercise, data = hersnodi)$, the unadjusted coefficient for exercise estimates the difference in mean glucose levels between two subgroups of the population of women with heart disease. But this comparison ignores other ways in which those subgroups may differ. In other words, the analysis does not take account of confounding of the association we see. Although the unadjusted coefficient may be useful for describing differences between subgroups, it would be risky to infer any causal connection between exercise and glucose on this basis. In contrast, the adjusted coefficient for exercise in the model 
+$\tt lm(glucose \sim exercise + age + drinkany + BMI, data = hersnodi)$, takes account of the fact that women who exercise also have lower BMI and are slightly younger and more likely to report alcohol use, all factors which are associated with differences in glucose levels. While this adjusted model is clearly rudimentary, the underlying premise of multipredictor regression analysis of observational data is that with a sufficiently refined model, we can estimate causal effects, free or almost free of confounding. Confounding is when one predictor $x_i$ (independent variable) can depend in some of the same variables that the response function $Y$.  
+
+## Adjusted vs. unadjusted  
+
+Uncontrolled confounding induces bias in unadjusted estimates of the causal effects that are commonly the focus of our attention. This suggests that unadjusted parameter estimates are always biased and adjusted estimates less so.  
+
+## Example: BMI and LDL  
+
+We turn to a relatively simple example, again using data from the HERS cohort. BMI and LDL cholesterol are both established heart disease risk factors. It is reasonable
+to hypothesize that higher BMI leads to higher LDL in some causal sense. An unadjusted model for BMI and LDL is obtainde with $\tt lm(LDL \sim BMI, data = hers)$. The unadjusted estimate shows that average LDL increases .42mg/dL per unit increase in BMI.  
+
+```{r}
+# when one predictor (independent variable) can depend in some of the 
+# same variables that the response function
+# Example 4 
+# Example of BMI (Body mass index) and LDL (cholesterol) using the HERS cohort data Table 4.12
+
+LDL_fit_bmi <- lm(LDL ~ BMI, data = hers)
+summary(LDL_fit_bmi)
+
+```
+
+However, age, ethnicity (nonwhite), smoking, and alcohol use (drinkany) may confound this unadjusted association. These covariates may either represent determinants of LDL or be proxies for such determinants, and are correlated with but almost surely not caused by BMI, and so may confound the BMI–LDL relationship.  
+
+```{r}
+# second half of Table 4.12
+# example of LDL modeled with BMI and other factors
+
+LDL_fit_all <- lm(LDL ~ BMI + age + nonwhite + smoking + drinkany, 
+                  data = hers)
+summary(LDL_fit_all)
+
+confint(LDL_fit_all)
+
+```
+
+After adjustment for these four demographic and lifestyle factors, the estimated increase in average LDL is 0.36mg/dL per unit increase in BMI, an association that remains highly statistically significant. In addition, average LDL is estimated to be 5.2mg/dL higher among nonwhite women, after adjustment for between-group differences in BMI, age, smoking, and alcohol use. The association of smoking with higher LDL is also statistically significant, and there is some evidence for lower LDL among older women and those who use alcohol. In addition, average LDL is estimated to be 5.2mg/dL higher among nonwhite women, after adjustment for between-group differences in BMI, age, smoking, and alcohol use. The association of smoking with higher LDL is also statistically significant, and there is some evidence for lower LDL among older women and those who use alcohol.  In this example, smoking is a negative confounder, because women with higher BMI are less likely to smoke, but both are associated with higher LDL.  
+
+# Mediation  
+
+If the predictor is cause of one of the covariates which in turn affects the outcome, this will be an instance of *mediation*. For the adjusted model for $LDL \sim BMI + age + nonwhite + smoking + drinkany$ we assumed that age, race/ethnicity, smoking, and alcohol use might confound the effect of BMI, because they affect both BMI and LDL levels, or are proxies for factors that do. However, if the primary predictor is a cause of one of the covariates, which in turn affects the outcome, this would be an instance of mediation.  
+
+## Overall and Direct Effects  
+
+If the indirect pathway exists, and confounding has been controlled, then the coefficient for the primary predictor before adjustment for the mediator has a causal interpretation as the *overall effect* of the primary predictor on the outcome. The coefficient adjusted for the mediator is interpretable as the so-called *direct effect* of the primary predictor via other pathways that do not involve the mediator. Finally, the *difference* between overall and direct effects of the primary predictor is interpretable as the *indirect effect*.  
+
+## Percent Explained
+
+The relative difference between the overall and direct effects is sometimes referred to as the percent explained (PE) and used as an additional summary measure of the indirect effect.  
+
+## Example: BMI, exercise, and Glucose  
+
+We examined the extent to which the effects of BMI on glucose levels might be mediated through its effects on likelihood of exercise. Although exercise may in some cases affect BMI, in HERS exercise was weakly associated (p = 0.06) with a small increase in BMI over the first year of the study. As a result, we would argue that in this population of older women with established heart disease, BMI mainly affects likelihood of exercise, with very little feedback. Thus, mediation of the effects of BMI by exercise makes sense in terms of a hypothesized causal framework. We recognize that our simple models might not completely control confounding of the relationships among BMI, exercise, and glucose, and could be improved with expert input.  
+
+```{r}
+# second half of Table 4.13
+# example of LDL modeled with BMI and other factors
+Gluc_fit_BMIall <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair, 
+                      data = hers_nodi)
+
+summary(Gluc_fit_BMIall)
+confint(Gluc_fit_BMIall)
+# and the second model
+Gluc_fit_BMIexer <- lm(glucose ~ BMI + age10 + nonwhite + smoking + drinkany + poorfair + exercise, 
+                       data = hers_nodi)
+
+summary(Gluc_fit_BMIexer)
+confint(Gluc_fit_BMIexer)
 ```
 
