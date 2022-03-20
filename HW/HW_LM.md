@@ -7,4 +7,4 @@
 Estimate using R, the model  `chol ~ bmi + age + smoking + arcus`  Estimate *sqrt(R^2)* comparing the correlation between *Y* and *Yhat*
 3. Using R and the `WCGS` data set referenced above in Problem 1, verify that you get equivalent results from:  
 A t-test and a simple linear model with one binary predictor. (use `chor ~ arcus` )  
-One-way ANOVA and a linear model with one multilevel categorical predictor. (use `chor ~ agec) age category.
+One-way ANOVA and a linear model with one multilevel categorical predictor. (use `chor ~ agec`) age category.
