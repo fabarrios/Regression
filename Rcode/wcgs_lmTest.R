@@ -1,6 +1,5 @@
 # Examples for more linear models WCGS data
 # Loading data  
-library(emmeans)
 library(multcomp)
 library(here)
 library(lmtest)
