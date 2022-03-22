@@ -70,7 +70,7 @@ and we want to compare to a nested model.  A nested model is defined like the fu
 $$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon $$  
 To compare the two models we use the null hypotesis:  
 $H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should take the nested model, occam's razor).  
-The $H_1$: the full model significantly outperforms the nested model. (conclussion you keep the full model).  
+The $H_1$: the full model significantly outperforms the nested model. (conclusion: you keep the full model).  
 So, to compare `cholBmi_mod2` to `cholBmi_mod1` models with the likelihood ratio test we run.  
 
 ```{r}
