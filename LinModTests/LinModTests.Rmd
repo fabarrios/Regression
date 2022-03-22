@@ -1,5 +1,6 @@
 ---
-title: ""
+title: "Linear Model Tests"
+author: F.A. Barrios
 date: "`r Sys.Date()`"
 output:
   rmdformats::robobook:
@@ -9,5 +10,84 @@ output:
 ```{r setup, include=FALSE}
 ## Global options
 knitr::opts_chunk$set(cache = TRUE)
+```
+
+
+```{r}
+library(multcomp)
+library(here)
+library(lmtest)
+library(tidyverse)
+```
+
+## Linear model of WCGS  
+
+The Western Collaborative Group Study (WCGS) was a large epidemiological study designed to investigate the association between the “type A” behavior pattern and coronary heart disease (CHD) (variable `behpat` : A1, A2, B1, B2).  
+We will model the cholesterol level with the body mass index and compare the model with a more complex model that includes `age`, and `arcus`.  
+
+```{r}
+WCGS <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+                 show_col_types = FALSE)
+
+# behpat personality trait
+names(WCGS)
+WCGS_n <- WCGS %>% mutate( arcus <- factor(arcus))
+WCGS_n <- WCGS_n %>% 
+    mutate(smoke = smoke %>% fct_relevel("No", "Yes"))
+```
+
+The variable `chd69` shows whether or not the subject had a coronary event.  Other interesting varible to relate to the cholesteron level in blood is the *arcus senilis*, a milky ring in the iris associated with high cholesterol levels, `arcus` is a variable with 1 for presence of the arcus senilis and 0 for the reference group.  
+
+```{r}
+# Model of the cholesterol vs BMI in middle aged men
+cholBmi_mod1 <- lm(chol ~ bmi + arcus, data = WCGS_n)
+summary(cholBmi_mod1)
+
+# Plot of chol ~ bmi data
+ggplot(data = WCGS_n, mapping = aes(x = bmi, y = chol)) + 
+  labs(x = "Body Mass Index kg/m^2", 
+       y = "Total Cholesteron mg/dL", 
+       title = "Linear model") + 
+  geom_point(aes(colour = arcus), shape = 20, alpha = 0.3) + 
+  geom_smooth(method = "lm", formula = y ~ x)
+
+```
+
+Other more complex model includes the `age` variable   
+
+```{r}
+# Multipredictor model2
+cholBmi_mod2 <- lm(chol ~ bmi + arcus + smoke + age, data = WCGS)
+summary(cholBmi_mod2)
+
+```
+
+## Test of two nested linear models  
+
+We can compare two linear models, we sill use the definition of a nested model.  We have a model that we call the full model  
+$$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \epsilon $$  
+and we want to compare to a nested model.  A nested model is defined like the full model with *less* variables included in the model.  
+$$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon $$  
+To compare the two models we use the null hypotesis:  
+$H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should take the nested model, occam's razor).  
+The $H_1$: the full model significantly outperforms the nested model. (conclussion you keep the full model).  
+So, to compare `cholBmi_mod2` to `cholBmi_mod1` models with the likelihood ratio test we run.  
+
+```{r}
+
+# Comparing model2 (fullmodel) with model1 (nested linear model)
+# likelihood ratios test
+lrtest(cholBmi_mod2, cholBmi_mod1)
+
+```
+
+## Testing for nonlinearities 
+
+```{r}
+# Non linear testing the model between chol ~ age 
+chol_age_mod <- lm(chol ~ age, data = WCGS_n)
+summary(chol_age_mod)
+# 
+raintest(chol_age_mod, fraction = 0.5, order.by = "mahalanobis", data = WCGS_n)
 ```
 
