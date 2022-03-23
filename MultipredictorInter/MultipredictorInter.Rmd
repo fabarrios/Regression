@@ -23,7 +23,8 @@ library(emmeans)
 library(multcomp)
 #
 # loading the HERS data set
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv")
+hers <- read_csv("DataRegressBook/Chap3/hersdata.csv",
+                 show_col_types = FALSE)
 ```
 
 # Interaction[^1]
@@ -59,7 +60,7 @@ confint(LDL1_model)
 # of the coefficients for the interaction to TEST the combination of 
 # the coefficients, HT, statin and HT and statin interaction b1, b2, and b3.
 
-coefeq <- matrix(data=0, nrow = 1, ncol = length(LDL1_model$coefficients))
+coefeq <- matrix(data = 0, nrow = 1, ncol = length(LDL1_model$coefficients))
 colnames(coefeq) <- names(LDL1_model$coefficients)
 #
 coefeq
@@ -67,15 +68,20 @@ coefeq
 coefeq[1, "HThormone therapy"] <- 1
 coefeq[1, "statinsyes"] <- 1
 coefeq[1, "HThormone therapy:statinsyes"] <- 1
-coefeq %*% LDL1_model$coefficients
 
-coeftestAll <- glht(model = LDL1_model, linfct= coefeq, rhs= 0)
+coefeq
+
+coefeq %*% LDL1_model$coefficients
+(coef_sum <- -17.728360 - 13.809124 + 6.244416)
+
+coeftestAll <- glht(model = LDL1_model, linfct = coefeq, rhs = 0)
 summary(coeftestAll)
 
-# TEST the combination of the coefficients for HT and the statin interaction b1 and b3 the third part of table 4.15
+# TEST the combination of the coefficients for HT and the statin interaction 
+# b1 and b3 the third part of table 4.15
 coefeq[1, "statinsyes"] <- 0
 coefeq %*% LDL1_model$coefficients
-coeftest <- glht(model= LDL1_model, linfct= coefeq, rhs= 0)
+coeftest <- glht(model = LDL1_model, linfct = coefeq, rhs = 0)
 summary(coeftest)
 ```
 
@@ -168,7 +174,7 @@ coef_LDLbmi[1, "statinsyes:BMIc"] <- 1
 coef_LDLbmi %*% LDLbmi_model$coefficients
 coef_LDLbmi
 
-coef_LDLbmitest <- glht(model= LDLbmi_model, linfct= coef_LDLbmi, rhs= 0)
+coef_LDLbmitest <- glht(model = LDLbmi_model, linfct = coef_LDLbmi, rhs = 0)
 summary(coef_LDLbmitest)
 
 # Comp of regular linear model and robust and some standard error handling
@@ -178,7 +184,7 @@ ggplot(data = hers, mapping = aes(x = BMI, y = LDL)) +
   labs(x = "Body Mass Index kg/m^2", 
        y = "LDL Cholesteron mg/dL", 
        title = "Interaction") + 
-  geom_point(shape = 20, color = 2) + 
+  geom_point(shape = 20, color = 2, alpha = 0.3) + 
   geom_smooth(method = "lm", formula = y ~ x)
 
 ggplot(data = hers, mapping = aes(x = statins, y = LDL)) + 
