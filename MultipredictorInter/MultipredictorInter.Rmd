@@ -87,7 +87,7 @@ summary(coeftest)
 
 The full model is: 
 $$ \tt E[LDL | x] = \beta_0 + \beta_1 HT + \beta_2 statins + \beta_3 HT:statins $$  
-The coefficient for HT, $\hat \beta_1$, shoes that women who did not report stati use at baseline, the average LDL at one year was almost 18 mg/dL lower that placebo. And for the group of HT among statin users is $\beta_1 + \beta_3$ so $\beta_3$ the interaction term gives the difference between the HT and statin users group.  
+The coefficient for HT, $\hat \beta_1$, shoes that women who did not report statin use at baseline, the average LDL at one year was almost 18 mg/dL lower that placebo. And for the group of HT among statin users is $\beta_1 + \beta_3$ so $\beta_3$ the interaction term gives the **difference between the HT and statin users group**.  
 
 
 ```{r}
@@ -133,12 +133,15 @@ summary(coef_LDL1phystest)
 
 ### Example  
 
-Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretation for statin use easier. We compute BMIc, statins is a parameter coded 1 fro users and 0 for nonusers. So the multipredictor general model is  
+Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretation for statin use easier. We compute BMIc, statins is a parameter coded 1 for users and 0 for nonusers. So the multipredictor general model is  
+
 $$ \tt E[LDL|x] = \beta_0 + \beta_1 statins + \beta_2 BMIc + \beta_3 statins:BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$ 
-the slope asociated with BMIc in this case is $\beta_2$, for women who do not use statins (statins is 0)  
+
+the slope associated with BMIc in this case is $\beta_2$, for women who do not use statins (statins is 0)  
+
 $$ \tt E[LDL|x] = \beta_0  + \beta_2 BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$  
 
-and statins users  
+and the model for statins users is  
 
 $$ \tt E[LDL|x] = \beta_0 + \beta_1 + (\beta_2 + \beta_3) BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
 So for the group of women  
@@ -155,7 +158,8 @@ hers <- mutate(hers, drinkany = factor(drinkany))
 
 hers <- mutate(hers, BMIc = BMI - mean(BMI, na.rm=TRUE))
 
-LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany, data = hers)
+LDLbmi_model <- lm(LDL ~ statins*BMIc + age + nonwhite + smoking + drinkany,
+                   data = hers)
 
 summary(LDLbmi_model)
 confint(LDLbmi_model)
@@ -184,18 +188,18 @@ summary(coef_LDLbmitest)
 # Comp of regular linear model and robust and some standard error handling
 # LDLbmi_model
 
-ggplot(data = hers, mapping = aes(x = BMI, y = LDL)) + 
-  labs(x = "Body Mass Index kg/m^2", 
+ggplot(data = hers, mapping = aes(x = BMIc, y = LDL)) + 
+  labs(x = "Body Mass Index centered kg/m^2", 
        y = "LDL Cholesteron mg/dL", 
        title = "Interaction") + 
   geom_point(shape = 20, color = 2, alpha = 0.3) + 
   geom_smooth(method = "lm", formula = y ~ x)
 
-ggplot(data = hers, mapping = aes(x = statins, y = LDL)) + 
-  labs(x="Body Mass Index kg/m^2", 
+ggplot(data = hers, mapping = aes(x = BMIc, y = LDL, color = statins)) + 
+  labs(x="Body Mass Index centered kg/m^2", 
        y= "LDL Cholesteron mg/dL", 
        title = "Interaction") + 
-  geom_point(shape = 20, color = 2) + 
+  geom_point(shape = 20, alpha = 0.2) + 
   geom_smooth(method = "lm", formula = y ~ x)
 ```
 
