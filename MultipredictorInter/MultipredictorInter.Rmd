@@ -131,11 +131,15 @@ summary(coef_LDL1phystest)
 
 ```
 
+### Example  
+
 Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretation for statin use easier. We compute BMIc, statins is a parameter coded 1 fro users and 0 for nonusers. So the multipredictor general model is  
 $$ \tt E[LDL|x] = \beta_0 + \beta_1 statins + \beta_2 BMIc + \beta_3 statins:BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$ 
 the slope asociated with BMIc in this case is $\beta_2$, for women who do not use statins (statins is 0)  
-$$ \tt E[LDL|x] = \beta_0  + \beta_2 BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$ 
-and statins users 
+$$ \tt E[LDL|x] = \beta_0  + \beta_2 BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$  
+
+and statins users  
+
 $$ \tt E[LDL|x] = \beta_0 + \beta_1 + (\beta_2 + \beta_3) BMIc + \beta_4 age + \beta_5 nonwhite + \beta_6 smoking + \beta_7 drinkany $$
 So for the group of women  
 
