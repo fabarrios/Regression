@@ -192,7 +192,7 @@ ggplot(data = hers, mapping = aes(x = BMIc, y = LDL)) +
   labs(x = "Body Mass Index centered kg/m^2", 
        y = "LDL Cholesteron mg/dL", 
        title = "Interaction") + 
-  geom_point(shape = 20, color = 2, alpha = 0.3) + 
+  geom_point(shape = 20, color = 2, alpha = 0.4) + 
   geom_smooth(method = "lm", formula = y ~ x)
 
 ggplot(data = hers, mapping = aes(x = BMIc, y = LDL, color = statins)) + 
