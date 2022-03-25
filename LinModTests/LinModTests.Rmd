@@ -44,11 +44,11 @@ cholBmi_mod1 <- lm(chol ~ bmi + arcus, data = WCGS_n)
 summary(cholBmi_mod1)
 
 # Plot of chol ~ bmi data
-ggplot(data = WCGS_n, mapping = aes(x = bmi, y = chol)) + 
+ggplot(data = WCGS_n, mapping = aes(x = bmi, y = chol, color = arcus)) + 
   labs(x = "Body Mass Index kg/m^2", 
        y = "Total Cholesteron mg/dL", 
        title = "Linear model") + 
-  geom_point(aes(colour = arcus), shape = 20, alpha = 0.3) + 
+  geom_point(shape = 20, alpha = 0.3) + 
   geom_smooth(method = "lm", formula = y ~ x)
 
 ```

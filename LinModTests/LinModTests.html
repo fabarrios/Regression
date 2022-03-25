@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios" />
     
-        <meta name="date" content="2022-03-21" />
+        <meta name="date" content="2022-03-24" />
     
     <title>Linear Model Tests</title>
 
@@ -1862,7 +1862,7 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
           <li class="divider"></li>
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios</span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-03-21</span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-03-24</span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -1963,11 +1963,11 @@ reference group.</p>
 ## Multiple R-squared:  0.0204, Adjusted R-squared:  0.01977 
 ## F-statistic: 32.66 on 2 and 3137 DF,  p-value: 9.193e-15</code></pre>
 <div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot of chol ~ bmi data</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> WCGS_n, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> bmi, <span class="at">y =</span> chol)) <span class="sc">+</span> </span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> WCGS_n, <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> bmi, <span class="at">y =</span> chol, <span class="at">color =</span> arcus)) <span class="sc">+</span> </span>
 <span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(<span class="at">x =</span> <span class="st">&quot;Body Mass Index kg/m^2&quot;</span>, </span>
 <span id="cb23-4"><a href="#cb23-4" aria-hidden="true" tabindex="-1"></a>       <span class="at">y =</span> <span class="st">&quot;Total Cholesteron mg/dL&quot;</span>, </span>
 <span id="cb23-5"><a href="#cb23-5" aria-hidden="true" tabindex="-1"></a>       <span class="at">title =</span> <span class="st">&quot;Linear model&quot;</span>) <span class="sc">+</span> </span>
-<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="fu">aes</span>(<span class="at">colour =</span> arcus), <span class="at">shape =</span> <span class="dv">20</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
+<span id="cb23-6"><a href="#cb23-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">shape =</span> <span class="dv">20</span>, <span class="at">alpha =</span> <span class="fl">0.3</span>) <span class="sc">+</span> </span>
 <span id="cb23-7"><a href="#cb23-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_smooth</span>(<span class="at">method =</span> <span class="st">&quot;lm&quot;</span>, <span class="at">formula =</span> y <span class="sc">~</span> x)</span></code></pre></div>
 <pre><code>## Warning: Removed 12 rows containing non-finite values (stat_smooth).</code></pre>
 <pre><code>## Warning: Removed 12 rows containing missing values (geom_point).</code></pre>
