@@ -36,7 +36,7 @@ WCGS_n <- WCGS_n %>%
     mutate(smoke = smoke %>% fct_relevel("No", "Yes"))
 ```
 
-The variable `chd69` shows whether or not the subject had a coronary event.  Other interesting varible to relate to the cholesteron level in blood is the *arcus senilis*, a milky ring in the iris associated with high cholesterol levels, `arcus` is a variable with 1 for presence of the arcus senilis and 0 for the reference group.  
+The variable `chd69` shows whether or not the subject had a coronary event.  Other interesting variable to relate to the cholesterol level in blood is the *arcus senilis*, a milky ring in the iris associated with high cholesterol levels, `arcus` is a variable with 1 for presence of the arcus senilis and 0 for the reference group.  
 
 ```{r}
 # Model of the cholesterol vs BMI in middle aged men
@@ -85,6 +85,8 @@ lrtest(cholBmi_mod2, cholBmi_mod1)
 
 ```{r}
 # Non linear testing the model between chol ~ age 
+# Test of concavity/convexity (rainbow test)
+
 chol_age_mod <- lm(chol ~ age, data = WCGS_n)
 summary(chol_age_mod)
 # 
