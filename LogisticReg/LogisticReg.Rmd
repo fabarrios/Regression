@@ -1,0 +1,116 @@
+---
+title: "Logistic Regression"
+author: "F.A. Barrios<br><small>UNAM<br></small>"
+date: "`r Sys.Date()`"
+output:
+  rmdformats::robobook:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+## Global options
+knitr::opts_chunk$set(cache = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(emmeans)
+library(rstatix)
+library(HSAUR2)
+library(car)
+library(effects)
+library(modelsummary)
+
+wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+```
+
+# Logistic Regression  
+
+## Example from HSAUR  
+
+### Introduction  
+
+The erythrocyte sedimentation rate (ESR) is the rate at which red blood cells (erythrocytes) settle out of suspension in the blood plasma, when measured under standard conditions.  If the ESR increases when the level of certain proteins in the blood plasma rise in association with conditions such as rheumatic diseases, chronic infections, and malignant diseases, its determination might be useful in screening blood samples taken from people suspected of suffering from one of the conditions mentioned. The absolute value of the ESR is not of great importance; rather, less than 20mm/hr indicates a 'healthy' individual. To asses whether the ESR is a useful diagnostic tool, Collett and Jemain (1985) collected the data in HSAUR. The question of interest is whether there is any association between the probability of an ESR reading greater than 20mm/hr and the levels of the two plasma proteins. If there is not then the determination of ESR would not be useful for diagnostic purposes.  
+
+```{r}
+# Using plasma data from HSAUR
+data("plasma", package = "HSAUR2")
+layout(matrix(1:2, ncol = 2))
+# cdplot computes and plots conditional densities describing how the 
+# conditional distribution of a categorical variable y changes over 
+# a numerical variable x
+
+cdplot(ESR ~ fibrinogen, data = plasma)
+cdplot(ESR ~ globulin, data = plasma)
+```
+
+To estimate a logistic regression model in R the glm (General Linear Model) is used, for binomial distribution the glm() function default to a logistic model.  
+
+```{r}
+# glm general linear model default is logistic for binomial distribution
+
+plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
+S(plasma_glm01)
+modelsummary(plasma_glm01)
+```
+
+From these results we see that the regression coefficients for fibrinogen is significant at the 5% level. An increase of one unit in this variable increases the log-odds on favor of an ESR value greater then 20 by estimated 1.83 with 95% confidence interval:  
+
+```{r}
+# coeff fibrinogen is sifnificative 5% one unit change in this variable 
+# increases the log-odds in favor of ESR > 20mm/hr by 1.83
+
+Confint(plasma_glm01, parm = "fibrinogen")
+exp(coef(plasma_glm01)["fibrinogen"])
+exp(confint(plasma_glm01, parm = "fibrinogen"))
+```
+These are the values of the odds themselves (by exponentiating the estimate). So **increased values of fibrinogen lead to a grater probability of an ESR value greater than 20**.  
+
+```{r}
+# full model with two variables
+plasma_glm02 <- glm(ESR ~ fibrinogen + globulin, data = plasma, family = binomial())
+S(plasma_glm02)
+```
+
+Comparing the residual deviance of the datasummary_correlation(dat)models: residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87), to test for significance R take the lgm with a $\chi^2$ the 1.87 we conclude that **the globulin has no influence in the ESR**.  
+To compare the two nested models (with fibrinogen and fibrinogen + gamma globulin) we can estimate the ANOVA of the models (Pr of 0.1716)  
+
+```{r}
+anova(plasma_glm01, plasma_glm02, test = "Chisq")
+Anova(plasma_glm01)
+
+# Estimates conditional probability of a ESR > 20 for all observations
+
+prob <- predict(plasma_glm02, type = "response")
+layout(matrix(1:1, ncol = 1))
+
+plot(globulin ~ fibrinogen, data = plasma, xlim = c(2, 6), ylim = c(25, 55), pch = ".")
+symbols(plasma$fibrinogen, plasma$globulin, circles = prob, add = TRUE)
+
+plot(predictorEffects(plasma_glm02))
+```
+
+## Interpretation of Regression Coefficients  
+
+So, the estimated logistic-regression model is given by  
+
+$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+
+If exponentiate both sides of the equation, we get  
+
+$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)$$  
+
+where the left hadn of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model.  
+
+```{r}
+wcgs <- mutate(wcgs, chd69 = factor(chd69))
+# For table 5.2
+CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
+S(CHD_glm01)
+#confint(CHD_glm01, parm = "age")
+# To estimate the model
+exp(coef(CHD_glm01)["age"])
+```
+
+The link transformation is the exponentiation, to obtain the odds.  
