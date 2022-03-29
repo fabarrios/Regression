@@ -131,7 +131,7 @@ summary(coef_LDL1phystest)
 
 ```
 
-### Example  
+### Example predictor manipulation  
 
 Centering BMI about its mean value of $28.6 kg/m^2$, make the interpretation for statin use easier. We compute BMIc, statins is a parameter coded 1 for users and 0 for nonusers. So the multipredictor general model is  
 
@@ -205,15 +205,16 @@ ggplot(data = hers, mapping = aes(x = BMIc, y = LDL, color = statins)) +
 
 ## Interaction and scale  
 
-The The effect of HT on LDL cholesterol in the HERS trial was dependent on baseline values of LDL, with larger reductions seen among women with higher baseline values. An interaction model for absolute change in LDL from baseline to the first annual visit. Note that baseline LDL is centered in this model in order to make the coefficient for hormone therapy (HT) easier to interpret.  
+The effect of HT on LDL cholesterol in the HERS trial was dependent on baseline values of LDL, with larger reductions seen among women with higher baseline values. An interaction model for absolute change in LDL from baseline to the first annual visit. Note that baseline LDL is centered in this model in order to make the coefficient for hormone therapy (HT) easier to interpret.  
 The coefficients in the model have the following interpretations:  
 
-* HT: Among women with the average baseline LDL level of 135mg/dL, the effect of HT is to lower LDL an average of 15.5mg/dL over the first year of the study.  
+* HT: Among women with the average baseline LDL level of `135mg/dL`, the effect of HT is to lower LDL an average of 15.5mg/dL over the first year of the study.  
 * cLDL0: Among women assigned to placebo, each mg/dL increase in baseline LDL is associated with a 0.35mg/dL greater decrease in LDL over the first year. That is, women with higher baseline LDL experience greater decreases in the absence of treatment; this is in part due to regression to the mean and in part to greater likelihood of starting use of statins.  
 * HT * cLDL0: The effect of HT is to lower LDL an additional 0.08mg/dL for each additional mg/dL in baseline LDL. In short, larger treatment effects are seen among women with higher baseline values. The interaction is statistically significant (P = 0:013).  
 
 ```{r}
 # Results for Table 4.18
+# Centered LDL at first visit cLDL0
 hers <- mutate(hers, LDLch = LDL1 - LDL)
 hers <- mutate(hers, cLDL0 = LDL - mean(LDL, na.rm = TRUE))
 LDLch_model <- lm(LDLch ~ HT * cLDL0, data = hers)
