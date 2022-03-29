@@ -21,7 +21,8 @@ library(car)
 library(effects)
 library(modelsummary)
 
-wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+        show_col_types = FALSE)
 ```
 
 # Logistic Regression  
@@ -37,7 +38,7 @@ The erythrocyte sedimentation rate (ESR) is the rate at which red blood cells (e
 data("plasma", package = "HSAUR2")
 layout(matrix(1:2, ncol = 2))
 # cdplot computes and plots conditional densities describing how the 
-# conditional distribution of a categorical variable y changes over 
+# conditional distribution of a categorical variable Y changes over 
 # a numerical variable x
 
 cdplot(ESR ~ fibrinogen, data = plasma)
@@ -92,23 +93,30 @@ plot(predictorEffects(plasma_glm02))
 
 ## Interpretation of Regression Coefficients  
 
+```{r}
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+        show_col_types = FALSE)
+```
+
 So, the estimated logistic-regression model is given by  
 
 $$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
 
 If exponentiate both sides of the equation, we get  
 
-$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(beta_k x_k)$$  
+$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(\beta_k x_k)$$  
 
-where the left hadn of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
-For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of CHD risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model.  
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the precense of a cardio-vacular event (1).  
 
 ```{r}
 wcgs <- mutate(wcgs, chd69 = factor(chd69))
+
 # For table 5.2
 CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
 S(CHD_glm01)
-#confint(CHD_glm01, parm = "age")
+
+# confint(CHD_glm01, parm = "age")
 # To estimate the model
 exp(coef(CHD_glm01)["age"])
 ```
