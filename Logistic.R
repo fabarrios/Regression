@@ -1,8 +1,8 @@
 # Logistic function
 # plot of the logistic function
 
-f_logistic <- function(x){
-  return(1 + exp(-x))^(-1)
+f_logistic <- function(x) {
+  return (1/(1 + exp(-x)))
   }
   
 curve(f_logistic,
