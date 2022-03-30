@@ -26,6 +26,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 3. [Multiple Linear Regression and Interactions](https://fabarrios.github.io/Regression/MultipredictorInter/MultipredictorInter.html)
 
 ### IV Logistic Regression (Barrios)  
+1. [Introduction to logistic regression](https://fabarrios.github.io/Regression/LogisticReg/LogisticReg.html)  
 
 ### V Survival Analysis (Barrios)  
 
