@@ -14,10 +14,7 @@ knitr::opts_chunk$set(cache = TRUE)
 
 ```{r}
 library(tidyverse)
-library(emmeans)
-library(rstatix)
 library(HSAUR2)
-library(car)
 library(effects)
 library(modelsummary)
 
@@ -51,7 +48,7 @@ To estimate a logistic regression model in R the glm (General Linear Model) is u
 # glm general linear model default is logistic for binomial distribution
 
 plasma_glm01 <- glm(ESR ~ fibrinogen, data = plasma, family = binomial())
-S(plasma_glm01)
+summary(plasma_glm01)
 modelsummary(plasma_glm01)
 ```
 
@@ -61,7 +58,7 @@ From these results we see that the regression coefficients for fibrinogen is sig
 # coeff fibrinogen is sifnificative 5% one unit change in this variable 
 # increases the log-odds in favor of ESR > 20mm/hr by 1.83
 
-Confint(plasma_glm01, parm = "fibrinogen")
+confint(plasma_glm01, parm = "fibrinogen")
 exp(coef(plasma_glm01)["fibrinogen"])
 exp(confint(plasma_glm01, parm = "fibrinogen"))
 ```
@@ -70,7 +67,7 @@ These are the values of the odds themselves (by exponentiating the estimate). So
 ```{r}
 # full model with two variables
 plasma_glm02 <- glm(ESR ~ fibrinogen + globulin, data = plasma, family = binomial())
-S(plasma_glm02)
+summary(plasma_glm02)
 ```
 
 Comparing the residual deviance of the datasummary_correlation(dat)models: residual deviance 01: 24.84 residual deviance 02: 22.971 -> 1.869 (1.87), to test for significance R take the lgm with a $\chi^2$ the 1.87 we conclude that **the globulin has no influence in the ESR**.  
@@ -78,7 +75,7 @@ To compare the two nested models (with fibrinogen and fibrinogen + gamma globuli
 
 ```{r}
 anova(plasma_glm01, plasma_glm02, test = "Chisq")
-Anova(plasma_glm01)
+anova(plasma_glm01)
 
 # Estimates conditional probability of a ESR > 20 for all observations
 
@@ -97,8 +94,7 @@ plot(predictorEffects(plasma_glm02))
 wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
         show_col_types = FALSE)
 ```
-
-So, the estimated logistic-regression model is given by  
+To estimate a logistic regression model the general formula in the predictor variables is given by :    
 
 $$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
 
@@ -114,7 +110,7 @@ wcgs <- mutate(wcgs, chd69 = factor(chd69))
 
 # For table 5.2
 CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
-S(CHD_glm01)
+summary(CHD_glm01)
 
 # confint(CHD_glm01, parm = "age")
 # To estimate the model
