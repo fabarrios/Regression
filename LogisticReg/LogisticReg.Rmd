@@ -22,12 +22,13 @@ library(modelsummary)
 
 # Logistic Regression  
 
+
+"Odds: the chances of something happening"  
+ Odds provide a measure of the likelihood of a particular outcome.  
+ 
 *odds of an outcome   - ratio of the number of events that produce the outcome to  
                       to the number that do not.*  
                       
-"Odds: the chances of something happening"  
-Odds provide a measure of the likelihood of a particular outcome.  
-
 The binary logistic regression model studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
 A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
 $$ E[Y|X] = X\beta$$  
@@ -84,13 +85,13 @@ wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/
 
 To estimate a logistic regression model the general formula in the predictor variables is given by :    
 
-$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+$$log[\frac{\hat\mu(X)}{1-\hat\mu(X)}] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k$$
 
 If exponentiate both sides of the equation, we get  
 
-$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(\beta_k x_k)$$  
+$$\frac{\hat\mu(X)}{1-\hat\mu(X)} = exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times \cdots \times exp(\beta_k X_k)$$  
 
-where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale.      
 For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the presence of a cardio-vacular event (1).  
 
 ```{r}
@@ -105,8 +106,7 @@ summary(CHD_glm01)
 exp(coef(CHD_glm01)["age"])
 ```
 
-The link transformation is the exponentiation, to obtain the odds of *Y*.  
-
+The "link transformation" is the exponentiation, to obtain the odds of *Y*.  
 
 ## Example from HSAUR  
 

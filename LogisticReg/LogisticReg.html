@@ -2114,11 +2114,11 @@ Barrios<br><small>UNAM<br></small></span></li>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(modelsummary)</span></code></pre></div>
 <div id="logistic-regression" class="section level1">
 <h1>Logistic Regression</h1>
+<p>“Odds: the chances of something happening”<br />
+Odds provide a measure of the likelihood of a particular outcome.</p>
 <p><em>odds of an outcome - ratio of the number of events that produce
 the outcome to<br />
 to the number that do not.</em></p>
-<p>“Odds: the chances of something happening”<br />
-Odds provide a measure of the likelihood of a particular outcome.</p>
 <p>The binary logistic regression model studies how a set of predictor
 variables <span class="math inline">\(X\)</span> is related to a
 dichotomous response variable <span class="math inline">\(Y\)</span>. We
@@ -2205,16 +2205,16 @@ increment of <span class="math inline">\(\beta_j d\)</span>.</p>
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>        <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
 <p>To estimate a logistic regression model the general formula in the
 predictor variables is given by :</p>
-<p><span class="math display">\[log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] =
-\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k\]</span></p>
+<p><span class="math display">\[log[\frac{\hat\mu(X)}{1-\hat\mu(X)}] =
+\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k\]</span></p>
 <p>If exponentiate both sides of the equation, we get</p>
-<p><span class="math display">\[\frac{\hat\mu(x)}{1-\hat\mu(x)} =
-exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times
-\cdots \times exp(\beta_k x_k)\]</span></p>
+<p><span class="math display">\[\frac{\hat\mu(X)}{1-\hat\mu(X)} =
+exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times
+\cdots \times exp(\beta_k X_k)\]</span></p>
 <p>where the left hand of the equation, <span class="math inline">\(\frac{\hat\mu(x)}{1-\hat\mu(x)}\)</span>, gives
 the <em>fitted odds</em> of success, <strong>the fitted probability of
 success divided by the fitted probability of failure</strong>.
-Exponentiating the model removes the logarithms and vhanges the model in
+Exponentiating the model removes the logarithms and changes the model in
 the log-odds scale to one that is multiplicative, in this log odds
 scale.<br />
 For the WCGS data and the variable Corollary Heart Disease (CHD) and
@@ -2256,8 +2256,8 @@ presence of a cardio-vacular event (1).</p>
 <span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">exp</span>(<span class="fu">coef</span>(CHD_glm01)[<span class="st">&quot;age&quot;</span>])</span></code></pre></div>
 <pre><code>##      age 
 ## 1.077262</code></pre>
-<p>The link transformation is the exponentiation, to obtain the odds of
-<em>Y</em>.</p>
+<p>The “link transformation” is the exponentiation, to obtain the odds
+of <em>Y</em>.</p>
 </div>
 <div id="example-from-hsaur" class="section level2">
 <h2>Example from HSAUR</h2>
