@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios UNAM " />
     
-        <meta name="date" content="2022-03-30" />
+        <meta name="date" content="2022-03-31" />
     
     <title>Logistic Regression</title>
 
@@ -2087,7 +2087,7 @@ border: 0;
           <li class="divider"></li>
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios<br><small>UNAM<br></small></span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-03-30</span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-03-31</span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -2171,18 +2171,19 @@ the form of the regression equation, and are easily understood if
 transforming <span class="math inline">\(Prob\{Y=1\}\)</span> to a model
 linear in <span class="math inline">\(X\beta\)</span>:</p>
 <p><span class="math display">\[ \tt logit\{Y=1 | X\} = logit(P) =
-\log[\frac{P}{1-P}] = X \beta\]</span> where $ P = Prob{Y=1 | X}$ the
-model is a linear regression model in le log odds that <span class="math inline">\(Y=1\)</span> since $ \tt logit(P)$ is a weighted
-sum of the <span class="math inline">\(Xs\)</span>,</p>
+\log[\frac{P}{1-P}] = X \beta\]</span></p>
+<p>where <em>P = Prob{Y = 1 | X}</em> the model is a linear regression
+model in the log odds that <em>Y = 1</em> since <em>logit(P)</em> is a
+weighted sum of the <em>Xs</em>,</p>
 <p><span class="math display">\[ \tt logit\{Y=1|X\} = \beta_0 + \beta_1
 X_1 + \dots + \beta_j X_j + \dots + \beta_k X_k\]</span> <span class="math display">\[ = \beta_j X_j + C\]</span> where all other
 factors are held constant, <span class="math inline">\(C\)</span> is a
-constant given by<br />
-<span class="math display">\[ C = \beta_0 + \beta_1 X_1 + \dots +
+constant given by</p>
+<p><span class="math display">\[ C = \beta_0 + \beta_1 X_1 + \dots +
 \beta_{j-1}X_{j-1} + \beta_{j+1} X_{j+1} + \dots + \beta_k X_k
-\]</span><br />
-Therefore the parameter <span class="math inline">\(\beta_j\)</span> is
-the change in the <em>log odds</em> per unit change in <span class="math inline">\(X_j\)</span> if <span class="math inline">\(X_j\)</span> represents a single factor that is
+\]</span></p>
+<p>Therefore the parameter <span class="math inline">\(\beta_j\)</span>
+is the change in the <em>log odds</em> per unit change in <span class="math inline">\(X_j\)</span> if <span class="math inline">\(X_j\)</span> represents a single factor that is
 linear and does not interact with other factors and if all the other
 factors are held constant. We can write the result in terms or the
 <em>odds that Y = 1</em>: <span class="math display">\[ \tt odds\{Y=1 |
