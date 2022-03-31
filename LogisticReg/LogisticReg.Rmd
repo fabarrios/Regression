@@ -18,11 +18,95 @@ library(HSAUR2)
 library(effects)
 library(modelsummary)
 
+```
+
+# Logistic Regression  
+
+*odds of an outcome   - ratio of the number of events that produce the outcome to  
+                      to the number that do not.*  
+                      
+"Odds: the chances of something happening"  
+Odds provide a measure of the likelihood of a particular outcome.  
+
+The binary logistic regression model studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
+A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
+$$ E[Y|X] = X\beta$$  
+since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
+$$ Prob\{Y=1 | X\} = [1+ \exp(-X\beta)]^{-1}$$.  
+with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$. The function  
+$$ P = [1 + \exp(-x)]^{-1} $$  
+```{r}
+# Logistic function
+# plot of the logistic function
+
+f_logistic <- function(x) {
+  return (1/(1 + exp(-x)))
+  }
+  
+curve(f_logistic,
+  from = -4, 
+  to = 4,
+  ylab = "P",
+  xlab = "X",
+  main = "Logistic Function")
+```
+
+is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve teh equation of the logistic for $x$ which is the inverse of the logistic function:  
+$$ x = \log[\frac{P}{1-P}] = \log[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
+The logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
+
+## Model Assumptions  
+Since the distribution of a binary random variable $Y$ is defined by the true probability that $Y=1$ and since the model makes no assumption about the distribution of the predictors, the logistic model makes no assumption about distributions. Its only assumptions relate to the form of the regression equation, and are easily understood if transforming $Prob\{Y=1\}$ to a model linear in $X\beta$:  
+
+$$ \tt logit\{Y=1 | X\} = logit(P) = \log[\frac{P}{1-P}] = X \beta$$
+where $ P = Prob\{Y=1 | X\}$ the model is a linear regression model in le log odds that $Y=1$ since $ \\tt logit(P)$ is a weighted sum of the $Xs$,
+
+$$ \tt logit\{Y=1|X\} = \beta_0 + \beta_1 X_1 + \dots + \beta_j X_j + \dots + \beta_k X_k$$
+$$ = \beta_j X_j + C$$
+where all other factors are held constant, $C$ is a constant given by  
+$$ C = \beta_0 + \beta_1 X_1 + \dots + \beta_{j-1}X_{j-1} + \beta_{j+1} X_{j+1} + \dots + \beta_k X_k $$  
+Therefore the parameter $\beta_j$ is the change in the *log odds* per unit change in $X_j$ if $X_j$ represents a single factor that is linear and does not interact with other factors and if all the other factors are held constant. We can write the result in terms or the *odds that Y = 1*:
+$$ \tt odds\{Y=1 | X\} = exp(X\beta) $$
+and if all factors other than $X_j$ are held constant,
+
+$$ \tt odds\{Y=1 | X\} = \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
+The regression parameters can also be written in terms of *odds ratios*. The odds that $Y = 1$ when $X_j$ is increased by $d$, divided by the odds at $X_j$ is  
+$$ \frac{ odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
+$$ = \frac{\exp[\beta_j(X_j+d)]\exp(C)}{\exp[\beta_j X_j]\exp(C)} $$  
+$$ = \exp[\beta_j X_j + \beta_j d - \beta_j X_j] = \exp(\beta_j d)$$
+The effect of increasing $X_j$ by $d$ is to increase the odds that $Y = 1$ by a factor of $\exp(\beta_j d)$, or to increase the $\log \space odds$ that $ Y = 1$ by an increment of $\beta_j d$.
+
+## Interpretation of Regression Coefficients  
+```{r}
 wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
         show_col_types = FALSE)
 ```
 
-# Logistic Regression  
+To estimate a logistic regression model the general formula in the predictor variables is given by :    
+
+$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+
+If exponentiate both sides of the equation, we get  
+
+$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(\beta_k x_k)$$  
+
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the presence of a cardio-vacular event (1).  
+
+```{r}
+wcgs <- mutate(wcgs, chd69 = factor(chd69))
+
+# For table 5.2
+CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
+summary(CHD_glm01)
+
+# confint(CHD_glm01, parm = "age")
+# To estimate the model
+exp(coef(CHD_glm01)["age"])
+```
+
+The link transformation is the exponentiation, to obtain the odds of *Y*.  
+
 
 ## Example from HSAUR  
 
@@ -88,33 +172,3 @@ symbols(plasma$fibrinogen, plasma$globulin, circles = prob, add = TRUE)
 plot(predictorEffects(plasma_glm02))
 ```
 
-## Interpretation of Regression Coefficients  
-
-```{r}
-wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
-        show_col_types = FALSE)
-```
-To estimate a logistic regression model the general formula in the predictor variables is given by :    
-
-$$log[\frac{\hat\mu(x)}{1-\hat\mu(x)}] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
-
-If exponentiate both sides of the equation, we get  
-
-$$\frac{\hat\mu(x)}{1-\hat\mu(x)} = exp(\beta_0) \times exp(\beta_1 x_1) \times exp(\beta_2 x_2) \times \cdots \times exp(\beta_k x_k)$$  
-
-where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and vhanges the model in the log-odds scale to one that is multiplicative, in this log odds scale.    
-For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the precense of a cardio-vacular event (1).  
-
-```{r}
-wcgs <- mutate(wcgs, chd69 = factor(chd69))
-
-# For table 5.2
-CHD_glm01 <- glm(chd69 ~ age, data = wcgs, family = binomial())
-summary(CHD_glm01)
-
-# confint(CHD_glm01, parm = "age")
-# To estimate the model
-exp(coef(CHD_glm01)["age"])
-```
-
-The link transformation is the exponentiation, to obtain the odds.  
