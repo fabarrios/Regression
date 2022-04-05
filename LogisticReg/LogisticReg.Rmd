@@ -128,10 +128,52 @@ In the following model we estimate the chance of the cardio-vascular event `chd6
 ```{r}
 # same response variable with multipredictor
 # wcgs data with the less than 645 in chol for a outlier with this chol value.
-CHD_glm02 <- glm(chd69 ~ age + chol + bmi + sbp + smoke, family = binomial(link = logit), data = wcgs_n)
+CHD_glm02 <- glm(chd69 ~ age + chol + bmi + sbp + smoke,
+                 family = binomial(link = logit), data = wcgs_n)
 S(CHD_glm02)
 
 # And the effects plot
 plot(predictorEffects(CHD_glm02))
 ```
+
+## Women's Labor Force Participation example  
+
+Using data from the 1976 U.S. Panel Study of Income Dynamics in which the response (*Y*) varible is married women's labor force participation. The data was used by Mroz (1987) and Berndt(1991) as an exercise in logistic regression.  The data is in the **carData** package in the `Mroz` data frame.  
+
+The variables in the Mroz data frame are:  
+
+ | Variable         | Description     | Remarks |
+|--------------|-----------|------------|
+| `lfp` | wife's labor force participation  | factor: no, yes     |
+| `k5`  | number of children ages 5 and younger  | 0-3, few 3s    |
+| `k618`| number of children ages 6 to 18  | 0-8, few > 5    |
+| `age` | wife's age in years  | 30-60 |
+| `wc`  | wife's college attendance  | factor: no, yes |
+| `hc`  | husband's college attendance  | factor: no, yes |
+| `lwg` | log of wife's estimated wage rate  | Imputation of wages  | 
+| `inc` | family income excluding wife's income | $1000s |  
+
+
+The variable `lfp` is a factor with two levels, and if we use this variable as the response variable, the `no` level correspond to failure (zero) and `yes`, to success.  
+Applying the `S()` funcion to a logistic-regression model produces results similar results for a linear (`lm`) model, by default we get additional trable of exponentiated coefficients and their confidence limits.  
+
+```{r}
+mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc,
+                family = binomial(link = logit), data = Mroz)
+S(mroz.mod)
+
+plot(predictorEffects(mroz.mod))
+
+plot(predictorEffects(mroz.mod), 1)
+plot(predictorEffects(mroz.mod), 3)
+plot(predictorEffects(mroz.mod), 7)
+
+plot(predictorEffects(mroz.mod), 4)
+
+```
+
+The Wald test for the regression coefficients, given by the *ratios of the coefficient estimates to their standard errors*, are labeled a `z values`.  The predictors `k5`, `age`, `wc`, `lwg`, and `inc` have estimated coefficients associated with very small p-values, while the coefficients for `k618` and `hc`, are associated with large p-values.
+
+
+
 
