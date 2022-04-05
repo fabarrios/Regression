@@ -1,5 +1,5 @@
 ---
-title: ""
+title: "Logistic Regression HSAUR"
 date: "`r Sys.Date()`"
 output:
   rmdformats::robobook:
@@ -15,6 +15,7 @@ knitr::opts_chunk$set(cache = TRUE)
 ```{r}
 library(HSAUR2)
 library(modelsummary)
+library(effects)
 library(tidyverse)
 ```
 
