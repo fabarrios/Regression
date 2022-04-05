@@ -76,7 +76,7 @@ The regression parameters can also be written in terms of *odds ratios*. The odd
 $$ \frac{ odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
 $$ = \frac{\exp[\beta_j(X_j+d)]\exp(C)}{\exp[\beta_j X_j]\exp(C)} $$  
 $$ = \exp[\beta_j X_j + \beta_j d - \beta_j X_j] = \exp(\beta_j d)$$
-The effect of increasing $X_j$ by $d$ is to increase the odds that $Y = 1$ by a factor of $\exp(\beta_j d)$, or to increase the $\log \space odds$ that $ Y = 1$ by an increment of $\beta_j d$.
+The effect of increasing $X_j$ by $d$ is to increase the odds that $Y = 1$ by a factor of $\exp(\beta_j d)$, or to increase the *log odds* that *Y = 1* by an increment of $\beta_j d$.  
 
 ## Interpretation of Regression Coefficients  
 ```{r}
@@ -92,13 +92,16 @@ If exponentiate both sides of the equation, we get
 
 $$\frac{\hat\mu(X)}{1-\hat\mu(X)} = exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times \cdots \times exp(\beta_k X_k)$$  
 
-where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale. 
+where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale.  
+
 ## Example of Cotollary Heart Disease  
 
-For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the presence of a cardio-vacular event (1).  
+For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the presence of a cardio-vascular event (1).  
 
 ```{r}
 wcgs <- mutate(wcgs, chd69 = factor(chd69))
+wcgs <- mutate(wcgs, arcus = factor(arcus))
+wcgs_n <- wcgs %>% filter(chol < 645)
 
 # For table 5.2
 CHD_glm01 <- glm(chd69 ~ age, family = binomial(link = logit), data = wcgs)
@@ -109,9 +112,26 @@ S(CHD_glm01)
 exp(coef(CHD_glm01)["age"])
 ```
 
-where we used the "link transformation" that is the exponentiation, to obtain the odds of *Y* (logit). In the `effects` library there is a general plotting function for ploting all the predictor effect plots used in a model.  
+Wich is identical to the last line in the `summary (S)` table, the exponential transformed $\beta_1$ coefficient (the link-function).  This is the **log-odds** of the *CHD (Corollary heart disease) risk*, the slope coefficient $\beta_1$ gives the change in the log-odds of `chd69` associated with one year increase in `age`.  This odds ration indicate a small (7.7%, change 100x(1.077 - 1.0) -> 0.077 x 100 %) but statistically significant increase in the chances of CHD for each one year age increase, for example for a 10 year increase in odds ratio (d=10) $\exp(\beta_{age} d)$
+$$ \exp(0.074 \times 10) = 2.105 $$
+
+where we used the "link transformation" that is the exponentiation, to obtain the odds of *Y* (logit). In the `effects` library there is a general plotting function for plotting all the predictor effect plots used in a model.  
 
 ```{r}
 plot(predictorEffects(CHD_glm01))
+```
+
+## Multiple predictors example  
+We can estimate a linear regression of multiple predictors as the function of the logistic-regression model of the fitted odds of success (fitted probability of the success over the fitted probability of no success).  
+In the following model we estimate the chance of the cardio-vascular event `chd69` now as response of the `age`, `chol`, `bmi`, `sbp` predictors and the binary `smoke` predictor (yes, no). We mentioned that logistic regression may not use too many predictors in a linear model since it gets complicated, we will present a couple of examples of multipredictor linear model since it is important.  In addition we will use the `car`and `effects` packages functions and comment their use.
+
+```{r}
+# same response variable with multipredictor
+# wcgs data with the less than 645 in chol for a outlier with this chol value.
+CHD_glm02 <- glm(chd69 ~ age + chol + bmi + sbp + smoke, family = binomial(link = logit), data = wcgs_n)
+S(CHD_glm02)
+
+# And the effects plot
+plot(predictorEffects(CHD_glm02))
 ```
 
