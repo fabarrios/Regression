@@ -27,6 +27,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 
 ### IV Logistic Regression (Barrios)  
 1. [Introduction to logistic regression](https://fabarrios.github.io/Regression/LogisticReg/LogisticReg.html)  
+2. [Logistic regression example](https://fabarrios.github.io/Regression/LogisticExamp02/LogisticExamp02.html)
 
 ### V Survival Analysis (Barrios)  
 
