@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios UNAM " />
     
-        <meta name="date" content="2022-04-04" />
+        <meta name="date" content="2022-04-07" />
     
     <title>Logistic Regression</title>
 
@@ -1861,6 +1861,8 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
           example</a></li>
           <li><a href="#womens-labor-force-participation-example">Women’s Labor
           Force Participation example</a></li>
+          <li><a href="#model-testing-in-logistic-regression">Model
+          Testing in Logistic Regression</a></li>
           </ul></li>
           </ul>
         </nav>
@@ -1868,7 +1870,7 @@ src: url(data:application/font-sfnt;base64,AAEAAAARAQAABAAQR0RFRgs+Cz8AAjwQAAAAQ
           <li class="divider"></li>
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios<br><small>UNAM<br></small></span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-04-04</span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2022-04-07</span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -2246,6 +2248,122 @@ are labeled a <code>z values</code>. The predictors <code>k5</code>,
 <code>inc</code> have estimated coefficients associated with very small
 p-values, while the coefficients for <code>k618</code> and
 <code>hc</code>, are associated with large p-values.</p>
+</div>
+<div id="model-testing-in-logistic-regression" class="section level2">
+<h2>Model Testing in Logistic Regression</h2>
+<p>We have used the <code>anova()</code> function to test linear models,
+which can also be used to test GLMs that differ by one or more terms. To
+test the hypothesis that women labor force participation does not depend
+on the number of young children, the number of older children or both We
+can remove the <code>k5</code> and <code>k618</code> variables from the
+Mroz model. And compare with the “full model” using the R ANOVA
+function.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>mroz_02.mod <span class="ot">&lt;-</span> <span class="fu">glm</span>(lfp <span class="sc">~</span> age <span class="sc">+</span> wc <span class="sc">+</span> hc <span class="sc">+</span> lwg <span class="sc">+</span> inc,</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">family =</span> <span class="fu">binomial</span>(<span class="at">link =</span> logit), <span class="at">data =</span> Mroz)</span>
+<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="fu">S</span>(mroz_02.mod)</span></code></pre></div>
+<pre><code>## Call: glm(formula = lfp ~ age + wc + hc + lwg + inc, family = binomial(link =
+##           logit), data = Mroz)
+## 
+## Coefficients:
+##              Estimate Std. Error z value Pr(&gt;|z|)    
+## (Intercept)  0.809890   0.451079   1.795  0.07258 .  
+## age         -0.016979   0.009689  -1.752  0.07970 .  
+## wcyes        0.652428   0.215562   3.027  0.00247 ** 
+## hcyes        0.028581   0.195488   0.146  0.88376    
+## lwg          0.615726   0.145266   4.239 2.25e-05 ***
+## inc         -0.032803   0.007639  -4.294 1.75e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## (Dispersion parameter for binomial family taken to be 1)
+## 
+##     Null deviance: 1029.75  on 752  degrees of freedom
+## Residual deviance:  971.75  on 747  degrees of freedom
+## 
+##  logLik      df     AIC     BIC 
+## -485.88       6  983.75 1011.50 
+## 
+## Number of Fisher Scoring iterations: 4
+## 
+## Exponentiated Coefficients and Confidence Bounds
+##              Estimate     2.5 %    97.5 %
+## (Intercept) 2.2476601 0.9296539 5.4579991
+## age         0.9831645 0.9646121 1.0019892
+## wcyes       1.9201981 1.2626460 2.9429640
+## hcyes       1.0289932 0.7010201 1.5099374
+## lwg         1.8510006 1.4005106 2.4791496
+## inc         0.9677297 0.9529277 0.9819626</code></pre>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a><span class="fu">anova</span>(mroz.mod, mroz_02.mod, <span class="at">test =</span> <span class="st">&quot;Chisq&quot;</span>)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table
+## 
+## Model 1: lfp ~ k5 + k618 + age + wc + hc + lwg + inc
+## Model 2: lfp ~ age + wc + hc + lwg + inc
+##   Resid. Df Resid. Dev Df Deviance  Pr(&gt;Chi)    
+## 1       745     905.27                          
+## 2       747     971.75 -2  -66.485 3.655e-15 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>The likelihood-ratio test statistic is the chance in deviance between
+the two fitted models, and the p-value for the test is estimated by
+comparing the test statistic to the <span class="math inline">\(\chi^2\)</span> distribution with <span class="math inline">\(df\)</span> equal to the change in degrees of
+freedom for the two models. In the Mroz example the deviance difference
+is 66.5 of 2 <em>df</em>, that reflect the two regressors (k5 and k618)
+removed. Then the p-value is effectively zero. Than the probability of a
+woman’s participation in the labor force depends on the number of
+children she has. Meaning that the inclusion of the predictors k5 and
+k618, result in a different model. This test is based in the deviance
+therefore is called an <em>analysis of deviance</em>.</p>
+<p>The Anova function from the <code>car</code> package, estimates the
+Type-II tests, and for a GLM estimates a likelihood-ratio test that is
+very similar to the Wald test (in the S() output of the model).</p>
+<p>With the linearHypothesis function we can test if the coefficients of
+<code>k5</code> and <code>k618</code> are zero, or if the coefficients
+<code>k5</code> and <code>k618</code> are equal.</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="fu">Anova</span>(mroz.mod)</span></code></pre></div>
+<pre><code>## Analysis of Deviance Table (Type II tests)
+## 
+## Response: lfp
+##      LR Chisq Df Pr(&gt;Chisq)    
+## k5     66.484  1  3.527e-16 ***
+## k618    0.903  1   0.342042    
+## age    25.598  1  4.204e-07 ***
+## wc     12.724  1   0.000361 ***
+## hc      0.294  1   0.587489    
+## lwg    17.001  1  3.736e-05 ***
+## inc    19.504  1  1.004e-05 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To test if the coefficients are zero</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(mroz.mod, <span class="fu">c</span>(<span class="st">&quot;k5&quot;</span>, <span class="st">&quot;k618&quot;</span>))</span></code></pre></div>
+<pre><code>## Linear hypothesis test
+## 
+## Hypothesis:
+## k5 = 0
+## k618 = 0
+## 
+## Model 1: restricted model
+## Model 2: lfp ~ k5 + k618 + age + wc + hc + lwg + inc
+## 
+##   Res.Df Df  Chisq Pr(&gt;Chisq)    
+## 1    747                         
+## 2    745  2 55.163  1.051e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># To test if the coefficientes are equal</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">linearHypothesis</span>(mroz.mod, <span class="st">&quot;k5 = k618&quot;</span>)</span></code></pre></div>
+<pre><code>## Linear hypothesis test
+## 
+## Hypothesis:
+## k5 - k618 = 0
+## 
+## Model 1: restricted model
+## Model 2: lfp ~ k5 + k618 + age + wc + hc + lwg + inc
+## 
+##   Res.Df Df  Chisq Pr(&gt;Chisq)    
+## 1    746                         
+## 2    745  1 49.479  2.005e-12 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 </div>
 </div>
 

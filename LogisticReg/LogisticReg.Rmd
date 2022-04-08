@@ -175,7 +175,28 @@ plot(predictorEffects(mroz.mod), 4)
 The Wald test for the regression coefficients, given by the *ratios of the coefficient estimates to their standard errors*, are labeled a `z values`.  The predictors `k5`, `age`, `wc`, `lwg`, and `inc` have estimated coefficients associated with very small p-values, while the coefficients for `k618` and `hc`, are associated with large p-values.
 
 
-##Model Testing in Logistic Regression  
+## Model Testing in Logistic Regression  
 
-We have used the `anova()` function to test linear models, which can also be used to test GLMs that differ by one or more terms.  We can remove the 
+We have used the `anova()` function to test linear models, which can also be used to test GLMs that differ by one or more terms.  To test the hypothesis that women labor force participation does not depend on the number of young children, the number of older children or both  We can remove the `k5` and `k618` variables from the Mroz model. And compare with the "full model" using the R ANOVA function.
 
+```{r}
+mroz_02.mod <- glm(lfp ~ age + wc + hc + lwg + inc,
+                family = binomial(link = logit), data = Mroz)
+S(mroz_02.mod)
+
+anova(mroz.mod, mroz_02.mod, test = "Chisq")
+```
+
+The likelihood-ratio test statistic is the chance in deviance between the two fitted models, and the p-value for the test is estimated by comparing the test statistic to the $\chi^2$ distribution with $df$ equal to the change in degrees of freedom for the two models.  In the Mroz example the deviance difference is 66.5 of 2 *df*, that reflect the two regressors (k5 and k618) removed. Then the p-value is effectively zero. Than the probability of a woman's participation in the labor force depends on the number of children she has. Meaning that the inclusion of the predictors k5 and k618, result in a different model. This test is based in the deviance therefore is called an *analysis of deviance*.
+
+The Anova function from the `car` package, estimates the Type-II tests, and for a GLM estimates a likelihood-ratio test that is very similar to the Wald test (in the S() output of the model).  
+
+With the linearHypothesis function we can test if the coefficients of `k5` and  `k618` are zero, or if the coefficients `k5` and `k618` are equal.  
+
+```{r}
+Anova(mroz.mod)
+# To test if the coefficients are zero
+linearHypothesis(mroz.mod, c("k5", "k618"))
+# To test if the coefficientes are equal
+linearHypothesis(mroz.mod, "k5 = k618")
+```
