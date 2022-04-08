@@ -175,5 +175,7 @@ plot(predictorEffects(mroz.mod), 4)
 The Wald test for the regression coefficients, given by the *ratios of the coefficient estimates to their standard errors*, are labeled a `z values`.  The predictors `k5`, `age`, `wc`, `lwg`, and `inc` have estimated coefficients associated with very small p-values, while the coefficients for `k618` and `hc`, are associated with large p-values.
 
 
+##Model Testing in Logistic Regression  
 
+We have used the `anova()` function to test linear models, which can also be used to test GLMs that differ by one or more terms.  We can remove the 
 
