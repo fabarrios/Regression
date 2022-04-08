@@ -18,7 +18,7 @@ different R functions and the needed libraries, for the *post hoc* analysis.  Th
 Revisiting some concepts of classical statistics  
 We will cover some examples of t-Test problem solving with R, using some of the R libraries and then we will cover different ANOVA models in R too, to finish the refresh of statistics we will solve some simple linear regression examples, in R.
 1. [t-Test and ANOVA](https://fabarrios.github.io/Regression/Exampl_t_ANOVA.html)  
-2. [Regression](https://fabarrios.github.io/Regression/LinearModel/LinearModel.html)  
+2. [Linear Regression](https://fabarrios.github.io/Regression/LinearModel/LinearModel.html)  
 
 ### III Multiple Linear Regression (Barrios)  
 1. [Multiple Linear Regression](https://fabarrios.github.io/Regression/MultipleLinearRegression/MultipleLinearRegression.html)
@@ -38,6 +38,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 ### Homework  
 1. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)
 2. Linear Model Homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_LM)
+3. Logistic Regression Homework [HW_LogstReg](https://fabarrios.github.io/Regression/HW/HW_RegLogist.md)
 
 
 ## Bibliography  
