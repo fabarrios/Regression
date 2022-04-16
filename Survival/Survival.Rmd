@@ -1,0 +1,28 @@
+---
+title: "Survival"
+author: "F.A. Barrios"
+date: '2022-04-15'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Survival data
+
+Survival data, or time-to-event data, are measurements of elapsed time between the beginning of a study (or subject participation) and the final disposition of the study subject. This elapsed time could be represented by the point in time when the subject enters the study and the final time of participation. Survival in this context simply means that an event has not occurred, not, necessarily, that the endpoint of interest involved an examination of “life” and “death.”
+
+
+```{r}
+library(car)
+library(effects)
+library(tidyverse)
+library(survival)
+```
+
+### The Kaplan–Meier Procedure  
+
+To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure.  
+
+
