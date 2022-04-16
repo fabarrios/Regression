@@ -26,15 +26,8 @@ library(survival)
 To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure.  
 
 
-Subject	Time (Months)	Vital Statusa	Tumor Gradeb	Subject	Time (Months)	Vital Statusa	Tumor Gradeb
- 1	29  dod  L  21  155  ned  L
- 2	129  ned  L  22  102  dod L
- 3	79  dod  L  23  34  ned  L
- 4	
-138
-ned
-L
-24
-109
-ned
-L
+Subject	| Time (Months)	| Vital Status | Tumor Grade	| Subject	| Time (Months)	| Vital Statusa	| Tumor Grade
+ 1	| 29   | dod  | L  | 21  | 155  | ned  | L
+ 2	| 129  | ned  | L  | 22  | 102  | dod  | L
+ 3	| 79   | dod  | L  | 23  | 34   | ned  | L
+ 4	| 138  | ned  | L  | 24  | 109  | ned  | L
