@@ -1,0 +1,206 @@
+---
+title: "Introduction to Survival Analysis"
+author: "F.A. Barrios<br>Instituto de Neurobiología UNAM<br>"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    rmdformats::material:
+    highlight: kate
+    self_contained: true
+    code_folding: show
+    thumbnails: true
+    gallery: true
+    fig_width: 7
+    fig_height: 7
+description: to prepare Class2020 presentations
+---
+
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="85")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=85)
+```
+
+```{r}
+library(tidyverse)
+library(survival)
+library(survminer)
+library(car)
+
+setwd("~/Dropbox/GitHub/Class2020")
+leuk <- read_csv(file="DataRegressBook/Chap3/leuk.csv")
+# wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+```
+
+# Introduction to Survival Analysis
+
+Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects. Then we say that the survival time is *censored* on the right.  
+
+There are several reasons for studying failure time using the specialized methods of survival analysis.  
+1. Time to failure can have an unusual distribution. Failure time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
+2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
+3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of failure  
+
+## Right Censoring
+
+To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
+
+Definition: A survival time is said to be right-censored at time t if it is only known to be greater than t.  
+
+```{r}
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), ylab = "Probability", xlab = "Time weeks")
+survdiff(Surv(time, cens) ~ group, data=leuk)
+```
+
+Definition: The survival function at time t, denoted S(t) is the probability of being eventfree at t; equivalently, the probability that the survival time is greater than t.
+
+## Interpretarion of Kaplan-Meier Curves
+
+Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk, when the survival curve descends rapidly, as well as periods of lower risk, when it remains relatively flat.
+
+
+# Fitting a survival model.
+
+
+```{r}
+fit <- survfit(Surv(time, cens) ~ group, data = leuk)
+ggsurvplot(fit, data = leuk, censor.shape="|", censor.size = 4, linetype = c(1,2))
+
+# With ggplot using 
+ggsurvplot(
+  fit, 
+  data = leuk, 
+  size = 0.5,                 # change line size
+  linetype = c("solid", "dashed"), # different line type
+  palette = c("lancet"), # color red, blue or custom palettes lancet
+  title    = "Acute Lymphoblastic Leukemia", # plot main title
+  xlab = "Time in weeks",   # customize X axis label.
+  conf.int = TRUE,          # Add confidence interval
+  pval = TRUE,              # Add p-value from log-rank test
+  risk.table = TRUE,        # Add risk table
+  risk.table.col = "strata",# Risk table color by groups
+  legend.labs = c("6-MP", "Control"),    # Change legend labels
+  risk.table.height = 0.25, # Useful to change when you have multiple groups
+  surv.median.line = "hv",  # add the median survival pointer.
+  ggtheme = theme_bw()      # Change ggplot2 theme
+)
+```
+
+How is tha data organized for hese kind of problems?
+
+```{r}
+leuk$group
+leuk$time
+leuk$cens
+
+```
+
+## Recidivism (the tendency of a convicted criminal to reoffend)
+
+The Rossi data set in the CarData. Is a study of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
+*`week`: week of the first arrest after release, or censoring time.  
+*`arrest`: the event indicator, equal to 1 for those arrested during the period of the study and 0 for those who were not arrested.  
+*`fin`: a factor, levels yes or no in the individual received finantial aid after release from prison.  
+*`age`: in years at the time of release.  
+*`race`: a factor with leves "black" and "other".  
+*`wexp`: a factor "yes" if the individual had full-time work experience prior to incarceration or "no".  
+*`mar`: a factor with leves "married" if te individual was married at the time of release and "not married" if he was not.  
+*`paro`: a factor coded "yes" if the individual was released on parol and "no" if he was not.  
+*`prio`: number of prior convictions.  
+*`educ`: education, categorical variable coded numerically, with codes 2 (grade 6 or less), 3 (grades 6 through 9), 4 (grades 10 and 11), 5 (grade 12), or 6(some post-secondary).  
+*`emp1-emp52`: factors coded "yes" if the individual was employed in the corresponding week of the study.  
+
+
+
+```{r}
+# Cox proportional-hazards regression
+# data("Rossi", package = "carData")
+args(coxph)
+#
+Rossi[1:5, 1:10]
+# Cox model and estimation of model tests
+mod.allison <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio, data = Rossi)
+summary(mod.allison)
+```
+
+# The Anova function (car)
+
+The Anova function of car package  has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model
+
+
+```{r}
+Anova(mod.allison)
+
+# Plots of the Cox model
+plot(survfit(mod.allison), xlab="Weeks", ylab="Proportion Not Rearrested")
+# now with better scale
+plot(survfit(mod.allison), ylim = c(0.7, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+
+# With ggplot using ggsurvplot
+#
+ggsurvplot(
+survfit(mod.allison), 
+data = Rossi, 
+size = 0.5,                      # change line size
+linetype = c("solid","dashed"), # different line type
+palette = "simpsons",              # color palette
+title   = "Rossi data",          # plot main title
+xlab = "Weeks",                  # customize X axis label.
+ylab = "Proportion Not Rearrested", # customize Y axis label
+ylim = c(0.7, 1),             # customize Y limits
+conf.int = TRUE,             # Add confidence interval
+pval = FALSE,                 # Add p-value from log-rank test
+risk.table = FALSE,           # Add risk table
+risk.table.col = "strata",   # Risk table color by groups
+surv.median.line = "none",
+legend = "none",
+risk.table.height = 0.25,    # Useful to change when you have multiple groups
+ggtheme = theme_bw()         # Change ggplot2 theme
+)
+
+```
+
+
+```{r}
+# To study the fin help variable
+Rossi.fin <- with (Rossi, data.frame(fin=c(0, 1), age=rep(mean(age), 2), race=rep(mean(race == "other"), 2),
+                                     wexp=rep(mean(wexp == "yes"), 2), mar=rep(mean(mar == "not married"), 2),
+                                     paro=rep(mean(paro == "yes"), 2), prio=rep(mean(prio), 2)))
+
+# plot(survfit(mod.allison, newdata=Rossi.fin), conf.int=TRUE, lty=c(1,2), ylim=c(0.6, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+# legend("bottomleft", legend=c("fin = no", "fin = yes"), lty=c(1, 2), insert=0.02)
+
+ggsurvplot(
+  survfit(mod.allison, newdata=Rossi.fin), 
+  data = Rossi, 
+  size = 0.5,                     # change line size
+  linetype = c("solid","dashed"), # different line type
+  palette = "lancet",             # color palette
+  title   = "Rossi data",         # plot main title
+  xlab = "Weeks",                 # customize X axis label.
+  ylab = "Proportion Not Rearrested", # customize Y axis label
+  ylim = c(0.65, 1),           # customize Y limits
+  conf.int = TRUE,            # Add confidence interval
+  pval = FALSE,               # Add p-value from log-rank test
+  risk.table = FALSE,         # Add risk table
+  risk.table.col = "strata",  # Risk table color by groups
+  surv.median.line = "none",
+  legend = "none",
+  risk.table.height = 0.25,   # Useful to change when you have multiple groups
+  ggtheme = theme_bw()        # Change ggplot2 theme
+  )
+
+```
+
+
