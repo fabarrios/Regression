@@ -29,8 +29,7 @@ library(survminer)
 library(car)
 library(tidyverse)
 
-setwd("~/Dropbox/GitHub/Class2020")
-leuk <- read_csv("DataRegressBook/Chap3/leuk.csv")
+leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv")
 ```
 
 # Introduction to Survival Analysis  
@@ -42,7 +41,7 @@ There are several reasons for studying failure time using the specialized method
 2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
 3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of the event.    
 
-### The Kaplan–Meier Procedure examples from Daniel  
+### The Kaplan–Meier Procedure intro from Daniel   
 
 To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure. For vital status are dod = dead of disease; ned = no evidence of disease; dpo = dead postoperation and the tumor grade: L = low-grade; H = high-grade.  
 
@@ -77,14 +76,14 @@ Calculations for the Kaplan–Meier Procedure
 
 To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
 
-Definition: A survival time is said to be right-censored at time t if it is only known to be greater than t.  
-
+Definition: A survival time is said to be right-censored at time *t* if it is only known to be greater than *t*.  
+*
 ```{r}
 plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), ylab = "Probability", xlab = "Time weeks")
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
 
-Definition: The survival function at time *t*, denoted *S(t)* is the probability of being eventfree at time *t*; equivalently, the probability that the survival time is greater than t.  
+Definition: The survival function at time *t*, denoted *S(t)* is the probability of being event-free at time *t*; equivalently, the probability that the survival time is greater than t.  
 
 ## Interpretarion of Kaplan-Meier Curves  
 
