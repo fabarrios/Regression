@@ -24,16 +24,28 @@ library(survival)
 
 ### The Kaplan–Meier Procedure  
 
-To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure.  
+To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure. For vital status are dod = dead of disease; ned = no evidence of disease; dpo = dead postoperation and the tumor grade: L = low-grade; H = high-grade.  
 
 
-|Subject |Time (Months) |Vital Status|Tumor Grade|Subject |Time (Months)|Vital Status|Tumor Grade|
+|Subject|Time (Months)|Vital Status|Tumor Grade|Subject|Time (Months)|Vital Status|Tumor Grade|
 |:----|:----:|:----:|:----:|:----|:-----:|:----:|:----:|
 |1	| 29   | dod  | L  | 21  | 155  | ned  | L|
 |2	| 129  | ned  | L  | 22  | 102  | dod  | L|
 |3	| 79   | dod  | L  | 23  | 34   | ned  | L|
 |4	| 138  | ned  | L  | 24  | 109  | ned  | L|
 |5	| 21   | dod  | L  | 25  | 15   | dod  | L|
-|Afghanistan |Asia      | 1962|  31.997| 10267083|  853.1007|
-|Afghanistan |Asia      | 1962|  31.997| 10267083|  853.1007|
-|Afghanistan |Asia      | 1962|  31.997| 10267083|  853.1007|
+|6  | 95   | ned  | L  | 26  | 122  | ned  | H|
+|7  | 137  | ned  | L  | 27  | 27   | dod  | H|
+|8  | 6    | ned  | L  | 28  | 6    | dod  | H|
+|9  | 212  | dod  | L  | 29  | 7    | dod  | H|
+|10 | 11   | dod  | L  | 30  | 2    | dod  | H|
+|11 | 15   | dod  | L  | 31  | 9    | dod  | H|
+|12 | 337  | ned  | L  | 32  | 17   | dod  | H|
+|13 | 82   | ned  | L  | 33  | 16   | dod  | H|
+|14 | 33   | dod  | L  | 34  | 23   | dod  | H|
+|15 | 75   | ned  | L  | 35  | 9    | dod  | H|
+|16 | 109  | ned  | L  | 36  | 12   | dod  | H|
+|17 | 26   | ned  | L  | 37  | 4    | dod  | H|
+|18 | 117  | ned  | L  | 38  | 0    | dpo  | H|
+|19 | 8    | ned  | L  | 39  | 3    | dod  | H|
+
