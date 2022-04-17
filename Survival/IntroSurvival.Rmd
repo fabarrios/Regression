@@ -2,24 +2,13 @@
 title: "Introduction to Survival Analysis"
 author: "F.A. Barrios<br>Instituto de Neurobiología UNAM<br>"
 date: "`r Sys.Date()`"
-output:
-  html_document:
-    rmdformats::material:
-    highlight: kate
-    self_contained: true
-    code_folding: show
-    thumbnails: true
-    gallery: true
-    fig_width: 7
-    fig_height: 7
-description: to prepare Class2020 presentations
+output: html_document
 ---
 
 
 ```{r setup, include=FALSE}
 library(knitr)
 library(rmdformats)
-
 ## Global options
 options(max.print="85")
 opts_chunk$set(echo=TRUE,
@@ -28,31 +17,63 @@ opts_chunk$set(echo=TRUE,
                tidy=TRUE,
                comment=NA,
                message=FALSE,
-               warning=FALSE)
+               warning=FALSE,
+               fig_width=8,
+               fig_height=6)
 opts_knit$set(width=85)
 ```
 
 ```{r}
-library(tidyverse)
 library(survival)
 library(survminer)
 library(car)
+library(tidyverse)
 
 setwd("~/Dropbox/GitHub/Class2020")
-leuk <- read_csv(file="DataRegressBook/Chap3/leuk.csv")
-# wcgs <- read_csv("DataRegressBook/Chap2/wcgs.csv")
+leuk <- read_csv("DataRegressBook/Chap3/leuk.csv")
 ```
 
-# Introduction to Survival Analysis
+# Introduction to Survival Analysis  
 
 Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects. Then we say that the survival time is *censored* on the right.  
 
 There are several reasons for studying failure time using the specialized methods of survival analysis.  
-1. Time to failure can have an unusual distribution. Failure time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
+1. Time to event can have an unusual distribution. Failure time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
 2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
-3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of failure  
+3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of the event.    
 
-## Right Censoring
+### The Kaplan–Meier Procedure examples from Daniel  
+
+To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in Table the following table. We wish to compare the 5-year survival experience of these two groups by means of the Kaplan–Meier procedure. For vital status are dod = dead of disease; ned = no evidence of disease; dpo = dead postoperation and the tumor grade: L = low-grade; H = high-grade.  
+
+
+|Subject|Time (Months)|Vital Status|Tumor Grade|Subject|Time (Months)|Vital Status|Tumor Grade|
+|:----|:----:|:----:|:----:|:----|:-----:|:----:|:----:|
+|1	| 29   | dod  | L  | 21  | 155  | ned  | L|
+|2	| 129  | ned  | L  | 22  | 102  | dod  | L|
+|3	| 79   | dod  | L  | 23  | 34   | ned  | L|
+|4	| 138  | ned  | L  | 24  | 109  | ned  | L|
+|5	| 21   | dod  | L  | 25  | 15   | dod  | L|
+|6  | 95   | ned  | L  | 26  | 122  | ned  | H|
+|7  | 137  | ned  | L  | 27  | 27   | dod  | H|
+|8  | 6    | ned  | L  | 28  | 6    | dod  | H|
+|9  | 212  | dod  | L  | 29  | 7    | dod  | H|
+|10 | 11   | dod  | L  | 30  | 2    | dod  | H|
+|11 | 15   | dod  | L  | 31  | 9    | dod  | H|
+|12 | 337  | ned  | L  | 32  | 17   | dod  | H|
+|13 | 82   | ned  | L  | 33  | 16   | dod  | H|
+|14 | 33   | dod  | L  | 34  | 23   | dod  | H|
+|15 | 75   | ned  | L  | 35  | 9    | dod  | H|
+|16 | 109  | ned  | L  | 36  | 12   | dod  | H|
+|17 | 26   | ned  | L  | 37  | 4    | dod  | H|
+|18 | 117  | ned  | L  | 38  | 0    | dpo  | H|
+|19 | 8    | ned  | L  | 39  | 3    | dod  | H|
+
+
+Calculations for the Kaplan–Meier Procedure  
+
+
+## Right Censoring and examples  
 
 To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
 
@@ -63,15 +84,13 @@ plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
 
-Definition: The survival function at time t, denoted S(t) is the probability of being eventfree at t; equivalently, the probability that the survival time is greater than t.
+Definition: The survival function at time *t*, denoted *S(t)* is the probability of being eventfree at time *t*; equivalently, the probability that the survival time is greater than t.  
 
-## Interpretarion of Kaplan-Meier Curves
+## Interpretarion of Kaplan-Meier Curves  
 
-Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk, when the survival curve descends rapidly, as well as periods of lower risk, when it remains relatively flat.
+Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk, when the survival curve descends rapidly, as well as periods of lower risk, when it remains relatively flat.  
 
-
-# Fitting a survival model.
-
+# Fitting a survival model  
 
 ```{r}
 fit <- survfit(Surv(time, cens) ~ group, data = leuk)
@@ -97,7 +116,7 @@ ggsurvplot(
 )
 ```
 
-How is tha data organized for hese kind of problems?
+How is the data organized for hese kind of problems?  
 
 ```{r}
 leuk$group
@@ -106,7 +125,7 @@ leuk$cens
 
 ```
 
-## Recidivism (the tendency of a convicted criminal to reoffend)
+## Recidivism (the tendency of a convicted criminal to reoffend)  
 
 The Rossi data set in the CarData. Is a study of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
 *`week`: week of the first arrest after release, or censoring time.  
@@ -122,7 +141,6 @@ The Rossi data set in the CarData. Is a study of recidivism of 432 male prisoner
 *`emp1-emp52`: factors coded "yes" if the individual was employed in the corresponding week of the study.  
 
 
-
 ```{r}
 # Cox proportional-hazards regression
 # data("Rossi", package = "carData")
@@ -134,10 +152,9 @@ mod.allison <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro +
 summary(mod.allison)
 ```
 
-# The Anova function (car)
+# The Anova function (car)  
 
-The Anova function of car package  has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model
-
+The Anova function of car package  has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model  
 
 ```{r}
 Anova(mod.allison)
