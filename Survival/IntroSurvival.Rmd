@@ -32,7 +32,7 @@ library(tidyverse)
 leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv")
 ```
 
-# Introduction to Survival Analysis  
+## Introduction to Survival Analysis (notes taken from Harrel RMS)  
 
 Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects. Then we say that the survival time is *censored* on the right.  
 
@@ -70,6 +70,27 @@ To assess results and identify predictors of survival, Martini et al. reviewed t
 
 
 Calculations for the Kaplan–Meier Procedure  
+We let:  
+$$\begin{array}{ll}
+  {\verb+Var+} & {\verb+Description+} \\
+  \hline
+  n = & {\verb+the number of subjects whose survival times are available+} \\
+  p_1 = & {\verb+the proportion of subjects surviving at least the first time period+} \\
+  p_2 = & {\verb+the proportion of subjects surviving the second time period after having survived the first time period+} \\
+  p_3 = & {\verb+the proportion of subjects surviving the third time period after having survived the second time period+} \\
+  p_k = & {\verb+the proportion of subjects surviving the kth time period after having survived th (k-1)th time period+} \\
+  \hline
+\end{array} $$
+
+These proportions are used as estimates of the probability that the subject from the population represented by the sample will survive the periods $1,2,3, \dots, k$, respectively. The probabilities will be relavel $\hat{p}_1, \hat{p}_2, \hat{p}_3, \dots, \hat{p}_k$.  
+The probability of surviving the *t*th time period, $p_t$ at any time *t*, with $1 \leq t \leq k$ can be estimated as follows  
+$$
+\hat{p}_t = \frac{\verb+number of subjects surviving at least (t-1) time periods who also survive the tth period+}{\verb+number of subjects alive at te end of time period (t-1)+}
+$$
+The probability to surviving to time *t*, *S(t)*, is estimated by  
+$$
+\hat{S}(t) = \hat{p}_1 \times \hat{p}_2 \times \dots \times \hat{p}_t
+$$
 
 
 ## Right Censoring and examples  
