@@ -30,6 +30,8 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [Logistic regression HSAUR example](https://fabarrios.github.io/Regression/LogisticExamp02/LogisticExamp02.html)
 
 ### V Survival Analysis (Barrios)  
+1. [Introduction to Survival Analysis](https://fabarrios.github.io/Regression/Survival/IntroSurvival.html)
+2. [Survival Analysis HSAUR example](https://fabarrios.github.io/Regression/Survival/Survival.html)
 
 ### VI Clustering (Jeziorski)  
 
