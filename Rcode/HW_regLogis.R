@@ -29,6 +29,15 @@ DataPoints_dir_ex <- 1/(1+exp(-DataPoint_dir))
 # odds change as exp
 exp(0.01074125*50) # the chances increase 1.710973 times for a 50 increase in chol
 
+# ggplot the model CHD_glm02
+wcgs_n$predCHDglm02 <- predict(CHD_glm02)
+
+ggplot(wcgs_n, aes(x = age, y = chd69, color = smoke)) +
+  geom_smooth(aes(y = predCHDglm02, fill = smoke), size = 0.75, alpha = .15)
+
+ggplot(wcgs_n, aes(x = sbp, y = chd69, color = smoke)) +
+  geom_smooth(aes(y = predCHDglm02, fill = smoke), size = 0.75, alpha = .15)
+
 # Problem 2
 # center all the variables and scale
 wcgs_n <- mutate(wcgs_n, age_c = age - mean(age, na.rm = TRUE))
