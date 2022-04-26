@@ -140,12 +140,13 @@ $$\begin{array}{lccccc}
   \hline
 \end{array} $$
 
+
 ## Right Censoring and examples  
 
 To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
 
 Definition: A survival time is said to be right-censored at time *t* if it is only known to be greater than *t*.  
-*
+
 ```{r}
 plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), ylab = "Probability", xlab = "Time weeks")
 survdiff(Surv(time, cens) ~ group, data=leuk)
