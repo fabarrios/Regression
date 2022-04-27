@@ -29,7 +29,8 @@ library(survminer)
 library(car)
 library(tidyverse)
 
-leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv")
+leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
+                 show_col_types = FALSE)
 ```
 
 ## Introduction to Survival Analysis (notes taken from Harrel RMS)  
