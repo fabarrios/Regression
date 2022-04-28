@@ -281,7 +281,7 @@ Rossi.fin <- with (Rossi, data.frame(fin=c(0, 1),
 
 ggsurvplot(
   survfit(mod.allison, newdata=Rossi.fin), 
-  data = Rossi, 
+  data = Rossi.fin, 
   size = 0.5,                     # change line size
   linetype = c("solid","dashed"), # different line type
   palette = "lancet",             # color palette
@@ -290,8 +290,9 @@ ggsurvplot(
   ylab = "Proportion Not Rearrested", # customize Y axis label
   ylim = c(0.65, 1),           # customize Y limits
   conf.int = TRUE,            # Add confidence interval
-  pval = FALSE,               # Add p-value from log-rank test
-  risk.table = FALSE,         # Add risk table
+  risk.table = TRUE,          # show risk table
+  pval = TRUE,                # Add p-value from log-rank test
+  risk.table.y.text.col = TRUE,         # Add risk table
   risk.table.col = "strata",  # Risk table color by groups
   surv.median.line = "none",
   legend = "none",
