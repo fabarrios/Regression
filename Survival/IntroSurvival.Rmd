@@ -196,14 +196,14 @@ leuk$cens
 
 ## Recidivism (the tendency of a convicted criminal to reoffend)  
 
-The Rossi data set in the CarData. Is a study of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
+The Rossi data set in the CarData. Is a study made by Allison of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
 *`week`: week of the first arrest after release, or censoring time.  
 *`arrest`: the event indicator, equal to 1 for those arrested during the period of the study and 0 for those who were not arrested.  
 *`fin`: a factor, levels yes or no in the individual received finantial aid after release from prison.  
 *`age`: in years at the time of release.  
-*`race`: a factor with leves "black" and "other".  
+*`race`: a factor with levels "black" and "other".  
 *`wexp`: a factor "yes" if the individual had full-time work experience prior to incarceration or "no".  
-*`mar`: a factor with leves "married" if te individual was married at the time of release and "not married" if he was not.  
+*`mar`: a factor with levels "married" if te individual was married at the time of release and "not married" if he was not.  
 *`paro`: a factor coded "yes" if the individual was released on parol and "no" if he was not.  
 *`prio`: number of prior convictions.  
 *`educ`: education, categorical variable coded numerically, with codes 2 (grade 6 or less), 3 (grades 6 through 9), 4 (grades 10 and 11), 5 (grade 12), or 6(some post-secondary).  
@@ -220,6 +220,12 @@ Rossi[1:5, 1:10]
 mod.allison <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio, data = Rossi)
 summary(mod.allison)
 ```
+
+The z column shows the ratio of each regression coefficient to its standard error, a Wald statistic to estimate the significance of the coefficient.  
+
+The exponential coefficients (second column) are the multipicative effect in the hazard. For example, keeping all the predictors constant, but age, an additional year of age reduces the weekly hazard of arrest by a factor of 0.9442 on average ( a 5.6 %). Similarly, each prior conviction increases the hazard by a factor of 1.096 (a 9.6%).  
+
+THe likelihood -ratio, Wald and score chi-square statistics, at the bottom are asymptotically equivalent tests of the omnibus null hypothesis the all the $\beta$s are zero. In this case the omnibus null hypothesis is rejected.  
 
 # The Anova function (car)  
 
@@ -260,11 +266,17 @@ ggtheme = theme_bw()         # Change ggplot2 theme
 
 ```{r}
 # To study the fin help variable
-Rossi.fin <- with (Rossi, data.frame(fin=c(0, 1), age=rep(mean(age), 2), race=rep(mean(race == "other"), 2),
-                                     wexp=rep(mean(wexp == "yes"), 2), mar=rep(mean(mar == "not married"), 2),
-                                     paro=rep(mean(paro == "yes"), 2), prio=rep(mean(prio), 2)))
+Rossi.fin <- with (Rossi, data.frame(fin=c(0, 1), 
+                  age=rep(mean(age), 2), 
+                  race=rep(mean(race == "other"), 2),
+                  wexp=rep(mean(wexp == "yes"), 2), 
+                  mar=rep(mean(mar == "not married"), 2),
+                  paro=rep(mean(paro == "yes"), 2), 
+                  prio=rep(mean(prio), 2)) )
 
-# plot(survfit(mod.allison, newdata=Rossi.fin), conf.int=TRUE, lty=c(1,2), ylim=c(0.6, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+# plot(survfit(mod.allison, newdata=Rossi.fin), conf.int=TRUE, 
+# lty=c(1,2), ylim=c(0.6, 1), xlab="Weeks", 
+# ylab="Proportion Not Rearrested")
 # legend("bottomleft", legend=c("fin = no", "fin = yes"), lty=c(1, 2), insert=0.02)
 
 ggsurvplot(
