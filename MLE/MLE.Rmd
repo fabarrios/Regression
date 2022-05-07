@@ -3,7 +3,7 @@ title: "Maximum Likelihood Estimation"
 author: "F.A. Barrios"
 date: "`r Sys.Date()`"
 output:
-  rmdformats::readthedown:
+  rmdformats::robobook:
     highlight: kate
   pdf_document:
 description: "to prepare Class2020 presentations"
