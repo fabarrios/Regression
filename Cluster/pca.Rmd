@@ -69,6 +69,7 @@ wdbc_pca_2$x %>%
 ```
 
 `autoplot` from the `ggfortify` package allows the scaled principal components (eigenvectors) to be visualized.  
+
 ```{r, warning=FALSE}
 autoplot(prcomp(select(wdbc, perimeter_mean, symmetry_mean)), data = wdbc, loadings = TRUE)
 ```

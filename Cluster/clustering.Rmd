@@ -1,11 +1,11 @@
 ---
 title: "Clustering algorithms"
 author: "Michael Jeziorski"
-date: "5 May 2022"
+date: 5 May 2022
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r setup}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(factoextra)
@@ -54,7 +54,7 @@ fviz_dist(res_dist, lab_size = 8)
 
 The `eclust()` function, also in the `factoextra` package, incorporates ggplot2 for visualization.  It allows several different clustering paradigms; we will use k-means.  The `nstart` argument sets the number of configurations for the algorithm to begin its analysis.  
 
-```{r message=FALSE}
+```{r}
 res_kmeans <- eclust(mtcars_s, "kmeans", k.max = 15, nstart = 25)
 ```
 
@@ -130,7 +130,6 @@ labelled_points <-
 ggplot(labelled_points, aes(x, y, color = cluster)) +
   geom_point(alpha = 0.3)
 ```
-
 
 
 
