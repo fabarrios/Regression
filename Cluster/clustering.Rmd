@@ -79,15 +79,15 @@ fviz_silhouette(res_kmeans)
 
 ```{r}
 res_hc <- mtcars %>%
-  scale() %>%                                              # Scale the data
-  dist(method = "euclidean") %>%                           # Compute dissimilarity matrix
-  hclust(method = "ward.D2")                               # Compute hierarchical clustering
-fviz_dend(res_hc, k = 10,                                  # Use 10 groups
-          cex = 0.5,                                       # label size
-          color_labels_by_k = TRUE,                        # color labels by groups
-          rect = TRUE                                      # Add rectangles around groups
-          )
+  scale() %>%                                   # Scale the data
+  dist(method = "euclidean") %>%                # Compute dissimilarity matrix
+  hclust(method = "ward.D2")                    # Compute hierarchical clustering
+fviz_dend(res_hc, k = 10,                       # Use 10 groups
+          cex = 0.5,                            # label size
+          color_labels_by_k = TRUE,             # color labels by groups
+          rect = TRUE)                          # Add rectangles around     groups)
 ```
+
 ### `mtcars` analysis repeated using only columns `mpg:qsec`
 
 ```{r}
