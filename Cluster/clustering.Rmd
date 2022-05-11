@@ -1,11 +1,11 @@
 ---
 title: "Clustering algorithms"
 author: "Michael Jeziorski"
-date: 5 May 2022
+date: "5 May 2022"
 output: html_document
 ---
 
-```{r setup}
+```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
 library(factoextra)
@@ -54,7 +54,7 @@ fviz_dist(res_dist, lab_size = 8)
 
 The `eclust()` function, also in the `factoextra` package, incorporates ggplot2 for visualization.  It allows several different clustering paradigms; we will use k-means.  The `nstart` argument sets the number of configurations for the algorithm to begin its analysis.  
 
-```{r}
+```{r message=FALSE}
 res_kmeans <- eclust(mtcars_s, "kmeans", k.max = 15, nstart = 25)
 ```
 
@@ -79,16 +79,17 @@ fviz_silhouette(res_kmeans)
 
 ```{r}
 res_hc <- mtcars %>%
-  scale() %>%                                   # Scale the data
-  dist(method = "euclidean") %>%                # Compute dissimilarity matrix
-  hclust(method = "ward.D2")                    # Compute hierarchical clustering
-fviz_dend(res_hc, k = 10,                       # Use 10 groups
-          cex = 0.5,                            # label size
-          color_labels_by_k = TRUE,             # color labels by groups
-          rect = TRUE)                          # Add rectangles around     groups)
+  scale() %>%                                              # Scale the data
+  dist(method = "euclidean") %>%                           # Compute dissimilarity matrix
+  hclust(method = "ward.D2")                               # Compute hierarchical clustering
+fviz_dend(res_hc, k = 10,                                  # Use 10 groups
+          cex = 0.5,                                       # label size
+          color_labels_by_k = TRUE,                        # color labels by groups
+          rect = TRUE                                      # Add rectangles around groups
+          )
 ```
 
-### `mtcars` analysis repeated using only columns `mpg:qsec`
+## `mtcars` analysis repeated using only columns `mpg:qsec`
 
 ```{r}
 mtcars_s_lim <- mtcars %>% select(mpg:qsec) %>% scale()
@@ -106,7 +107,7 @@ for (i in 2:15) {eclust(mtcars_s_lim, "kmeans", k = i, nstart = 25)}
 
 ### The tidymodels package
 
-```{r, warning=FALSE message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 library(tidymodels)
 
 set.seed(27)                    # ensure a reproducible example
@@ -130,6 +131,7 @@ labelled_points <-
 ggplot(labelled_points, aes(x, y, color = cluster)) +
   geom_point(alpha = 0.3)
 ```
+
 
 
 
