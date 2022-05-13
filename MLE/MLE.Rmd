@@ -32,7 +32,7 @@ library(effects)
 ```
 # Maximum Likelihood Estimation (MLE) 
 
-Que es la Estimación por Máxima Posibilidad --Maximum Likelihood Estimation (MLE)-- ? (en este comentario vamos a usar likelihood --probabilidad, posibilidad-- como posibilidad). Este comentario surgió del comentario en R-Loggers y de la entrada en el blog llamada "Maximum likelihood distilled" [^1]
+Que es la Estimación por Máxima Probabilidad --Maximum Likelihood Estimation (MLE)-- ? (en este comentario vamos a usar likelihood --probabilidad, posibilidad-- como posibilidad). Este comentario surgió del comentario en R-Loggers y de la entrada en el blog llamada "Maximum likelihood distilled" [^1]
 
 [^1]: Entrada en el blog the Jorge Cimentada (https://cimentadaj.github.io/blog/2020-11-26-maximum-likelihood-distilled/maximum-likelihood-distilled/)
 
