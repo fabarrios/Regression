@@ -35,6 +35,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 
 ### VI Clustering (Jeziorski)  
 1. [Principal Component Analysis](https://fabarrios.github.io/Regression/Cluster/pca.html)  
+2. [Clustering](https://fabarrios.github.io/Regression/Cluster/clustering.html)  
 
 ### VII Maximum Likelihood Estimation (Barrios)  
 
