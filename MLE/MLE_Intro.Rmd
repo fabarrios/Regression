@@ -64,6 +64,31 @@ This likelihood function can be written as:
 $$
 L(\lambda, x=(k_1, k_2,k_3, \dots)) = \prod_{i=1}^{100}f(k_i)
 $$
-is mush easier work with logarithms, and avoid use multiplication of very small numbers therefore we work with the log of the likelihood function. Since the logarithm is strictly increasing function, if there is a point where there it reaches a maximum the probability will be maximum in that point
+is mush easier work with logarithms, and avoid use multiplication of very small numbers therefore we work with the log of the likelihood function. Since the logarithm is strictly an increasing function, if there is a point where it reaches a maximum the probability will be maximum in that point.
+
+We can estimate the likelihood for different poissont parameters.
+
+```{r}
+loglikelihood <- function(lambda, data = e100) {
+  sum(log(dpois(data, lambda)))
+}
+```
+
+And we can compute the likelihood for any series of parameters lambda needed  
+
+```{r}
+lambdas <- seq(0.05, 0.95, length = 100)
+
+loglik <- vapply(lambdas, loglikelihood, numeric(1))
+plot(lambdas, loglik, type = "l", col = "red", ylab = "", lwd = 2,
+     xlab = expression(lambda))
+
+m0 <- mean(e100)
+abline(v = m0, col = "blue", lwd = 2)
+abline(h = loglikelihood(m0), col = "purple", lwd = 2)
+
+m0
+table(rpois(100, m0))
+```
 
 
