@@ -1,0 +1,69 @@
+---
+title: "MLE_Intro"
+author: "F.A. Barrios"
+date: '2022-05-13'
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(vcd)
+library(tidyverse)
+```
+## Poisson distribution and examples  
+
+The Poisson distribution with a rate parameter $\lambda = np$ i defined as :
+$$
+P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}
+$$
+and in R we can estimate it by using `dpois()`.  
+
+ELISA assays are used to detect specific epitopes at different positions along a protein. Suppose the following facts hold for an ELISA array we are using:  
+
+1. The baseline noise level per position, or more precisely the false positive rate, is 1%. This is the probability of declaring a hit – we think we have an epitope – when there is none. 
+2. The protein is tested at 100 different positions, supposed to be independent.  
+3. We are going to examine a collection of 50 patient samples.
+
+We’re going to study the data for all 50 patients tallied at each of the 100 positions. If there are no allergic reactions, the false positive rate means that for one patient, each individual position has a probability of 1 in 100 of being a 1. So, after tallying 50 patients, we expect at any given position the sum of the 50 observed (0,1) variables to have a Poisson distribution with parameter 0.5. 
+
+```{r}
+load("DataMSforMB/e100.Rdata")
+
+e100
+barplot(table(e100), space = 0.4, col = "chartreuse4")
+```
+
+## Estimating the parameter of the Poisson distribution  
+
+Can we try out different values of the parameter $\lambda$ and see which gives the best fit to our data?
+
+```{r}
+table(e100)
+# A Poisson distribution for parameter 3, to generate a 100 numbers
+table(rpois(100, 3))
+table(rpois(100, 4))
+table(rpois(100, .8))
+```
+
+We can estimate which parameter value maximizes our data. The parameter that maximizes our data can be estimated calculating the probability of seeing the data if the value of the Poisson parameter is `m`. Since de data comes from independent draws, the probability is the product of individual probabilities:  
+$$
+P({\verb+ 58 zeroe, 34 ones, 7 twos, 1 seven+}\space |\space {\verb+data are Poisson(m)+}) \\
+= P(0)^{58} \times P(1)^{34} \times P(2)^7 \times P(7)^1
+$$
+```{r}
+prod(dpois(c(0, 1, 2, 7), lambda = 3)^(c(58, 34, 7, 1)))
+prod(dpois(c(0, 1, 2, 7), lambda = 4)^(c(58, 34, 7, 1)))
+prod(dpois(c(0, 1, 2, 7), lambda = .8)^(c(58, 34, 7, 1)))
+```
+
+This probability as a function of the parameter `m` is the **likelihood function** of the parameter $\lambda$ and the value that maximizes it, is the maximum likelihood value.
+This likelihood function can be written as:
+$$
+L(\lambda, x=(k_1, k_2,k_3, \dots)) = \prod_{i=1}^{100}f(k_i)
+$$
+is mush easier work with logarithms, and avoid use multiplication of very small numbers therefore we work with the log of the likelihood function. Since the logarithm is strictly increasing function, if there is a point where there it reaches a maximum the probability will be maximum in that point
+
+
