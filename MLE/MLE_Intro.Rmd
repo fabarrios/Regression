@@ -15,7 +15,7 @@ library(tidyverse)
 ```
 ## Poisson distribution and examples  
 
-The Poisson distribution with a rate parameter $\lambda = np$ i defined as :
+The Poisson distribution with a rate parameter $\lambda = np$ is defined as :
 $$
 P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}
 $$
@@ -91,4 +91,86 @@ m0
 table(rpois(100, m0))
 ```
 
+With the function `goodfit` from the `vcd` R package we can estimate the probability distribution in general for experimental data.
 
+```{r}
+gf <- goodfit(e100, "poisson")
+names(gf)
+
+gf$par
+```
+
+The list produced by `goodfit` have the result of the data fitted to the type of distribution selected.  In particular the `par` variable has the adjusted frequency distribution parameter $\lambda\ for the Poisson case.  
+
+There is a formal estimation for finding that the mean maximizes the (log-)likelihood  
+
+$$
+log L(\lambda, x) = \sum_{i=1}^{100} (-\lambda + k_i log\lambda - log(k_i!) )\\
+                  = -100\lambda + log\lambda(\sum_{i=1}^{100}k_i) + const.
+$$
+The `*const*` term is a constant that does not depend on $\lambda$. To find the parameter $\lambda$ that maximizes this, we compute the derivative in $\lambda$ and set it to zero:
+$$
+\frac{d}{d\lambda}log L = -100 + \frac{1}{\lambda}\sum_{i=1}^{100} k_i = 0 \\
+                     \lambda = \frac{1}{100}\sum_{i=1}^{100}k_i \\
+                     \lambda = \bar{k}
+$$
+
+This is a statistical approach, starting from the data to infer the model parameter(s): this is statistical estimation of a parameter from data.  
+
+## Binomial distribution and maximum likelihood  
+
+The binomial distribution has two parameters: the number of trials *n*, which is typically known, and the probability *p* of seeing a 1 in a trial. This probability is often unknown.  
+Suppose we take a sample of n = 120 males and test them for red-green color blindness. We can code the data as 0 if the subject in not color blind and 1 if he is.
+
+```{r}
+cb <- c(rep(0,110), rep(1,10))
+
+table(cb)
+```
+
+Where the most likely value of *p* for this data is $\hat{p} = \frac{1}{12}$ which is the maximum likelihood estimate. (the hat is for because this is an estimate of *p* made from the data).   
+
+### The binomial distribution  
+
+Mathematical theory tells us that for X distributed as a binomial distribution with parameters *(n, p)*, written $X \sim B(n,p)$ the probability of seeing $X=k$ successes is
+$$
+P(X=k) = \left( \begin{array}{c} 
+          n \\ k
+          \end{array} \right) p^k(1-p)^{n-k}
+$$
+For our problem we will like to estimate the possible distribution of the color blindness table: `cb` we can plot the probability using the `dbinom` function fo R.
+
+For $n=120$ and *10* successes $\hat p = \frac{1}{12}$.  As  
+
+$$
+\left( \begin{array}{c} 
+          n \\ k
+          \end{array} \right)
+$$ 
+for this problem is very large, $\sim 1.2\times 10^{14}$ using the Stirling's formula it results in around $e^{30}$ we use the logarithm of the likelihood to give
+
+$$
+log P(X | n, k) = log( \left( \begin{array}{c} 
+          n \\ k
+          \end{array} \right) p^k (1-p)^{(n-k)} ) \\
+$$
+
+Using our numbers for this fomula we can estimate the funciton of the log likelihood.  
+
+$$
+log f(p|k) = 30 + 10log(p) + (120 - 10)log(1-p)          
+$$
+
+We can plot the function to visualize the maximum of the function  
+
+
+```{r}
+loglikelihood <- function(theta, n = 120, k = 10) {
+  30 + k * log(theta) + (n-k) * log(1-theta)
+}
+
+thetas <- seq(0, 1, by = 0.001)
+plot(thetas, loglikelihood(thetas), xlab = expression(theta),
+     ylab = expression(paste("log f(", theta, " | k)")), type = "l")
+abline(v = 1/12, col = "red")
+```
