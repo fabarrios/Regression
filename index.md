@@ -38,6 +38,8 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [Clustering](https://fabarrios.github.io/Regression/Cluster/clustering.html)  
 
 ### VII Maximum Likelihood Estimation (Barrios)  
+1. [Introduction to MLE](https://fabarrios.github.io/Regression/MLE/MLE_Intro.html)  
+2. [MLE an example](https://fabarrios.github.io/Regression/MLE/MLE.html)  
 
 ### Homework  
 1. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)
