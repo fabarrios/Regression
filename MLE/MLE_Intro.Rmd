@@ -21,13 +21,19 @@ P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}
 $$
 and in R we can estimate it by using `dpois()`.  
 
+## A generative model for epitope detection[^1]
+
+When testing certain pharmaceutical compounds, it is important to detect proteins that provoke an allergic reaction. The molecular sites that are responsible for such reactions are called epitopes. An antibody is a type of protein made by certain white blood cells in response to a foreign substance in the body, which is called the antigen.  
+An antibody binds to its antigen. The purpose of the binding is to help destroy the antigen. Antibodies can work in several ways, depending on the nature of the antigen. Some antibodies destroy antigens directly. Others help recruit white blood cells to destroy the antigen. An epitope, also known as antigenic determinant, is the part of an antigen that is recognized by the immune system, specifically by antibodies, B cells or T cells.  
 ELISA assays are used to detect specific epitopes at different positions along a protein. Suppose the following facts hold for an ELISA array we are using:  
 
 1. The baseline noise level per position, or more precisely the false positive rate, is 1%. This is the probability of declaring a hit – we think we have an epitope – when there is none. 
 2. The protein is tested at 100 different positions, supposed to be independent.  
 3. We are going to examine a collection of 50 patient samples.
 
-We’re going to study the data for all 50 patients tallied at each of the 100 positions. If there are no allergic reactions, the false positive rate means that for one patient, each individual position has a probability of 1 in 100 of being a 1. So, after tallying 50 patients, we expect at any given position the sum of the 50 observed (0,1) variables to have a Poisson distribution with parameter 0.5. 
+We’re going to study the data for all 50 patients tallied at each of the 100 positions. If there are no allergic reactions, the false positive rate means that for one patient, each individual position has a probability of 1 in 100 of being a 1. So, after tallying 50 patients, we expect at any given position the sum of the 50 observed (0,1) variables to have a Poisson distribution with parameter 0.5.  
+
+[^1]: Notes taken from the Holmes S. & Huber W, Modern Statistics for Modern Biology, Cambridge, 2019.
 
 ```{r}
 load("DataMSforMB/e100.Rdata")
@@ -46,6 +52,7 @@ table(e100)
 table(rpois(100, 3))
 table(rpois(100, 4))
 table(rpois(100, .8))
+table(rpois(100, .3))
 ```
 
 We can estimate which parameter value maximizes our data. The parameter that maximizes our data can be estimated calculating the probability of seeing the data if the value of the Poisson parameter is `m`. Since de data comes from independent draws, the probability is the product of individual probabilities:  
@@ -173,4 +180,5 @@ thetas <- seq(0, 1, by = 0.001)
 plot(thetas, loglikelihood(thetas), xlab = expression(theta),
      ylab = expression(paste("log f(", theta, " | k)")), type = "l")
 abline(v = 1/12, col = "red")
+abline(h = loglikelihood(1/12), col = "purple", lwd = 2)
 ```
