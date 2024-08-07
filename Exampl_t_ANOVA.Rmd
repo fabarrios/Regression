@@ -24,12 +24,12 @@ opts_knit$set(width=80)
   
 # Examples for t-test and ANOVA
 
-The examples for chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD). We will present some exercises from Daniel's book, and this will cover a refresher for t-test and ANOVA (assuming parametric distributions).
+Examples of problems taken from chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD). Also we will present some exercises from Daniel's book too, and this will cover a refresher for t-test and ANOVA (assuming parametric distributions).
 
 ## Introduction
-Basic tools for assessing the statistical significance of differences between the average values of a continuous outcome across two or more samples folowing parametric sttisctics are the t-Test and ANOVA.
-The example presented in (chapter 3 Table 3) of the t-Test of difference in average glucose by exercise for the women that are not diabetic in the HERS data set. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a **boxplot** gives a good amount of information about a numerical variable:  
-**Centering** described by the median  
+We will cover some basic tools for assessing the statistical significance of differences between the average values of a continuous outcome across two or more samples following parametric statistics are the t-Test and ANOVA.
+The example presented in (chapter 3 Table 3) of the t-Test of differences in glucose average combined with exercise for the women that are not diabetic in the HERS data set. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a **boxplot** gives a good amount of information about a numerical variable:  
+**Centering** described by the median.  
 **Dispersion**, measured by the high of the box (*interquartil* distance)  
 **Observation range** The presence of extreme values (*outliers*)  
 And some information of the distribution “linked to skewness”.      
@@ -89,9 +89,9 @@ boxplot(Length ~ Group, data = Ex733)
 t.test(Length ~ Group, data = Ex733, alternative = "less", conf.level = 0.99)
 ```
 
-How it looks for several variables an ANOVA example using the HERS data refering to the diabetic participants.
+How it looks for several variables an ANOVA example using the HERS data reffering to the diabetic participants.
 ```{r}
-#  Example of the HERS data for diabetic participants
+# Example of the HERS data for diabetic participants
 # hers_yesdi <- filter(HERS, diabetes == "yes")
 hers_yesdi <- HERS %>% 
   filter(diabetes == "yes") %>% 
@@ -113,7 +113,7 @@ contrast(glucose_emmeans, adjust="sidak")
 ```
 
 # Example from R-bloggers
-First we build four random variables with two different distributions.
+Plotting data distributions of random data to do an example of ggplot color filling. First we build four random variables with two different distributions.  And then followed of a ggplot command using the color to distinguish the variables.  
 
 ```{r}
 # Create the four groups
