@@ -10,7 +10,7 @@ This is the repository for the materials, homework and other files for the Regre
 ### I Data manipulation (data wrangling and visualisation in R (Jeziorski)  
 After loading data in R, the first step is to understand the structure of and format the data is, and restructure its order if needed to use the 
 different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.
-1. [Tidyverse]([http](https://fabarrios.github.io/Regression/Intro/Rtutorial_new.html)  
+1. [Tidyverse](https://fabarrios.github.io/Regression/Intro/Rtutorial_new.html)  
 2. Tibles, Pipe, filters, functions (on tibbles), ggplot. Data wrangling and visualization  
 
 ### II Introduction (Barrios)  
