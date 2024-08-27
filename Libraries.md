@@ -16,6 +16,7 @@ The easiest way to install is in RStudio, go to the Packages screen (at the righ
 | effects | https://cran.r-project.org/web/packages/effects/index.html  |  
 | rstatix | https://rpkgs.datanovia.com/rstatix/ |   
 | WRS2 | https://rdrr.io/cran/WRS2/ |  
+| Tidymodels | https://www.tidymodels.org/ |  
 | scales | https://scales.r-lib.org/ |  
 | broom | https://broom.tidymodels.org/ |  
 | modetest | https://www.rdocumentation.org/packages/multimode/versions/1.5/topics/modetest |  
