@@ -1,5 +1,4 @@
-# Tarea Probabilidad y Estadística  
-## Lic. Tecnología ENES Juriquilla, 2021  
+## Regression in biostatistics, 2024  
 ## F.A. Barrios  
 ### Regresión y Correlación. En todos los problemas explique sus resultados y discuta los niveles de confianza estadística, e intervalos de confianza.  
 

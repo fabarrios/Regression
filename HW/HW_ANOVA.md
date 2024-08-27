@@ -1,5 +1,5 @@
 # Tarea Probabilidad y Estadística  
-## Lic. Tecnología ENES Juriquilla, 2021  
+## RegresiΩ´øn en bioestadística  
 ## F.A. Barrios  
 ### ANOVA. En todos los problemas explique sus resultados y discuta los niveles de confianza estadística, e intervalos de confianza.  
 
