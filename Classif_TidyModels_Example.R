@@ -1,5 +1,6 @@
-# Example of tidy models, from r-bloogers
-# works with the wine data quality for machine learning.
+# Example of tidy models, from r-bloggers
+# Works with the wine data quality for machine learning.
+# Tidy models are a set of wrapper functions to execute ML projects and models.
 library(vip)
 library(readr)
 library(dplyr)
