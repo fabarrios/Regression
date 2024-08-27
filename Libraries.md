@@ -29,3 +29,4 @@ The easiest way to install is in RStudio, go to the Packages screen (at the righ
 | rcompanion | https://rcompanion.org/handbook/ |  
 | HSAUR2 | https://cran.r-project.org/web/packages/HSAUR/HSAUR.pdf |  
 | HSAUR3 | https://cran.r-project.org/web/packages/HSAUR/HSAUR.pdf |  
+F.A. Barrios
