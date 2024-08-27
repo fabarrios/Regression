@@ -1,0 +1,388 @@
+---
+title: "Tidyverse_exercise"
+author: "Mike Jeziorski"
+date: "2024-08-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+The exercise for this class was to import an unknown dataset, learn how it is organized, and ask interesting questions about it.
+
+The dataset that was chosen was one available from Kaggle that contains the most streamed songs on Spotify in 2023.  After trying to import directly from Kaggle, the decision was to download the dataset and read it in as a local file.
+```{r}
+spotify_2023_raw <- read_csv("spotify-2023.csv")
+```
+
+We first checked the class and distribution of the variables.
+```{r}
+summary(spotify_2023_raw)
+```
+
+This dataset presented two initial questions.  First, why was the apparently numeric variable `streams` classed as character?  Second, why did the years start at 1930?
+
+To solve the streams problem, we sorted the streams variable to find out which values were non-numeric.  We learned that a single value contained an error.
+```{r}
+spotify_2023_raw %>%
+      arrange(desc(streams)) %>%
+      select(`artist(s)_name`, streams, released_year, track_name)
+```
+The value of the `streams` variable for "Love Grows (Where My Rosemary Goes)" is in error; it contains concatenated column names and values for other values for that song entry, causing the value and thus the entire column to be defined as character.  We need to correct that value in order for the `streams` variable to be useful.  There are several options:
+1. Replace the value with a correct numeric value.  We do not have access to the correct value, though.
+2. Replace the value with NA.
+3. Delete the entire entry for that song.
+
+We will choose option 2.  Although in class I did so by editing the original .csv file, a student correctly pointed out that all such corrections should be part of the code.  Unfortunately, the only way to edit individual values is manually.  The original Kaggle dataset has a link to comments, and one user (Lucio Colonna) has provided his code to correct a significant number of errors.  I have copied that part of his code and amended it to fit my preferred style.
+
+```{r}
+spotify_2023 <- spotify_2023_raw %>%
+  
+  # add track_id to DF
+  mutate(track_id = row_number()) %>% 
+
+# ---------------------------------------------------------- #
+
+  # rename columns to improve readability and usage
+  
+  rename(
+    artist_name = `artist(s)_name`,
+    danceability_pct = `danceability_%`,
+    valence_pct = `valence_%`,
+    energy_pct = `energy_%`,
+    acousticness_pct = `acousticness_%`,
+    instrumentalness_pct = `instrumentalness_%`,
+    liveness_pct = `liveness_%`,
+    speechiness_pct = `speechiness_%`
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # change incorrect entry to NA, then convert "streams" to numeric
+
+mutate(
+    streams = case_when(
+      track_id == 575 ~ NA,
+      TRUE ~ streams   # keeps existing value if track_id is not specified
+    )) %>%
+      
+      
+mutate(
+    streams = as.numeric(streams)
+  ) %>%
+  
+# ---------------------------------------------------------- #
+
+  #fix corrupted artists' names
+
+  mutate(
+    artist_name = case_when(
+      track_id == 27 ~ "Rema, Selena Gomez",
+      track_id == 44 ~ "Tyler The Creator, Kali Uchis",
+      track_id == 64 ~ "Rauw Alejandro, ROSALÍA",
+      track_id == 66 ~ "Coldplay",
+      track_id == 113 ~ "Jasiel Nuñez, Peso Pluma",
+      track_id == 119 ~ "Sebastián Yatra, Manuel Turizo, Beéle",
+      track_id == 147 ~ "Bomba Estéreo, Bad Bunny",
+      track_id == 205 ~ "Arijit Singh, Sachin-Jigar, Amitabh Bhattacharya",
+      track_id == 210 ~ "Kaliii",
+      track_id == 211 ~ "Junior H, Eden Muñoz",
+      track_id == 213 ~ "Semicenk, Doğu Swag",
+      track_id == 232 ~ "Beyoncé",
+      track_id == 237 ~ "Kendrick Lamar, Beyoncé",
+      track_id == 250 ~ "Zé Neto & Cristiano",
+      track_id == 259 ~ "Rich The Kid, Matuê",
+      track_id == 279 ~ "ROSALÍA",
+      track_id == 295 ~ "Jasiel Nuñez, Peso Pluma",
+      track_id == 303 ~ "Tyler The Creator",
+      track_id == 304 ~ "Tiësto, Tate McRae",
+      track_id == 305 ~ "Tyler The Creator",
+      track_id == 310 ~ "Marília Mendonça",
+      track_id == 376 ~ "Wisin & Yandel, ROSALÍA",
+      track_id == 381 ~ "ROSALÍA",
+      track_id == 393 ~ "Rema",
+      track_id == 412 ~ "Elley Duhé",
+      track_id == 446 ~ "Michael Bublé",
+      track_id == 452 ~ "José Feliciano",
+      track_id == 453 ~ "Michael Bublé",
+      track_id == 489 ~ "DJ LK da Escócia, Mc Jhenny, Tchakabum, Mc Ryan SP",
+      track_id == 504 ~ "Lauren Spencer Smith",
+      track_id == 515 ~ "The Weeknd, Tyler The Creator",
+      track_id == 527 ~ "Måneskin",
+      track_id == 531 ~ "Tiësto, Ava Max",
+      track_id == 534 ~ "Olivia Rodrigo",
+      track_id == 537 ~ "Xamã, Gustah, Neo Beats",
+      track_id == 544 ~ "Justin Quiles, Lenny Tavárez, Blessd",
+      track_id == 574 ~ "Tiësto, Karol G",
+      track_id == 576 ~ "The Weeknd, ROSALÍA",
+      track_id == 599 ~ "Tiësto",
+      track_id == 601 ~ "Måneskin",
+      track_id == 602 ~ "Marília Mendonça, George Henrique & Rodrigo",
+      track_id == 643 ~ "Dimelo Flow, Sech, Lenny Tavárez, Arcangel, De La Ghetto, Justin Quiles, Dalex, Rich Music",
+      track_id == 646 ~ "Maiara & Maraisa, Marília Mendonça",
+      track_id == 668 ~ "La Pantera, Quevedo, Juseph, ABHIR, Bejo, Cruz Cafuné, EL IMA",
+      track_id == 669 ~ "Dr. Dre, 2Pac, Roger Troutman",
+      track_id == 683 ~ "Zé Felipe",
+      track_id == 689 ~ "Marília Mendonça, Hugo & Guilherme",
+      track_id == 695 ~ "Tyler The Creator",
+      track_id == 711 ~ "Eden Muñoz",
+      track_id == 743 ~ "Matuê, Teto & WIU",
+      track_id == 750 ~ "Luísa Sonza, MC Frog, DJ Gabriel do Borel, Davi Kneip",
+      track_id == 760 ~ "Jordan Fisher, Josh Levi, Finneas O'Connell, 4*TOWN, Topher Ngo, Grayson Villanueva",
+      track_id == 783 ~ "Bad Bunny, The Marías",
+      track_id == 799 ~ "Måneskin",
+      track_id == 834 ~ "Pharrell Williams, Tyler The Creator, 21 Savage",
+      track_id == 864 ~ "Beyoncé",
+      track_id == 870 ~ "Schürze, DJ Robin",
+      track_id == 888 ~ "Beyoncé",
+      track_id == 889 ~ "Ghost B.C.",
+      track_id == 919 ~ "Måneskin",
+      track_id == 930 ~ "Luciano, Aitch, BIA",
+      TRUE ~ artist_name   # keeps existing value if track_id is not specified
+    )) %>% 
+
+# ---------------------------------------------------------- #
+
+#fix corrupted track names
+
+mutate(
+    track_name = case_when(
+      track_id == 37  ~ "Frágil",
+      track_id == 61  ~ "Tá OK",
+      track_id == 80  ~ "CORAZÓN VA",
+      track_id == 83  ~ "Novidade na Área",
+      track_id == 94  ~ "Don't Blame Me",
+      track_id == 126 ~ "Feliz Cumpleaños Fe",
+      track_id == 142 ~ "Novo Balanço",
+      track_id == 175 ~ "Idol",
+      track_id == 193 ~ "Titi Me Preguntó",
+      track_id == 203 ~ "Acróstico",
+      track_id == 213 ~ "Pişman Değilim",
+      track_id == 235 ~ "Niña Bonita",
+      track_id == 248 ~ "Cartão B",
+      track_id == 259 ~ "Conexões de Máfia",
+      track_id == 266 ~ "Cupid - Twin Ver. (FIFTY FIFTY) - Sped Up Version",
+      track_id == 276 ~ "Igualito a Mi Apá",
+      track_id == 279 ~ "DESPECHÁ",
+      track_id == 302 ~ "Arcángel: Bzrp Music Sessions, Vol 53",
+      track_id == 310 ~ "Leão",
+      track_id == 337 ~ "Ain't That Some",
+      track_id == 338 ~ "Thinkin' Bout Me",
+      track_id == 347 ~ "PLAYA DEL INGLÉS",
+      track_id == 352 ~ "PERO TÚ",
+      track_id == 355 ~ "Monotonía",
+      track_id == 356 ~ "'98 braves",
+      track_id == 365 ~ "Sem Aliança no Dedo",
+      track_id == 369 ~ "LA CANCIÓN",
+      track_id == 370 ~ "¿Qué Más Pues?",
+      track_id == 375 ~ "Shinunoga E-Wa",
+      track_id == 380 ~ "Devil Don't Cry",
+      track_id == 399 ~ "Muñeca",
+      track_id == 440 ~ "Agudo Mágico 3",
+      track_id == 489 ~ "Tubarão Te Amo",
+      track_id == 500 ~ "GATÚBELA",
+      track_id == 501 ~ "abcdefu",
+      track_id == 515 ~ "Here We Go... Again",
+      track_id == 537 ~ "Malvadão 3",
+      track_id == 539 ~ "Don't Break My Heart",
+      track_id == 548 ~ "Volvó",
+      track_id == 558 ~ "L'enfer",
+      track_id == 559 ~ "Nostálgico",
+      track_id == 602 ~ "Vai Lá Em Casa Hoje",
+      track_id == 619 ~ "Cúrame",
+      track_id == 623 ~ "¿Qué Más Pues?",
+      track_id == 645 ~ "When I'm Gone",
+      track_id == 646 ~ "Esqueça-me Se For Capaz",
+      track_id == 647 ~ "Miénteme",
+      track_id == 648 ~ "Súbele",
+      track_id == 668 ~ "Cayó La Noche",
+      track_id == 680 ~ "Problema",
+      track_id == 694 ~ "Señorita",
+      track_id == 701 ~ "Una Noche en Medellín",
+      track_id == 706 ~ "DANÇA",
+      track_id == 723 ~ "Money so Big",
+      track_id == 733 ~ "X ÚLTIMA",
+      track_id == 746 ~ "Me Arrepentí",
+      track_id == 749 ~ "RUMBATÓN",
+      track_id == 767 ~ "Después de la Playa",
+      track_id == 789 ~ "Enséñame",
+      track_id == 790 ~ "El Apagón",
+      track_id == 811 ~ "TUS LÁGRIMAS",
+      track_id == 882 ~ "cómo dormí",
+      track_id == 886 ~ "Si Te La Encuentras Por Ahí",
+      track_id == 914 ~ "XQ Te Pones Así",
+      track_id == 916 ~ "Sin Señal",
+      TRUE ~ track_name   # keeps existing value if track_id is not specified
+    )
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+#fix wrong release year (only checked in range between 1930 - 2010)
+
+  mutate(
+    released_year = case_when(
+      track_id == 641 ~ 2017,
+      track_id == 911 ~ 2011,
+      TRUE ~ released_year   # keeps existing value if track_id is not specified
+    )
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # fill in missing key values (source: Tunebat.com)
+  
+  # All missing keys are "C" except for the following tracks:
+  # 125 - “Por las Noches”	(Peso Pluma) --> A
+  # 460 - “A Holly Jolly Christmas” (Burl Ives) --> A#
+  # 533 - “Moth To A Flame” (The Weeknd, Swedish House Mafia) --> G#
+
+  mutate(
+    key = ifelse(key == 0, "C", key)
+  ) %>% 
+  
+    mutate(
+    key = case_when(
+      track_id == 125 ~ "A", 
+      track_id == 460 ~ "A#", 
+      track_id == 533 ~ "G#", 
+      TRUE ~ key   # keeps existing value if track_id is not specified
+    )
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # correct metrics for song #534 "traitor"
+
+  mutate(
+    bpm = case_when(
+      track_id == 534 ~ 101,
+      TRUE ~ bpm
+    ),
+    danceability_pct = case_when(
+      track_id == 534 ~ 38,
+      TRUE ~ danceability_pct
+    ),
+    valence_pct = case_when(
+      track_id == 534 ~ 8,
+      TRUE ~ valence_pct
+    ),
+    energy_pct = case_when(
+      track_id == 534 ~ 34,
+      TRUE ~ energy_pct
+    ),
+    acousticness_pct = case_when(
+      track_id == 534 ~ 69,
+      TRUE ~ acousticness_pct
+    ),
+    speechiness_pct = case_when(
+      track_id == 534 ~ 3,
+      TRUE ~ speechiness_pct
+    )
+  )  %>% 
+
+# ---------------------------------------------------------- #
+
+  #adjust track names and artist names
+
+  mutate(
+
+  # remove text starting with a parenthesis "(" until the end of the string, excluding cases 
+  # where the parenthesis is at the very beginning
+  track_name = str_replace(track_name, "(?<!^)\\(.*$", ""),
+
+  # same as previous but for bracket "["
+  track_name = str_replace(track_name, "(?<!^)\\[.*$", ""),
+
+  # remove text starting with a hyphen followed by a space "- " and by any other character
+  track_name = str_replace(track_name, "- .*", "")
+  
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # filter out tracks with wrong data
+  
+  # - 90 - "MONTAGEM - FR PUNK" (Ayparia, unxbected) --> errors in dataset (e.g. release date, artist names)
+  # - 124 - "Que Vuelvas" (Carin Leon, Grupo Frontera) --> stream number too low
+  # - 266 - "Cupid - Twin Ver. (FIFTY FIFTY) - Sped Up Version" (sped up 8282) --> errors in dataset (e.g. artist, names, released year)
+  # - 394 - "Jhoome Jo Pathaan" (various artists) --> stream number too low
+  # - 440 - "Agudo Mágico 3" (various artists) --> errors in dataset (e.g. release date, artist names)
+  # - 675 - "Contection" (GODZZ__-, Zakaria), --> probably included by mistake (less than 3k streams on Spotify as of today)
+  # - 813 - "I Tried to Tell Y'all" (Ugly Dray, Tesla Jnr) --> probably included by mistake (less than 20k streams on Spotify as of today)
+  
+  filter(!track_id %in% c(90, 124, 266, 394, 440, 675, 813)) %>%
+
+# ---------------------------------------------------------- #
+
+  # track_name and artist_name adjustments
+
+  mutate(
+
+  # squish and trim spaces
+    artist_name = str_trim(str_squish(artist_name)),
+    track_name = str_trim(str_squish(track_name))
+    
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # modify existing features
+
+  mutate(
+    key = factor(key, levels = c("A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#")),
+    # recalculate artist_count for each song
+    artist_count = str_count(artist_name, ",") + 1
+  ) %>% 
+
+# ---------------------------------------------------------- #
+
+  # reorder columns
+
+  select(track_id, everything())
+```
+
+The above code illustrates the large amount of work needed to manually correct errors in a dataset.  The user above made many more modifications of the dataset and produced some interesting visualizations.  His code can be seen [here.](https://www.kaggle.com/code/lcolon/spotify-2023-focus-on-artists/notebook?scriptVersionId=192971895)
+
+The new corrected dataset is called `spotify_2023`.  We can now examine stream counts by artist.
+```{r warning=FALSE}
+spotify_2023 %>%
+      group_by(artist_name) %>%  # the code we wrote in class needs to be updated with the new name
+      summarize(songs = n(), sum_streams = sum(streams)) %>%
+      arrange(desc(sum_streams)) %>%
+      filter(sum_streams > 3000000000) %>% # filter for > 3 * 10^9 streams
+      ggplot(aes(x = sum_streams, y = reorder(artist_name, sum_streams),
+                 fill = songs)) +
+      geom_col() +
+      labs(x = "Total streams", 
+           y = "Artist", 
+           title = "Artists with the most Spotify streams during the first half of 2023",
+           caption = "Source: https://www.kaggle.com/datasets/nelgiriyewithana/top-spotify-songs-2023/data")
+```
+
+```{r warning=FALSE}
+spotify_2023 %>%
+      group_by(released_year) %>%
+      summarize(songs = n(), sum_streams = sum(streams)) %>%
+      ggplot(aes(x = songs, y = sum_streams, label = released_year)) +
+      geom_label() +
+      labs(x = "Total songs", 
+           y = "Total streams",
+           title = "Total songs vs. total streams")
+```
+
+```{r warning=FALSE}
+spotify_2023 %>%
+      group_by(artist_name) %>%
+      summarize(songs = n(), sum_streams = sum(streams)) %>%
+      arrange(desc(songs)) %>%
+      filter(songs >= 5) %>%
+      ggplot(aes(x = songs, y = reorder(artist_name, songs))) +
+      geom_col() +
+      labs(x = "Songs", 
+           y = "Artist",
+           title = "Artists with five or more songs in the dataset")
+```
+
