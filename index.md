@@ -41,10 +41,11 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [MLE an example](https://fabarrios.github.io/Regression/MLE/MLE.html)  
 
 ### Homework  
-1. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)
-2. Linear Model Homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_LM)
-3. Logistic Regression Homework [HW_LogstReg](https://fabarrios.github.io/Regression/HW/HW_RegLogist)
-4. Survival Regression Homework [HW_Survival](https://fabarrios.github.io/Regression/HW/HW_Survival)
+1. t-Test Refresher hoework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_tTest)  
+2. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)  
+3. Linear Model Homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_LM)
+4. Logistic Regression Homework [HW_LogstReg](https://fabarrios.github.io/Regression/HW/HW_RegLogist)
+5. Survival Regression Homework [HW_Survival](https://fabarrios.github.io/Regression/HW/HW_Survival)
 
 
 ## Bibliography  
