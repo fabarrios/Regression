@@ -1643,14 +1643,17 @@ and we want to compare to a nested model. A nested model is defined like
 the full model with <em>less</em> variables included in the model.<br />
 <span class="math display">\[ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 +
 \epsilon \]</span><br />
-To compare the two models we use the null hypotesis: <span class="math inline">\(H_0\)</span>: both, the full and the nested models
+To compare the two models we use the null hypothesis: <span class="math inline">\(H_0\)</span>: both, the full and the nested models
 fit the data equally well. (if you cannot discard <span class="math inline">\(H_0\)</span> therefore you should take the nested
-model, occam’s razor). And the alternative hypotesis is <span class="math inline">\(H_1\)</span>: the full model significantly
+model, Occam’s razor). And the alternative hypothesis is <span class="math inline">\(H_1\)</span>: the full model significantly
 outperforms the nested model (conclusion: you keep the full
 model).<br />
-So, to compare <code>cholBmi_mod2</code> to <code>cholBmi_mod1</code>
-models with the likelihood ratio test we run.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># using the aniva R test to compare the models</span></span>
+We can estimate the comparison of a full model and nested models using
+the anova R function, or other more complex methods like the likelihood
+ration test from <code>lmtest</code> package, to compare
+<code>cholBmi_mod2</code> to <code>cholBmi_mod1</code> models with anova
+and the likelihood ratio test we run.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># using the anova R test to compare the models</span></span>
 <span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a><span class="fu">anova</span>(cholBmi_mod2, cholBmi_mod1)</span></code></pre></div>
 <pre><code>## Analysis of Variance Table
 ## 
