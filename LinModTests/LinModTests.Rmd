@@ -13,7 +13,7 @@ knitr::opts_chunk$set(cache = TRUE)
 ```
 
 
-```{r}
+```{r, echo=FALSE}
 library(multcomp)
 library(here)
 library(lmtest)
@@ -53,7 +53,7 @@ ggplot(data = WCGS_n, aes(x = bmi, y = chol, color = arcus)) +
 
 ```
 
-Other more complex model includes the `age` variable   
+Other more complex model includes the `age` and `smoke` variables   
 
 ```{r}
 # Multipredictor model2
@@ -68,12 +68,13 @@ We can compare two linear models, we sill use the definition of a nested model. 
 $$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \epsilon $$  
 and we want to compare to a nested model.  A nested model is defined like the full model with *less* variables included in the model.  
 $$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon $$  
-To compare the two models we use the null hypotesis:  
-$H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should take the nested model, occam's razor).  
-The $H_1$: the full model significantly outperforms the nested model. (conclusion: you keep the full model).  
-So, to compare `cholBmi_mod2` to `cholBmi_mod1` models with the likelihood ratio test we run.  
+To compare the two models we use the null hypothesis: $H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should
+take the nested model, Occam's razor). And the alternative hypothesis is $H_1$: the full model significantly outperforms the nested model (conclusion: you keep the full model).  
+We can estimate the comparison of a full model and nested models using the anova R function, or other more complex methods like the likelihood ration test from `lmtest` package, to compare `cholBmi_mod2` to `cholBmi_mod1` models with anova and the likelihood ratio test we run.  
 
 ```{r}
+# using the anova R test to compare the models
+anova(cholBmi_mod2, cholBmi_mod1)
 
 # Comparing model2 (fullmodel) with model1 (nested linear model)
 # likelihood ratios test
@@ -81,7 +82,8 @@ lrtest(cholBmi_mod2, cholBmi_mod1)
 
 ```
 
-## Testing for nonlinearities 
+## Testing for nonlinearities  
+The Test of Concavity/Convexity, often referred to as the Rainbow Test, is a statistical method used primarily in regression analysis to determine whether a model is correctly specified as linear or if it exhibits non-linear characteristics, such as convexity or concavity. The test is constructed assuming the linear model is correct, Null Hypothesis: The null hypothesis of the test posits that the regression model is correctly specified as linear.  
 
 ```{r}
 # Non linear testing the model between chol ~ age 
