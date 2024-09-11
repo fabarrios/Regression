@@ -6,5 +6,4 @@
 2. Using the `WCGS` data referenced in problem 1, extract the fitted values from the multipredictor linear regression model for cholesterol and show that the square of the sample correlation between the fitted values and the outcome variable is equal to *R^2*.  
 Estimate using R, the model  `chol ~ bmi + age + smoking + arcus`  Estimate *sqrt(R^2)* comparing the correlation between *Y* and *Yhat*
 3. Using R and the `WCGS` data set referenced above in Problem 1, verify that you get equivalent results from:  
-A t-test and a simple linear model with one binary predictor. (use `chor ~ arcus` )  
-One-way ANOVA and a linear model with one multilevel categorical predictor. (use `chor ~ agec`) age category.
+A t-Test and a simple linear model with one binary predictor (use `chor ~ arcus`), and One-way ANOVA and a linear model with one multilevel categorical predictor, (use `chor ~ agec`) age category.  
