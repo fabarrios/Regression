@@ -82,8 +82,12 @@ lrtest(cholBmi_mod2, cholBmi_mod1)
 
 ```
 
+If the p-value associated with the extra parameters is low, it suggests that removing it does significantly affect the model's explanatory power, suggesting that it is better to keep the full model.
+
 ## Testing for nonlinearities  
+
 The Test of Concavity/Convexity, often referred to as the Rainbow Test, is a statistical method used primarily in regression analysis to determine whether a model is correctly specified as linear or if it exhibits non-linear characteristics, such as convexity or concavity. The test is constructed assuming the linear model is correct, Null Hypothesis: The null hypothesis of the test posits that the regression model is correctly specified as linear.  
+A low p-value (typically below 0.05) would lead to rejection of the null hypothesis, suggesting that the model may not be linear.  
 
 ```{r}
 # Non linear testing the model between chol ~ age 

@@ -1676,6 +1676,10 @@ and the likelihood ratio test we run.</p>
 ## 2   4 -16263 -2 46.49  8.033e-11 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>If the p-value associated with the extra parameters is low, it
+suggests that removing it does significantly affect the model’s
+explanatory power, suggesting that it is better to keep the full
+model.</p>
 </div>
 <div id="testing-for-nonlinearities" class="section level2">
 <h2>Testing for nonlinearities</h2>
@@ -1685,7 +1689,9 @@ determine whether a model is correctly specified as linear or if it
 exhibits non-linear characteristics, such as convexity or concavity. The
 test is constructed assuming the linear model is correct, Null
 Hypothesis: The null hypothesis of the test posits that the regression
-model is correctly specified as linear.</p>
+model is correctly specified as linear.<br />
+A low p-value (typically below 0.05) would lead to rejection of the null
+hypothesis, suggesting that the model may not be linear.</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a><span class="co"># Non linear testing the model between chol ~ age </span></span>
 <span id="cb15-2"><a href="#cb15-2" tabindex="-1"></a><span class="co"># Test of concavity/convexity (rainbow test)</span></span>
 <span id="cb15-3"><a href="#cb15-3" tabindex="-1"></a></span>
