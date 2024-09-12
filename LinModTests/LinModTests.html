@@ -1608,11 +1608,11 @@ reference group.</p>
 <p>Other more complex model includes the <code>age</code> and
 <code>smoke</code> variables</p>
 <div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Multipredictor model2</span></span>
-<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>cholBmi_mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> bmi <span class="sc">+</span> arcus <span class="sc">+</span> smoke <span class="sc">+</span> age, <span class="at">data =</span> WCGS)</span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>cholBmi_mod2 <span class="ot">&lt;-</span> <span class="fu">lm</span>(chol <span class="sc">~</span> bmi <span class="sc">+</span> arcus <span class="sc">+</span> smoke <span class="sc">+</span> age, <span class="at">data =</span> WCGS_n)</span>
 <span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a><span class="fu">summary</span>(cholBmi_mod2)</span></code></pre></div>
 <pre><code>## 
 ## Call:
-## lm(formula = chol ~ bmi + arcus + smoke + age, data = WCGS)
+## lm(formula = chol ~ bmi + arcus + smoke + age, data = WCGS_n)
 ## 
 ## Residuals:
 ##     Min      1Q  Median      3Q     Max 
@@ -1649,8 +1649,8 @@ model, Occam’s razor). And the alternative hypothesis is <span class="math inl
 outperforms the nested model (conclusion: you keep the full
 model).<br />
 We can estimate the comparison of a full model and nested models using
-the anova R function, or other more complex methods like the likelihood
-ration test from <code>lmtest</code> package, to compare
+the <code>anova</code> R function, or other more complex methods like
+the likelihood ration test from <code>lmtest</code> package, to compare
 <code>cholBmi_mod2</code> to <code>cholBmi_mod1</code> models with anova
 and the likelihood ratio test we run.</p>
 <div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># using the anova R test to compare the models</span></span>
@@ -1723,6 +1723,7 @@ hypothesis, suggesting that the model may not be linear.</p>
 ## 
 ## data:  chol_age_mod
 ## Rain = 0.98345, df1 = 1571, df2 = 1569, p-value = 0.6295</code></pre>
+<p>We may conclude that the model of cholesterol with age is linear.</p>
 </div>
 
    

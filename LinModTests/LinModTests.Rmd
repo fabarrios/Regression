@@ -57,7 +57,7 @@ Other more complex model includes the `age` and `smoke` variables
 
 ```{r}
 # Multipredictor model2
-cholBmi_mod2 <- lm(chol ~ bmi + arcus + smoke + age, data = WCGS)
+cholBmi_mod2 <- lm(chol ~ bmi + arcus + smoke + age, data = WCGS_n)
 summary(cholBmi_mod2)
 
 ```
@@ -68,9 +68,8 @@ We can compare two linear models, we sill use the definition of a nested model. 
 $$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_3 + \beta_4 x_4 + \epsilon $$  
 and we want to compare to a nested model.  A nested model is defined like the full model with *less* variables included in the model.  
 $$ Y = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \epsilon $$  
-To compare the two models we use the null hypothesis: $H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should
-take the nested model, Occam's razor). And the alternative hypothesis is $H_1$: the full model significantly outperforms the nested model (conclusion: you keep the full model).  
-We can estimate the comparison of a full model and nested models using the anova R function, or other more complex methods like the likelihood ration test from `lmtest` package, to compare `cholBmi_mod2` to `cholBmi_mod1` models with anova and the likelihood ratio test we run.  
+To compare the two models we use the null hypothesis: $H_0$: both, the full and the nested models fit the data equally well. (if you cannot discard $H_0$ therefore you should take the nested model, Occam's razor). And the alternative hypothesis is $H_1$: the full model significantly outperforms the nested model (conclusion: you keep the full model).  
+We can estimate the comparison of a full model and nested models using the `anova` R function, or other more complex methods like the likelihood ration test from `lmtest` package, to compare `cholBmi_mod2` to `cholBmi_mod1` models with anova and the likelihood ratio test we run.  
 
 ```{r}
 # using the anova R test to compare the models
@@ -99,3 +98,4 @@ summary(chol_age_mod)
 raintest(chol_age_mod, fraction = 0.5, order.by = "mahalanobis", data = WCGS_n)
 ```
 
+We may conclude that the model of cholesterol with age is linear.
