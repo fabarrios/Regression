@@ -34,7 +34,7 @@ So far, we have made the assumption that causal effect of the primary predictor 
 
 ## Example: Hormone Therapy and statin use  
 
-As an example of interaction, we examine whether the effect of HT on LDL cholesterol differs according to baseline statin use, using data from HERS. To do this, a constructed interaction variable is useful. Suppose both assignment to HT and use of statins at baseline are coded using indicator variables. Then, the product of these two variables is also an indicator, equal to one only for the subgroup of women who reported using statins at baseline and were randomly assigned to HT, and zero for everyone else. Now, consider the regression model:  
+As an example of interaction, we examine whether the effect of Hormone Therapy (HT) on LDL cholesterol differs according to baseline statin use, using data from HERS. To do this, a constructed interaction variable is useful. Suppose both assignment to HT and use of statins at baseline are coded using indicator variables. Then, the product of these two variables is also an indicator, equal to one only for the subgroup of women who reported using statins at baseline and were randomly assigned to HT, and zero for everyone else. Now, consider the regression model:  
 $$\tt E[LDL | x] = \beta_0 + \beta_1 HT + \beta_2 statins + \beta_3 HT:statins $$  
 where HT is the indicator of assignment to HT (hormone therapy), $\tt statins$ the indicator of baseline statin use, and $ HT:statins$ the interaction term. The model 
 $$ \tt LDL \sim HT + statins + HT:statins $$  
