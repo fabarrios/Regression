@@ -1,0 +1,104 @@
+---
+title: "Correlations HW"
+author: "F.A.Barrios"
+date: "2024-09-15"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+## Correlation examples. 
+
+1.	Metadona es comúnmente usada en el tratamiento de adicción a opiáceos y dolor crónico. Krantz et al. estudiaron la relación entre dosis de metadona y el intervalo QT corregido (QTc) de 17 pacientes que desarrollaron taquicardia ventricular en repuesta a los medicamentos. QTc se calcula a partir del electrocardiograma y se mide en mm/s. Un valor mayor de QTc indica un riesgo mayor de mortalidad cardiovascular. Una pregunta de interés es saber si se puede predecir y estimar el valor de QTc a partir de la dosis de metadona. Por lo que se considerará la variable repuesta los datos de QTc y dosis de metadona como la variable independiente de los datos en EXR_C09_S03_03.csv.  
+2.	Evans et al. examinaron el efecto de la velocidad en la fuerza de reacción del suelo (GRF) en perros que cojeaban a cause del ligamento cruzado rasgado. Los perros caminaban y corrían sobre una plataforma de fuerza que medía la fuerza de respuesta (GRF) en Newtons. La tabla en EXR_C09_S03_06.csv contiene 22 medidas de fuerza resultado del promedio de 5 tomas de fuerza por perro cuando camina y de 5 tomas del perro corriendo. use los valores de respuesta al caminar para relacionar los valores de respuesta al trotar (trotar es la variable respuesta).  
+3.	En una muestra aleatoria simple de niños sanos entre 6 meses y 15 años de edad, resultó en datos de edad (X) y volumen del hígado por unidad de peso corporal (ml/kg) Y. con los datos de la tabla en EXR_C09_S07_06.csv, que se puede concluir que estas variables están correlacionadas?  
+4.	En la tabla REV_C09_23.csv se incluyen los pesos (kg) y niveles de glucosa en sangre (mg/100 ml) de 16 hombres adultos aparentemente sanos. Estime si existe un modelo lineal de las variables y determine el intervalo de confianza al 95% de su coeficiente de correlación. Cual es el valor predicho de nivel de glucosa en sangre para un hombre de 95 kg de peso. al 95% de confianza?  
+5.	Gelb et al. condujeron un estudio en el que exploraron la relación entre limitación moderada a severa de flujo de aire espiratorio en la presencia y extensión de morfología y CT calificado (calificado por Tomografía Computarizada) enfisema en pacientes ambulatorios evaluados consecutivamente con Enfermedad Pulmonar Obstructiva Crónica (EPOC). Los datos en REV_C09_36.csv muestran resultados de calificación de CT pulmonar y patología (PATH) de enfisema. A que conclusión se puede llegar con estos datos?  
+  
+# Soluciones Simple linear regression and correlation homework. 
+And some examples for using correlations functions and tests.  
+
+```{r message = FALSE}
+# Simple Linear Regression and correlations
+# Packages setup (loading libraries)
+# to install a missing library we needed to use Bioconcuctor from the CRAN based installation
+# if (!require("BiocManager", quietly = TRUE))
+# +     install.packages("BiocManager")
+# BiocManager::install("graph")
+
+library(tidyverse)
+library(psych)
+library(ggm)
+
+# post hoc
+library(emmeans)
+library(multcomp)
+```
+Correlations (from R in Action, R.I.K). 
+The Pearson product-moment correlation assesses the degree of linear relationship between two quantitative variables. Spearman’s rank-order correlation coefficient assesses the degree of relationship between two rank-ordered variables. Kendall’s tau is also a nonparametric measure of rank correlation.  
+The R function is `cor()` and the `cov()` functions produces covariances. With similar inputs.  
+Examples using the state.x77 database from the 50 US states in 1977, and packages `psych` and `ggm`.  
+
+```{r} 
+states<- state.x77[,1:6]
+cov(states)
+cor(states)
+cor(states, method="spearman")
+```
+It is possible to generate general (not square necessarily) a matrix structure with x rows and y columns and do a x by y correlation. This version of the function is particularly useful when you’re interested in the relationships between one set of variables and another. 
+
+# Partial correlations (this is important). 
+A partial correlation is a correlation between two quantitative variables, controlling for one or more other quantitative variables.  The `pcor()` function in ggm can be used to estimate.
+
+```{r}
+x <- states[,c("Population", "Income", "Illiteracy", "HS Grad")]
+y <- states[,c("Life Exp", "Murder")]
+cor(x,y)
+# partial correlations
+pcor(c(1,5,2,3,6), cov(states))
+# is the correlation between population (variable 1) and murder rate (variable 5), controlling for the influence of income, illiteracy rate, and high school 
+# graduation rate (variables 2, 3, and 6, respectively).
+colnames(states)
+```
+is the correlation between population (variable 1) and murder rate (variable 5), controlling for the influence of income, illiteracy rate, and high school graduation rate (variables 2, 3, and 6, respectively).  
+Once you’ve generated correlation coefficients, how do you test them for statistical significance? The typical null hypothesis is no relationship (that is, the correlation in the population is 0). You can use the `cor.test()` function to test an individual Pearson, Spearman, and Kendall correlation coefficient.  
+
+```{r}
+cor.test(states[,3], states[,5])
+```
+ This code tests the null hypothesis that the Pearson correlation between life expectancy and murder rate is 0. Assuming that the population correlation is 0, you’d expect to see a sample correlation as large as 0.703 less than 1 time out of 10 million (that is, p=1.258e-08). Given how unlikely this is, you reject the null hypothesis in favor of the research hypothesis that the population correlation between life expectancy and murder rate is not 0.  
+To test more that a pair of variables, the corr.test() function provided in the psych package allows you to go further. The corr.test() function produces correlations and significance levels for matrices of Pearson, Spearman, and Kendall correlations.  
+```{r}
+corr.test(states, use="complete")
+```
+
+# Problem 3.  
+Loading data from the exercise 6 in chapter 9 of Daniel, we will estimate the different correlations types and estimates for significance of different methods.  
+
+```{r}
+Exr09.07_p06 <- read_csv("~/Dropbox/GitHub/Regression/DataSets/ch09_all/EXR_C09_S07_06.csv",
+                 show_col_types = FALSE)
+cor.test(Exr09.07_p06$X, Exr09.07_p06$Y)
+cor.test(~ Y + X, data=Exr09.07_p06)
+```
+
+# Problema 4.  
+```{r}
+Rev09_23 <- read_csv("~/Dropbox/GitHub/Regression/DataSets/ch09_all/REV_C09_23.csv",
+                 show_col_types = FALSE)
+Mod_Rev09_23 <- lm(GLUCOSE ~ WEIGHT, data = Rev09_23)
+anova(Mod_Rev09_23)
+
+summary(Mod_Rev09_23)
+new_w <- data.frame( WEIGHT = c(95))
+predict(Mod_Rev09_23, new_w, level= 0.95, se.fit = TRUE)
+# GLUCOSE = 110.3 ± 4.92
+```
+
+# Problema 5.  
+```{r}
+Rev09_36 <- read_csv("~/Dropbox/GitHub/Regression/DataSets/ch09_all/REV_C09_36.csv",
+                 show_col_types = FALSE)
+cor.test(~ PATH + CT, data=Rev09_36)
+```
