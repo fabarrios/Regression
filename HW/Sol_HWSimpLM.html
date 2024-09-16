@@ -391,7 +391,7 @@ glucosa en sangre (mg/100 ml) de 16 hombres adultos aparentemente sanos.
 Estime si existe un modelo lineal de las variables y determine el
 intervalo de confianza al 95% de su coeficiente de correlación. Cual es
 el valor predicho de nivel de glucosa en sangre para un hombre de 95 kg
-de peso. al 95% de confianza?<br />
+de peso al 95% de confianza?<br />
 </li>
 <li>Gelb et al. condujeron un estudio en el que exploraron la relación
 entre limitación moderada a severa de flujo de aire espiratorio en la
@@ -607,6 +607,10 @@ anova(Mod_Rev09_23)</code></pre>
 ## Residual standard error: 9.276 on 14 degrees of freedom
 ## Multiple R-squared:  0.2344, Adjusted R-squared:  0.1797 
 ## F-statistic: 4.286 on 1 and 14 DF,  p-value: 0.0574</code></pre>
+<pre class="r"><code>confint(Mod_Rev09_23)</code></pre>
+<pre><code>##                  2.5 %     97.5 %
+## (Intercept) 20.7205466 103.033319
+## WEIGHT      -0.0183444   1.037845</code></pre>
 <pre class="r"><code>new_w &lt;- data.frame( WEIGHT = c(95))
 predict(Mod_Rev09_23, new_w, level= 0.95, se.fit = TRUE)</code></pre>
 <pre><code>## $fit
