@@ -53,7 +53,8 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 1. Harrell, F.E. (2015) Regression Modeling Strategies (2nd edition), Springer Series in Statistics, Springer.  
 2. Vittinghoff, E., Glidden, D.V., Shiboski, S.C., & McCulloch, C.E. (2012) Regression Methods in Biostatistics (2nd edition), Springer Series in Statistics, Springer.  
 3. Fox J. & Weisberg, S. (2019) An R Companion to Applied Regression, 3rd Ed. SAGE.  
-4. Vehkalahti, K. & Everitt, B.S. (2020) Multivariate Analysis for the Behavioral Sciences, 2nd Ed. CRC Press, Taylor & Francis.  
-5. Hothorn, T. & Everitt, B.S. (2014) A Handbook of Statistical Analyses Using R, 3rd Ed. CRC Press, Chapman & Hall.  
-6. Harrison, E. & Pius, R. (2021) R for Health Data Science, CRC Press, Taylor and Francis Group.  
-7. Crawley, M.J. (2015) Statistics An Introduction using R, Second Edition, John Wiley & Sons Ltd.  
+4. Kabacoff, R.I. (2022) R in Action. 3rd Ed. Manning.  
+5. Vehkalahti, K. & Everitt, B.S. (2020) Multivariate Analysis for the Behavioral Sciences, 2nd Ed. CRC Press, Taylor & Francis.  
+6. Hothorn, T. & Everitt, B.S. (2014) A Handbook of Statistical Analyses Using R, 3rd Ed. CRC Press, Chapman & Hall.  
+7. Harrison, E. & Pius, R. (2021) R for Health Data Science, CRC Press, Taylor and Francis Group.  
+8. Crawley, M.J. (2015) Statistics An Introduction using R, Second Edition, John Wiley & Sons Ltd.  
