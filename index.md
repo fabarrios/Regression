@@ -41,7 +41,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [MLE an example](https://fabarrios.github.io/Regression/MLE/MLE.html)  
 
 ### Homework  
-1. Regression and linear model Refresher homework [HW_SimpLM](https://fabarrios.github.io/Regression/HW/HW_SimpLM)
+1. Regression and linear model Refresher homework [HW_SimpLM](https://fabarrios.github.io/Regression/HW/HW_SimpLM)  
    Solutions to some of the [SimpLM homework](https://fabarrios.github.io/Regression/HW/Sol_HW_SimpLM)    
 2. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)  
 3. Linear Model homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_LM)
