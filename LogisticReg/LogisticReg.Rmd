@@ -43,14 +43,14 @@ f_logistic <- function(x) {
   }
   
 curve(f_logistic,
-  from = -4, 
-  to = 4,
+  from = -12, 
+  to = 12,
   ylab = "P",
   xlab = "X",
   main = "Logistic Function")
 ```
 
-is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve teh equation of the logistic for $x$ which is the inverse of the logistic function:  
+is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
 $$ x = \log[\frac{P}{1-P}] = \log[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
 The logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
 
