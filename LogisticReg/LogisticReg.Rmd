@@ -12,7 +12,7 @@ output:
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r}
+```{r, echo=FALSE }
 library(tidyverse)
 library(car)
 library(effects)
@@ -20,20 +20,26 @@ library(effects)
 
 # Logistic Regression  
 
-
 "Odds: the chances of something happening"  
  Odds provide a measure of the likelihood of a particular outcome.  
  
 *odds of an outcome   - ratio of the number of events that produce the outcome to  
                       to the number that do not.*  
                       
+The odds are calculated as the ratio of the probability of the event occurring to the probability of it not occurring:  
+$$ Odds = \frac {p}{1−p} $$
 The binary logistic regression model studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
 A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
 $$ E[Y|X] = X\beta$$  
 since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
 $$ Prob\{Y=1 | X\} = [1+ \exp(-X\beta)]^{-1}$$.  
-with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$. The function  
-$$ P = [1 + \exp(-x)]^{-1} $$  
+with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$.  
+The function  
+$$ p = [1 + \exp(-x)]^{-1} $$  
+is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
+$$ x = \ln[\frac{p}{1-p}] = \ln[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
+Therefore the logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
+
 ```{r}
 # Logistic function
 # plot of the logistic function
@@ -49,10 +55,6 @@ curve(f_logistic,
   xlab = "X",
   main = "Logistic Function")
 ```
-
-is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
-$$ x = \log[\frac{P}{1-P}] = \log[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
-The logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
 
 ## Model Assumptions  
 Since the distribution of a binary random variable $Y$ is defined by the true probability that $Y=1$ and since the model makes no assumption about the distribution of the predictors, the logistic model makes no assumption about distributions. Its only assumptions relate to the form of the regression equation, and are easily understood if transforming $Prob\{Y=1\}$ to a model linear in $X\beta$:  
