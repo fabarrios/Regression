@@ -28,7 +28,7 @@ library(effects)
                       
 The odds are calculated as the ratio of the probability of the event occurring to the probability of it not occurring:  
 $$ Odds = \frac {p}{1−p} $$
-The binary logistic regression model studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
+The **binary logistic regression model** studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
 A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
 $$ E[Y|X] = X\beta$$  
 since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
