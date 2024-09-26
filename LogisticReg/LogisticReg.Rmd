@@ -18,7 +18,7 @@ library(car)
 library(effects)
 ```
 
-# Logistic Regression  
+# Introduction.    
 
 "Odds: the chances of something happening"  
  Odds provide a measure of the likelihood of a particular outcome.  
@@ -34,9 +34,10 @@ $$ E[Y|X] = X\beta$$
 since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
 $$ Prob\{Y=1 | X\} = [1+ \exp(-X\beta)]^{-1}$$.  
 with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$.  
+  
 The function  
 $$ p = [1 + \exp(-x)]^{-1} $$  
-is called the logistic function, has unlimited range for $x$ while $P$ is restricted to range from $0$ to $1$. Using $1 - P = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
+is called the logistic function, has unlimited range for $x$ while $p$ is restricted to range from $0$ to $1$. Using $1 - p = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
 $$ x = \ln[\frac{p}{1-p}] = \ln[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
 Therefore the logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
 
@@ -74,7 +75,7 @@ $$ \tt odds\{Y=1 | X\} = exp(X\beta) $$
 and if all factors other than $X_j$ are held constant,
 
 $$ \tt odds\{Y=1 | X\} = \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
-The regression parameters can also be written in terms of *odds ratios*. The odds that $Y = 1$ when $X_j$ is increased by $d$, divided by the odds at $X_j$ is  
+The regression parameters can also be written in terms of *odds ratios*. The odds that $Y = 1$ when $X_j$ is increased by $d$, divided by the odds at $X_j$ is:  
 $$ \frac{ odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
 $$ = \frac{\exp[\beta_j(X_j+d)]\exp(C)}{\exp[\beta_j X_j]\exp(C)} $$  
 $$ = \exp[\beta_j X_j + \beta_j d - \beta_j X_j] = \exp(\beta_j d)$$
@@ -90,7 +91,7 @@ To estimate a logistic regression model the general formula in the predictor var
 
 $$log[\frac{\hat\mu(X)}{1-\hat\mu(X)}] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k$$
 
-If exponentiate both sides of the equation, we get  
+If we exponentiate both sides of the equation, we get  
 
 $$\frac{\hat\mu(X)}{1-\hat\mu(X)} = exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times \cdots \times exp(\beta_k X_k)$$  
 
@@ -114,7 +115,8 @@ S(CHD_glm01)
 exp(coef(CHD_glm01)["age"])
 ```
 
-Wich is identical to the last line in the `summary (S)` table, the exponential transformed $\beta_1$ coefficient (the link-function).  This is the **log-odds** of the *CHD (Corollary heart disease) risk*, the slope coefficient $\beta_1$ gives the change in the log-odds of `chd69` associated with one year increase in `age`.  This odds ration indicate a small (7.7%, change 100x(1.077 - 1.0) -> 0.077 x 100 %) but statistically significant increase in the chances of CHD for each one year age increase, for example for a 10 year increase in odds ratio (d=10) $\exp(\beta_{age} d)$
+Wich is identical to the last line in the `summary (S)` table, the exponential transformed $\beta_1$ coefficient (the link-function).  This is the **log-odds** of the *CHD (Corollary heart disease) risk*, the slope coefficient $\beta_1$ gives the change in the log-odds of `chd69` associated with one year increase in `age`.  This odds ration indicate a small (7.7%, change 100x(1.077 - 1.0) -> 0.077 x 100 %) but statistically significant increase in the chances of CHD for each one year age increase, for example for a 10 year increase in odds ratio (d=10) $\exp(\beta_{age} d)$  
+
 $$ \exp(0.074 \times 10) = 2.105 $$
 
 where we used the "link transformation" that is the exponentiation, to obtain the odds of *Y* (logit). In the `effects` library there is a general plotting function for plotting all the predictor effect plots used in a model.  
@@ -140,7 +142,7 @@ plot(predictorEffects(CHD_glm02))
 
 ## Women's Labor Force Participation example  
 
-Using data from the 1976 U.S. Panel Study of Income Dynamics in which the response (*Y*) varible is married women's labor force participation. The data was used by Mroz (1987) and Berndt(1991) as an exercise in logistic regression.  The data is in the **carData** package in the `Mroz` data frame.  
+Using data from the 1976 U.S. Panel Study of Income Dynamics in which the response (*Y*) variable is married women's labor force participation. The data was used by Mroz (1987) and Berndt(1991) as an exercise in logistic regression.  The data is in the **carData** package in the `Mroz` data frame.  
 
 The variables in the Mroz data frame are:  
 
@@ -156,12 +158,12 @@ The variables in the Mroz data frame are:
 | `inc` | family income excluding wife's income | $1000s |  
 
 
-The variable `lfp` is a factor with two levels, and if we use this variable as the response variable, the `no` level correspond to failure (zero) and `yes`, to success.  
-Applying the `S()` funcion to a logistic-regression model produces results similar results for a linear (`lm`) model, by default we get additional trable of exponentiated coefficients and their confidence limits.  
+The variable `lfp` is a factor with two levels, and if we use this variable as the response variable, the `no` level correspond to failure (zero) and `yes`, to success. Applying the `S()` function to a logistic-regression model produces results similar results for a linear (`lm`) model, by default we get additional table of exponentiated coefficients and their confidence limits.  
 
 ```{r}
 mroz.mod <- glm(lfp ~ k5 + k618 + age + wc + hc + lwg + inc,
                 family = binomial(link = logit), data = Mroz)
+summary(mroz.mod)
 S(mroz.mod)
 
 plot(predictorEffects(mroz.mod))
@@ -193,7 +195,7 @@ The likelihood-ratio test statistic is the chance in deviance between the two fi
 
 The Anova function from the `car` package, estimates the Type-II tests, and for a GLM estimates a likelihood-ratio test that is very similar to the Wald test (in the S() output of the model).  
 
-With the linearHypothesis function we can test if the coefficients of `k5` and  `k618` are zero, or if the coefficients `k5` and `k618` are equal.  
+With the `linearHypothesis` function we can test if the coefficients of `k5` and  `k618` are zero, or if the coefficients `k5` and `k618` are equal.  
 
 ```{r}
 Anova(mroz.mod)
