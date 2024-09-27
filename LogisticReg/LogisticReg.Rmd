@@ -27,20 +27,12 @@ library(effects)
                       to the number that do not.*  
                       
 The odds are calculated as the ratio of the probability of the event occurring to the probability of it not occurring:  
-$$ Odds = \frac {p}{1−p} $$
-The **binary logistic regression model** studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
-A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
-$$ E[Y|X] = X\beta$$  
-since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
-$$ Prob\{Y=1 | X\} = [1+ \exp(-X\beta)]^{-1}$$.  
-with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$.  
-  
-The function  
-$$ p = [1 + \exp(-x)]^{-1} $$  
-is called the logistic function, has unlimited range for $x$ while $p$ is restricted to range from $0$ to $1$. Using $1 - p = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation of the logistic for $x$ which is the inverse of the logistic function:  
-$$ x = \ln[\frac{p}{1-p}] = \ln[odds \space that \space Y=1 \space occurs] = logit\{Y=1\}$$  
-Therefore the logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.  
-
+$$ Odds = \frac {p}{1−p} $$  
+Thus, the log-odds can be expressed mathematically as:  
+$$ Log \space Odds = \ln(\frac{p}{1-p}) $$ 
+We also have the function  
+$$ p = [1 + \exp(-x)]^{-1} = \frac{1}{1+\exp(-x)} $$  
+that is called the logistic function, has unlimited range for $x$ while $p$ is restricted to range from $0$ to $1$. 
 ```{r}
 # Logistic function
 # plot of the logistic function
@@ -57,6 +49,25 @@ curve(f_logistic,
   main = "Logistic Function")
 ```
 
+Logistic regression uses log-odds to model probabilities because it allows for predictions to be made on an unbounded scale, which can then be transformed back into probabilities using the logistic function:
+$$ p = \frac{e^{Log \space Odds}}{1 + e^{Log \space Odds}} $$
+This transformation ensures that predicted probabilities remain within the bounds of 0 and 1.  
+For example lets assume you have a model predicting whether a student passes an exam based on hours studied. If the estimated log-odds for a student studying 5 hours is 1.5, you can calculate the probability as follows:  
+First convert log-odds to odds:  
+$$ Odds = e^{1.5} \approx 4.48 $$
+Then Convert odds to probability:
+$$ p = \frac{4.48}{1+4.48} \approx 0.817 $$
+
+Using $1 - p = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation for the Log Odds function:  
+$$ x = \ln(\frac{p}{1-p}) = \log(odds \space that \space Y=1 \space occurs) = logit\{Y=1\}$$  
+  
+The **binary logistic regression model** studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
+A linear attempt to model a vector $X$ of predictors $\{ X_1, X_2, \dots , X_k \}$ will look like:  
+$$ E[Y|X] = X\beta$$  
+since the expectation $E[Y|X]$ of a binary variable $Y$ is $Prob\{Y=1|X\}$. A purely linear model like this cannot easily fit the data over the whole range.  Therefore the statistically preferred model for the analysis of binary responses is instead the binary logistic regression model, stated in terms of the probability that $Y=1$ given $X$:  
+$$ Prob\{Y=1 | X\} = [1+ \exp(-X\beta)]^{-1}$$.  
+with $X\beta$ equal to $\beta_0 + \beta_1 X_1 + \beta_2 X_2 + \dots + \beta_k X_k$. Therefore the logistic model is a direct probability model since it is stated in terms of $Prob[Y=1 | X]$.
+  
 ## Model Assumptions  
 Since the distribution of a binary random variable $Y$ is defined by the true probability that $Y=1$ and since the model makes no assumption about the distribution of the predictors, the logistic model makes no assumption about distributions. Its only assumptions relate to the form of the regression equation, and are easily understood if transforming $Prob\{Y=1\}$ to a model linear in $X\beta$:  
 
@@ -71,10 +82,10 @@ where all other factors are held constant, $C$ is a constant given by
 $$ C = \beta_0 + \beta_1 X_1 + \dots + \beta_{j-1}X_{j-1} + \beta_{j+1} X_{j+1} + \dots + \beta_k X_k $$  
 
 Therefore the parameter $\beta_j$ is the change in the *log odds* per unit change in $X_j$ if $X_j$ represents a single factor that is linear and does not interact with other factors and if all the other factors are held constant. We can write the result in terms or the *odds that Y = 1*:
-$$ \tt odds\{Y=1 | X\} = exp(X\beta) $$
+$$ \tt Odds\{Y=1 | X\} = exp(X\beta) $$
 and if all factors other than $X_j$ are held constant,
 
-$$ \tt odds\{Y=1 | X\} = \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
+$$ \tt Odds\{Y=1 | X\} = \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
 The regression parameters can also be written in terms of *odds ratios*. The odds that $Y = 1$ when $X_j$ is increased by $d$, divided by the odds at $X_j$ is:  
 $$ \frac{ odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
 $$ = \frac{\exp[\beta_j(X_j+d)]\exp(C)}{\exp[\beta_j X_j]\exp(C)} $$  
