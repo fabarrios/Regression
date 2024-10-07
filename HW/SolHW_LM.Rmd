@@ -1,0 +1,85 @@
+---
+title: "Solution_HW_LM"
+author: "F.A.Barrios"
+date: "2024-10-03"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(car)
+library(emmeans)
+```
+
+## Solution to HW_KM
+
+Linear models examples from the Vittinhoff book using the WCGS data base fit a multipredictor model for total cholesterol (chol) that includes the binary predictor arcus, which is coded 1 for the group with arcus senilis, a milky ring in the iris associated with high cholesterol levels, and 0 for the reference group. Save the fitted values. Now refit the model with the code for the reference group changed to 2.
+
+
+```{r}
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv", show_col_types = FALSE)
+
+names(wcgs)
+wcgs_n <- mutate(wcgs, arcus = factor(arcus))
+
+wcgs_n <- wcgs_n %>% 
+    mutate(smoke = smoke %>% fct_relevel("No", "Yes"))
+
+```
+
+## Cholesteron linear model
+Multipredictor model for total cholesterol (chol) that includes the binary predictor arcus
+
+
+```{r}
+chol_arcus_mod1 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod1)
+
+wcgs_n <- wcgs_n %>% 
+  mutate(arcus = arcus %>% fct_relevel("1", "0"))
+
+chol_arcus_mod2 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod2)
+
+# start again with the original arcus states
+wcgs_n <- wcgs_n %>%
+  mutate(arcus = arcus %>% fct_relevel("0", "1"))
+
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+summary(chol_mult_mod)
+
+# chol ~ bmi + age + smoking + arcus
+wcgs_n <- wcgs_n %>% 
+  mutate(arcus = arcus %>% fct_relevel("1", "0"))
+chol_mult_mod_2 <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+summary(chol_mult_mod_2)
+```
+
+## T-test and ANOVA
+For the T-test and the ANOVA Example we estimate a T-test with the `chol ~ arcus` using the `arcus` reference level "0".
+and estimate a model with `agec`
+
+```{r}
+
+wcgs_n <- wcgs_n %>%
+  mutate(arcus = arcus %>% fct_relevel("0", "1"))
+      
+t.test(chol ~ arcus, data = wcgs_n)
+
+wcgs_n <- mutate(wcgs_n, agec = factor(agec))
+boxplot(chol ~ agec, data = wcgs_n)
+
+chol_agec_mod <- lm(chol ~ agec, data = wcgs_n)
+summary(chol_agec_mod)
+
+aov_agec_mod <- aov(chol ~ agec, data = wcgs_n)
+summary(aov_agec_mod)
+
+```
+
+         
