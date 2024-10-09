@@ -44,9 +44,10 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 1. Regression and linear model Refresher homework [HW_SimpLM](https://fabarrios.github.io/Regression/HW/HW_SimpLM)  
    Solutions to some of the [SimpLM homework](https://fabarrios.github.io/Regression/HW/Sol_HWSimpLM.html)    
 2. ANOVA Refresher homework [HW_ANOVA](https://fabarrios.github.io/Regression/HW/HW_ANOVA)  
-3. Linear Model homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_NewLM.html)
-4. Logistic Regression homework [HW_LogstReg](https://fabarrios.github.io/Regression/HW/HW_RegLogist)
-5. Survival Regression homework [HW_Survival](https://fabarrios.github.io/Regression/HW/HW_Survival)
+3. Linear Model homework [HW_LM](https://fabarrios.github.io/Regression/HW/HW_NewLM.html)  
+   Solutions to some of the [HW_LM homework](https://fabarrios.github.io/Regression/HW/SolHW_LM.html)    
+5. Logistic Regression homework [HW_LogstReg](https://fabarrios.github.io/Regression/HW/HW_RegLogist)
+6. Survival Regression homework [HW_Survival](https://fabarrios.github.io/Regression/HW/HW_Survival)
 
 
 ## Bibliography  
