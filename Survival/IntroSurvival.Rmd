@@ -206,8 +206,8 @@ The Rossi data set in the CarData. Is a study made by Allison of recidivism of 4
 *`age`: in years at the time of release.  
 *`race`: a factor with levels "black" and "other".  
 *`wexp`: a factor "yes" if the individual had full-time work experience prior to incarceration or "no".  
-*`mar`: a factor with levels "married" if te individual was married at the time of release and "not married" if he was not.  
-*`paro`: a factor coded "yes" if the individual was released on parol and "no" if he was not.  
+*`mar`: a factor with levels "married" if the individual was married at the time of release and "not married" if he was not.  
+*`paro`: a factor coded "yes" if the individual was released on parole and "no" if he was not.  
 *`prio`: number of prior convictions.  
 *`educ`: education, categorical variable coded numerically, with codes 2 (grade 6 or less), 3 (grades 6 through 9), 4 (grades 10 and 11), 5 (grade 12), or 6(some post-secondary).  
 *`emp1-emp52`: factors coded "yes" if the individual was employed in the corresponding week of the study.  
@@ -226,13 +226,13 @@ summary(mod.allison)
 
 The z column shows the ratio of each regression coefficient to its standard error, a Wald statistic to estimate the significance of the coefficient.  
 
-The exponential coefficients (second column) are the multipicative effect in the hazard. For example, keeping all the predictors constant, but age, an additional year of age reduces the weekly hazard of arrest by a factor of 0.9442 on average ( a 5.6 %). Similarly, each prior conviction increases the hazard by a factor of 1.096 (a 9.6%).  
+The exponential coefficients (second column) are the multiplicative effect in the hazard. For example, keeping all the predictors constant, but age, an additional year of age reduces the weekly hazard of arrest by a factor of 0.9442 on average (a 5.6 %). Similarly, each prior conviction increases the hazard by a factor of 1.096 (a 9.6%).  
 
-THe likelihood -ratio, Wald and score chi-square statistics, at the bottom are asymptotically equivalent tests of the omnibus null hypothesis the all the $\beta$s are zero. In this case the omnibus null hypothesis is rejected.  
+The likelihood-ratio, Wald and score chi-square statistics, at the bottom are asymptotically equivalent tests of the omnibus null hypothesis the all the $\beta$s are zero. In this case the omnibus null hypothesis is rejected.  
 
 # The Anova function (car)  
 
-The Anova function of car package  has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model  
+The Anova function of car package has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model  
 
 ```{r}
 Anova(mod.allison)
