@@ -12,6 +12,7 @@ After loading data in R, the first step is to understand the structure of and fo
 different R functions and the needed libraries, for the *post hoc* analysis.  Therefore we will start the course with "tidy" gymnastics, the pipe, filters and funcitons to work with "tibbles" and then visualization with ggplot.
 1. [Tidyverse](https://fabarrios.github.io/Regression/Intro/Rtutorial_new.html) Tibbles, Pipe, filters, functions (on tibbles), ggplot. 
 2. [Tidyverse exercise](https://fabarrios.github.io/Regression/Intro/Tidyverse_exercise.html).
+3. More examples of data wrangling: [Other examples](https://fabarrios.github.io/Regression/Intro/data_exercise_EH.html).  
 
 ### II Introduction (Barrios)  
 Revisiting some concepts of classical statistics  
