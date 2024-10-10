@@ -28,21 +28,20 @@ library(survival)
 library(survminer)
 library(car)
 library(tidyverse)
-
 ```
 
 ## Introduction to Survival Analysis (notes taken from Harrel RMS)  
 
-Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects. Then we say that the survival time is *censored* on the right.  
+Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. It is particularly useful in fields like medicine, engineering, and social sciences, where understanding the timing of events is crucial. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects then we say that the survival time is *censored*.  When the real survival time is not known is classified as *type I censoring* in the case of loss to follow-up the *terminating event* is classified as *right censored*, when the end of the experiment mark the terminating event it is clasified as *type II censoring*.  
 
-There are several reasons for studying failure time using the specialized methods of survival analysis.  
-1. Time to event can have an unusual distribution. Failure time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
+There are several reasons for studying survival time using the specialized methods of survival analysis.  
+1. Time to event can have an unusual distribution. Survival time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
 2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
 3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of the event.    
 
 ### The Kaplan–Meier Procedure (intro from Daniel)   
 
-To assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in the following table. We wish to compare the 5-year survival experience of these two groups by means of the *Kaplan–Meier procedure*. For vital status are **dod** = dead of disease; **ned** = no evidence of disease; **dpo** = dead postoperation and the tumor grade: L = low-grade; H = high-grade.  
+Also known as the *product-limit method* of estimating survival probabilities. Is used to assess results and identify predictors of survival, Martini et al. reviewed their total experience with primary malignant tumors of the sternum. They classified patients as having either low-grade (25 patients) or high-grade (14 patients) tumors. The event (status), time to event (months), and tumor grade for each patient are shown in the following table. We wish to compare the 5-year (60 months) survival rate of these two groups by means of the *Kaplan–Meier procedure*. For vital status are **dod** = dead of disease; **ned** = no evidence of disease; **dpo** = dead postoperation and the tumor grade: L = low-grade; H = high-grade.  
 
 
 |Subject|Time (Months)|Vital Status|Tumor Grade|Subject|Time (Months)|Vital Status|Tumor Grade|
@@ -81,17 +80,17 @@ $$\begin{array}{ll}
   \hline
 \end{array} $$
 
-These proportions are used as estimates of the probability that the subject from the population represented by the sample will survive the periods $1,2,3, \dots, k$, respectively. The probabilities will be relavel $\hat{p}_1, \hat{p}_2, \hat{p}_3, \dots, \hat{p}_k$.  
+These proportions are used as estimates of the probability that the subject from the population represented by the sample will survive the periods $1,2,3, \dots, k$, respectively. The probabilities will be relabel $\hat{p}_1, \hat{p}_2, \hat{p}_3, \dots, \hat{p}_k$.  
 The probability of surviving the *t*th time period, $p_t$ at any time *t*, with $1 \leq t \leq k$ can be estimated as follows    
 $$
-\hat{p}_t = \frac{\verb+number of subjects surviving at least (t-1) time periods who also survive the tth period+}{\verb+number of subjects alive at te end of time period (t-1)+}
+\hat{p}_t = \frac{\verb+number of subjects surviving at least (t-1) time periods who also survive the t period+}{\verb+number of subjects alive at the end of time period (t-1)+}
 $$
 The probability to surviving to time *t*, *S(t)*, is estimated by  
 
 $$
 \hat{S}(t) = \hat{p}_1 \times \hat{p}_2 \times \dots \times \hat{p}_t
 $$
-Data arrangement and calculations for Kaplan-Meier procedure from the patients of tumor grade.
+Data arrangement and calculations for Kaplan-Meier procedure from the patients of different tumor grade.
 
 $$\begin{array}{lccccc}
   {\verb+Time (Months)+} & {\verb+Vital status (0,1)+} & {\verb+At risk+} & {\verb+Remaining alive+} & {\verb+Survival proportion+} & {\verb+Cumulative proportion+}\\
@@ -138,7 +137,11 @@ $$\begin{array}{lccccc}
  27 & 1  &  2 & 1  &   1/2 = .5000  & .07142 \\
 122 & 0  &  1 & 0  &                &        \\
   \hline
-\end{array} $$
+\end{array} $$  
+
+From this table we can easily estimate the **Median survival time**, this is to locate the time in months at which the cumulative survival proportion is equal to $0.5$, for the low grade (LG) we can see from the table that it happens in the 212 months and for the high grade (HG) the 9 months.  
+The **5-year (60 months) survival rate** we calculate LG: 0.7342 x 100 -> 73% and for HG: 0.07114 x 100 -> 7%.  
+The **Mean survival time** for each group may be computed directly as the total months divided by the total subjects, $\bar{T}_{LG} = 2201 / 25 = 88.04$ months and $\bar{T}_{HG} = 257/14 = 18.35 $ months.
 
 
 ## Right Censoring and examples  

@@ -21,10 +21,6 @@ opts_chunk$set(echo=TRUE,
 # knitr::kable()
 ```
 
-## Survival data
-
-Survival data, or time-to-event data, are measurements of elapsed time between the beginning of a study (enrollment of subject participation) and the final disposition of the subject. This elapsed time could be represented by the point in time when the subject enters the study and the final time of participation. Survival in this context simply means that an event has not occurred, not, necessarily, that the endpoint of interest involved an examination of “life” and “death.”
-
 
 ```{r}
 library(tidyverse)
@@ -35,7 +31,9 @@ library(coin)
 library(partykit)
 ```
 
-## More Survival Regression Examples
+## Survival data
+
+Survival data, or time-to-event data, are measurements of elapsed time between the beginning of a study (enrollment of subject participation) and the final disposition of the subject. This elapsed time could be represented by the point in time when the subject enters the study and the final time of participation. Survival in this context simply means that an event has not occurred, not, necessarily, that the endpoint of interest involved an examination of “life” and “death.”
 
 ### Patients treated with Radioimmunotherapy Examples from HSAUR
 

@@ -357,6 +357,12 @@ display: none;
 </div>
 
 
+<pre class="r"><code>library(tidyverse)
+library(car)
+library(survival)
+library(survminer)
+library(coin)
+library(partykit)</code></pre>
 <div id="survival-data" class="section level2">
 <h2>Survival data</h2>
 <p>Survival data, or time-to-event data, are measurements of elapsed
@@ -366,15 +372,6 @@ time could be represented by the point in time when the subject enters
 the study and the final time of participation. Survival in this context
 simply means that an event has not occurred, not, necessarily, that the
 endpoint of interest involved an examination of “life” and “death.”</p>
-<pre class="r"><code>library(tidyverse)
-library(car)
-library(survival)
-library(survminer)
-library(coin)
-library(partykit)</code></pre>
-</div>
-<div id="more-survival-regression-examples" class="section level2">
-<h2>More Survival Regression Examples</h2>
 <div id="patients-treated-with-radioimmunotherapy-examples-from-hsaur" class="section level3">
 <h3>Patients treated with Radioimmunotherapy Examples from HSAUR</h3>
 <p>In a clinical trial investigating a novel radioimmunotherapy
