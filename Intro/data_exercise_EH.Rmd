@@ -1,0 +1,98 @@
+---
+title: "Data exercise"
+author: "Mike Jeziorski"
+date: "2024-09-30"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+A student in the class provided a .csv file, "AveGenSub_u0.03_M1.1_g1_st500_N1000_v0.3_alg0_2.csv", 259 KB in size.
+
+He also provided the following metadata:
+
+**Average Generation information**  
+**This document contain the Average population information for each generation, it's organized like:**
+
+**- Generation: Number of each generation.**  
+**- Expression and repression constant: Average genotype information.**  
+**- Constant of light rate: Average genotype information.**  
+**- Dissociation constant: Average genotype information.**  
+**- Hill exponents: Average genotype information.**  
+**- WCC: Mean WCC protein at each generation.**  
+**- Fitness: Mean fitness at each generation.**  
+
+These descriptions are useful, but do not clarify whether all the columns contain numeric data.  We will inspect the data ourselves, working entirely within R.
+
+The first step is to import the raw data and review how it is organized.
+```{r}
+avgen_raw <- read_csv("AveGenSub_u0.03_M1.1_g1_st500_N1000_v0.3_alg0_2.csv")
+```
+The import step tells us that the data frame has 480 observations (rows) of 8 variables (columns).
+
+```{r}
+avgen_raw %>%
+      summary()
+```
+From this preliminary analysis we see that five columns contain numeric values and three columns contain character strings.  However, looking at the columns in the viewer shows that each of the character columns contains several numeric values apparently separated by spaces, with brackets at the beginning and end.  Also, the first column seems to be unnecessary.  (Note that when `read_csv()` encounters columns without names, it names them as "...1", "...2", etc.)
+
+After some trial and error, we determine that the best way to proceed is to remove the brackets as well as any spaces at the beginning and end of the strings.
+```{r}
+# verify that all values in column 3 start with "[" and end with "]"
+# if so, the summary should indicate that all 480 values for col3start and col3end are TRUE
+avgen_raw %>%
+      mutate(col3start = str_starts(`Expresion and repression constants`, "\\["),
+             col3end = str_ends(`Expresion and repression constants`, "\\]")) %>%
+      summary()
+# also verified for columns 5 and 6
+```
+
+To remove the brackets, it is easier to select everything in the string except the first and last characters using `str_sub()`, then use `str_trim()` to delete spaces from the ends.  We can also use the opportunity to rename the columns to something easier to work with in R.  This cleaner but not yet fully cleaned data frame will be saved as an intermediate object.
+```{r}
+# an intermediate data frame is created that deletes column 1, repairs column names, and makes the three character columns easier to parse
+avgen_step1 <- avgen_raw %>%
+      mutate(exp_rep_con = str_trim(str_sub(`Expresion and repression constants`, 2, -2))) %>%
+      mutate(dis_con = str_trim(str_sub(`Disociation constants`, 2, -2))) %>%
+      mutate(Hill_exp = str_trim(str_sub(`Hill exponents`, 2, -2))) %>%
+# when we select columns we can rename them at the same time
+      select(Generation, exp_rep_con, light_rate_con = `Constant of light rate`, dis_con,
+             Hill_exp, WCC, Fitness)
+```
+During the initial analysis we learned that the "spaces" between the values in the three character columns could be regular spaces (`\s`), line breaks (`\n`), or both.  The regular expression "`(\\s|\\n)+`" means "one or more of either `\s` or `\n`".
+```{r}
+# now the correct number of elements in each character column can be determined
+avgen_step1 %>%
+      mutate(wordscol2 = str_count(exp_rep_con, "(\\s|\\n)+")) %>%
+      mutate(wordscol4 = str_count(dis_con, "(\\s|\\n)+")) %>%
+      mutate(wordscol5 = str_count(Hill_exp, "(\\s|\\n)+")) %>%
+      summary()
+# there are 23 (22 + 1) elements in the exp_rep_con column, 7 in the dis_con column, and 4 in the Hill_exp column
+```
+
+With all the above work we painstakingly establish that the three character columns each contain a constant number of values.  We can now split up the columns and convert the resulting values to numeric.  This can be laborious if we do each column separately, so we will take advantage of helper functions like `across()` that allow operations on multiple columns at once.
+
+Initially `separate_wider_regex()` is attempted to split columns based on our regular expression.  However, that function does not work with `across()`, so instead we will mutate to replace the space characters with commas, then use `separate_wider_delim()` to split on commas.
+```{r}
+# the across() argument permits mutating all columns that are character
+avgen_step2 <- avgen_step1 %>%
+      mutate(across(where(is.character), 
+                    \(x) str_replace_all(x, pattern = "(\\s|\\n)+", replacement = ","))) %>%
+      separate_wider_delim(cols = c(exp_rep_con, dis_con, Hill_exp), delim = ",", names_sep = "_") %>%
+      mutate(across(where(is.character), \(x) as.numeric(x)))
+# the expected number of variables is 1 + 23 + 1 + 7 + 4 + 1 + 1 = 38
+
+avgen_step2 %>%
+      summary()
+```
+
+What have we accomplished?  
+1. Determined the overall structure of the data  
+2. Identified three columns with numeric values stored in an unusual way  
+3. Verified the format of the unusual columns and the number of values in each  
+4. Cleaned the three columns and split them to create new variables  
+5. Established that all columns contain consistent ranges of values (no outliers, no NAs)
+
+Because the newly isolated variables are very different (for example, compare exp_rep_con_20 with exp_rep_con_21), we would need more information about what each variable represents.  However, this data frame is much more useful now than it was initially.
