@@ -23,23 +23,23 @@ opts_chunk$set(echo=TRUE,
 
 ## Survival data
 
-Survival data, or time-to-event data, are measurements of elapsed time between the beginning of a study (or subject participation) and the final disposition of the study subject. This elapsed time could be represented by the point in time when the subject enters the study and the final time of participation. Survival in this context simply means that an event has not occurred, not, necessarily, that the endpoint of interest involved an examination of “life” and “death.”
+Survival data, or time-to-event data, are measurements of elapsed time between the beginning of a study (enrollment of subject participation) and the final disposition of the subject. This elapsed time could be represented by the point in time when the subject enters the study and the final time of participation. Survival in this context simply means that an event has not occurred, not, necessarily, that the endpoint of interest involved an examination of “life” and “death.”
 
 
 ```{r}
+library(tidyverse)
 library(car)
 library(survival)
-library("survminer")
-library("coin")
-library("partykit")
-library(tidyverse)
+library(survminer)
+library(coin)
+library(partykit)
 ```
 
 ## More Survival Regression Examples
 
 ### Patients treated with Radioimmunotherapy Examples from HSAUR
 
-The question is if under the radioimmunotherapy the malignant glioma patients survive longer.The overall survival, i.e., the time from the beginning of the therapy to the disease-caused death of the patient, is compared for two groups. A control group underwent standard therapy and another group of patients was treated in addition with radioimmunotherapy   to assess if the in the plot is right we can perform a log-rank test. Function logrank_test from package `coin` can be used to compute an exact conditional test answering the question whether the survival times differ for grade III patients (`g3`).  For all possible permutations of the groups on the censored response variable, the test statistic is computed and the fraction of whose being greater than the observed statistic defines the exact p-value.  And the same exercise can be performed for patients with grade IV glioma (`g4`).  
+In a clinical trial investigating a novel radioimmunotherapy treatment, the question was if under the radioimmunotherapy the malignant glioma patients survive longer. The overall survival, i.e., the time from the beginning of the therapy to the disease-caused death of the patient, is compared for two groups. A control group underwent standard therapy and a second group of patients was treated in addition with radioimmunotherapy, the survival time was compared for the two groups of patients. To assess if the survival times were different we plot the Kaplan-Meier estimates stratified for the group of patients from grades III and IV  and perform a log-rank test. Function logrank_test from package `coin` can be used to compute an exact conditional test answering the question whether the survival times differ for grade III patients (`g3`).  For all possible permutations of the groups on the censored response variable, the test statistic is computed and the fraction of whose being greater than the observed statistic defines the exact p-value.  And the same exercise can be performed for patients with grade IV glioblastoma (GBM, `g4`).  
 
 ```{r}
 # Examples Chp 11 HSAUR
@@ -56,14 +56,14 @@ plot(survfit(Surv(time, event) ~ group, data = g3), main = "Grade III Glioma", l
 plot(survfit(Surv(time, event) ~ group, data = g4), main = "Grade IV Glioma", lty = c(2,1), mark.time = TRUE, ylab = "Probability", xlab = "Survival Months")
 ```
 
-To assess if the malignant glioma patients treated with the radioimmunotheraoy survive longer as the Kaplan-Meier plots suggest, we can perform a log-rank test. `survdiff` from the `survive` R package.  
+To assess if the malignant glioma patients treated with the radioimmunotheraoy survive longer as the Kaplan-Meier plots suggest, first we can perform a log-rank test, `survdiff` from the `survive` R package.  
 
 ```{r}
 # to assess if there are different survival we can perform a log-rank test from survival
 survdiff(Surv(time, event) ~ group, data = g3)
 ```
 
-To run an exact log-rank test Coin has a permutation function that can calculate an exact  or estimated test and can answer the more interesting question is the Radioimmunotherapy is superior for both groups, this is done stratifying or blocking (by block) with respect to tumor grading (the HSAUR book has a defunct funtion surv_test(Surv(time, event) ~ group | histology, data = glioma, distribution = approximate(B = 10000)) ). This is now done by `logrank_test` function, the function estimates the probability with exact distribution and approximation  
+It is possible to run a nonparametric log-rank test in the Coin package based in a permutation function that can calculate an exact or estimated test and can answer the more interesting question is the Radioimmunotherapy Therapy superior for both groups, this is done stratifying or blocking (by block) with respect to tumor grading (the HSAUR book has a defunct function surv_test(Surv(time, event) ~ group | histology, data = glioma, distribution = approximate(B = 10000)) ). This is now done by `logrank_test` function, the function estimates the probability with exact distribution and approximation: 
 
 ```{r}
 logrank_test(Surv(time, event) ~ group, data = g3, distribution = "exact")
