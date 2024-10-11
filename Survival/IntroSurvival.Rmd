@@ -139,23 +139,25 @@ $$\begin{array}{lccccc}
   \hline
 \end{array} $$  
 
-From this table we can easily estimate the **Median survival time**, this is to locate the time in months at which the cumulative survival proportion is equal to $0.5$, for the low grade (LG) we can see from the table that it happens in the 212 months and for the high grade (HG) the 9 months.  
+From this table we can easily estimate:  
+The **Median survival time**, this is to locate the time in months at which the cumulative survival proportion is equal to $0.5$, for the low grade (LG) we can see from the table that it happens in the 212 months and for the high grade (HG) the 9 months.  
 The **5-year (60 months) survival rate** we calculate LG: 0.7342 x 100 -> 73% and for HG: 0.07114 x 100 -> 7%.  
-The **Mean survival time** for each group may be computed directly as the total months divided by the total subjects, $\bar{T}_{LG} = 2201 / 25 = 88.04$ months and $\bar{T}_{HG} = 257/14 = 18.35 $ months.
+The **Mean survival time** for each group may be computed directly as the total months divided by the total subjects, $\bar{T}_{LG} = 2201 / 25 = 88.04$ months and $\bar{T}_{HG} = 257/14 = 18.35$ months.  
 
 
 ## Right Censoring and examples  
 
-To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia* (ALL) Forty-two patients achieved remission from induction therapy and were then randomized in equal numbers to 6-MP or placebo. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
+To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia*. Forty-two (ALL) patients achieved remission from induction therapy, and were then randomized in equal numbers to 6-MP or placebo groups. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
 
-Definition: A survival time is said to be right-censored at time *t* if it is only known to be greater than *t*.  
+Definition: A survival time is said to be right-censored at time *t* if it is only known to be greater than *t*, (not precisely determined).  
 
 ```{r}
 leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
                  show_col_types = FALSE)
 names(leuk)
 
-plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), ylab = "Probability", xlab = "Time weeks")
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), 
+     legend.text = c("Placebo", "6-MP"), legend.bty = "n", ylab = "Probability", xlab = "Time weeks")
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
 
@@ -169,7 +171,7 @@ Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk
 
 ```{r}
 fit <- survfit(Surv(time, cens) ~ group, data = leuk)
-ggsurvplot(fit, data = leuk, censor.shape="|", censor.size = 4, linetype = c(1,2))
+# ggsurvplot(fit, data = leuk, censor.shape="|", censor.size = 4, linetype = c(2, 1))
 
 # With ggplot using 
 ggsurvplot(
@@ -184,7 +186,7 @@ ggsurvplot(
   pval = TRUE,              # Add p-value from log-rank test
   risk.table = TRUE,        # Add risk table
   risk.table.col = "strata",# Risk table color by groups
-  legend.labs = c("6-MP", "Control"),    # Change legend labels
+  legend.labs = c("6-MP", "Placebo"),    # Change legend labels
   risk.table.height = 0.25, # Useful to change when you have multiple groups
   surv.median.line = "hv",  # add the median survival pointer.
   ggtheme = theme_bw()      # Change ggplot2 theme
