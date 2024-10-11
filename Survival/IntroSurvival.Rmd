@@ -145,7 +145,7 @@ The **5-year (60 months) survival rate** we calculate LG: 0.7342 x 100 -> 73% an
 The **Mean survival time** for each group may be computed directly as the total months divided by the total subjects, $\bar{T}_{LG} = 2201 / 25 = 88.04$ months and $\bar{T}_{HG} = 257/14 = 18.35$ months.  
 
 
-## Right Censoring and examples  
+### Right Censoring and examples  
 
 To illustrate the special characteristics of survival data, we consider a study of *6-mercaptopurine* (6-MP) as maintenance therapy for children in remission from *acute lymphoblastic leukemia*. Forty-two (ALL) patients achieved remission from induction therapy, and were then randomized in equal numbers to 6-MP or placebo groups. The survival time studied was from randomization until relapse. At the time of the analysis, all 21 patients in the placebo group had relapsed, whereas only 9 of 21 patients in the 6-MP group had. One crucial characteristic of these survival times is that for the 12 patients in the 6-MP group who remained in remission at the time of the analysis, the exact time to relapse was unobserved; it was only known to exceed the follow-up time. For example, one patient had only been under observation for six weeks, so we only know that the relapse time is longer than that. Such a survival time is said to be *right-censored*.  
 
@@ -163,11 +163,11 @@ survdiff(Surv(time, cens) ~ group, data=leuk)
 
 Definition: The survival function at time *t*, denoted *S(t)* is the probability of being event-free at time *t*; equivalently, the probability that the survival time is greater than t.  
 
-## Interpretarion of Kaplan-Meier Curves  
+### Interpretarion of Kaplan-Meier Curves  
 
 Plots of the Kaplan–Meier estimates of S(t), we can infer periods of high risk, when the survival curve descends rapidly, as well as periods of lower risk, when it remains relatively flat.  
 
-# Fitting a survival model  
+### Fitting a survival model  
 
 ```{r}
 fit <- survfit(Surv(time, cens) ~ group, data = leuk)
@@ -202,7 +202,27 @@ leuk$cens
 
 ```
 
-## Recidivism (the tendency of a convicted criminal to reoffend)  
+### The Cox Proportional Hazards Model.  
+
+The Cox proportional hazards model is a widely used statistical technique in survival analysis that assesses the effect of several variables on the time until an event occurs, such as death or failure. Developed by David Cox in 1972, this semi-parametric model allows researchers to examine the relationship between multiple predictors and the hazard rate, which is the risk of the event occurring at a particular time.  
+
+Hazard Function The model expresses the hazard function $h(t)$ as:  
+$$
+h(t) = h_0(t) e^{(\beta_1 x_1 + \beta_2 x_2 + \dots + \beta_n x_n)}
+$$
+where:  
+$h_0(t)$ is the baseline hazard function, representing the hazard when all covariates are zero.  
+$\beta_i$ are the coefficients corresponding to each covariate $x_i$.  
+The term $\exp({\beta_i})$ represents the **hazard ratio (HR)**, indicating how each covariate affects the hazard.  
+
+Interpretation of Hazard Ratios   
+HR = 1: No effect on the hazard.  
+HR < 1: Indicates a reduction in hazard (better survival).  
+HR > 1: Indicates an increase in hazard (worse survival).  
+
+For example, if a covariate has an HR of 1.5, it suggests that for each unit increase in that covariate, the risk of the event occurring increases by 50%.  
+
+### Recidivism (the tendency of a convicted criminal to reoffend)  
 
 The Rossi data set in the CarData. Is a study made by Allison of recidivism of 432 male prisoners, who were observed for a year after being released from prison. The following variables are included in the data:  
 *`week`: week of the first arrest after release, or censoring time.  
@@ -235,17 +255,18 @@ The exponential coefficients (second column) are the multiplicative effect in th
 
 The likelihood-ratio, Wald and score chi-square statistics, at the bottom are asymptotically equivalent tests of the omnibus null hypothesis the all the $\beta$s are zero. In this case the omnibus null hypothesis is rejected.  
 
-# The Anova function (car)  
+### The Anova function (car)  
 
 The Anova function of car package has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model  
 
 ```{r}
 Anova(mod.Recidivism)
+S(mod.Recidivism)
 
 # Plots of the Cox model
 plot(survfit(mod.Recidivism), xlab="Weeks", ylab="Proportion Not Rearrested")
 # now with better scale
-plot(survfit(mod.Recidivism), ylim = c(0.6, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+plot(survfit(mod.Recidivism), ylim = c(0.4, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
 
 # With ggplot using ggsurvplot
 #
