@@ -11,7 +11,7 @@
 
 <meta name="author" content="F.A. Barrios Instituto de Neurobiología UNAM " />
 
-<meta name="date" content="2024-10-11" />
+<meta name="date" content="2024-10-12" />
 
 <title>Introduction to Survival Analysis</title>
 
@@ -353,7 +353,7 @@ display: none;
 <h1 class="title toc-ignore">Introduction to Survival Analysis</h1>
 <h4 class="author">F.A. Barrios<br>Instituto de Neurobiología
 UNAM<br></h4>
-<h4 class="date">2024-10-11</h4>
+<h4 class="date">2024-10-12</h4>
 
 </div>
 
@@ -825,10 +825,24 @@ affects the hazard.</p>
 <p>Interpretation of Hazard Ratios<br />
 HR = 1: No effect on the hazard.<br />
 HR &lt; 1: Indicates a reduction in hazard (better survival).<br />
-HR &gt; 1: Indicates an increase in hazard (worse survival).</p>
-<p>For example, if a covariate has an HR of 1.5, it suggests that for
-each unit increase in that covariate, the risk of the event occurring
-increases by 50%.</p>
+HR &gt; 1: Indicates an increase in hazard (worse survival).<br />
+For example, if a covariate has an HR of 1.5, it suggests that for each
+unit increase in that covariate, the risk of the event occurring
+increases by 50%.<br />
+The baseline hazard <span class="math inline">\(h_0(t)\)</span> is
+crucial for interpreting results from a Cox regression analysis. It
+helps in understanding how individual covariate affect the risk of an
+event relative to this baseline. For instance, if a covariate has a
+significant positive coefficient, it indicates that individuals with
+higher values of that covariate have a higher hazard compared to those
+at the baseline level.<br />
+The baseline hazard in the Cox proportional hazards model is significant
+because it provides a reference point for understanding how various
+predictors influence survival times. Its flexibility and lack of strict
+parametric assumptions make it a powerful tool in survival analysis,
+allowing researchers to derive meaningful insights from complex datasets
+without imposing unnecessary constraints on the underlying hazard
+function.</p>
 </div>
 <div id="recidivism-the-tendency-of-a-convicted-criminal-to-reoffend" class="section level3">
 <h3>Recidivism (the tendency of a convicted criminal to reoffend)</h3>

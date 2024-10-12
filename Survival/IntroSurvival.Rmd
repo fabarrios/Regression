@@ -219,8 +219,9 @@ Interpretation of Hazard Ratios
 HR = 1: No effect on the hazard.  
 HR < 1: Indicates a reduction in hazard (better survival).  
 HR > 1: Indicates an increase in hazard (worse survival).  
-
 For example, if a covariate has an HR of 1.5, it suggests that for each unit increase in that covariate, the risk of the event occurring increases by 50%.  
+The baseline hazard $h_0(t)$ is crucial for interpreting results from a Cox regression analysis. It helps in understanding how individual covariate affect the risk of an event relative to this baseline. For instance, if a covariate has a significant positive coefficient, it indicates that individuals with higher values of that covariate have a higher hazard compared to those at the baseline level.  
+The baseline hazard in the Cox proportional hazards model is significant because it provides a reference point for understanding how various predictors influence survival times. Its flexibility and lack of strict parametric assumptions make it a powerful tool in survival analysis, allowing researchers to derive meaningful insights from complex datasets without imposing unnecessary constraints on the underlying hazard function.
 
 ### Recidivism (the tendency of a convicted criminal to reoffend)  
 
