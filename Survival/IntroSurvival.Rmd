@@ -157,7 +157,7 @@ leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
 names(leuk)
 
 plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), 
-     legend.text = c("Placebo", "6-MP"), legend.bty = "n", ylab = "Probability", xlab = "Time weeks")
+     legend.text = c("Placebo", "6-MP"), legend.bty = "s", ylab = "Probability", xlab = "Time weeks")
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
 
@@ -193,7 +193,7 @@ ggsurvplot(
 )
 ```
 
-How is the data organized for hese kind of problems?  
+How is the data organized for these kind of problems?  
 
 ```{r}
 leuk$group
