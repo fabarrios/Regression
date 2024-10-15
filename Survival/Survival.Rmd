@@ -59,6 +59,7 @@ To assess if the malignant glioma patients treated with the radioimmunotheraoy s
 ```{r}
 # to assess if there are different survival we can perform a log-rank test from survival
 survdiff(Surv(time, event) ~ group, data = g3)
+survdiff(Surv(time, event) ~ group, data = g4)
 ```
 
 It is possible to run a nonparametric log-rank test in the Coin package based in a permutation function that can calculate an exact or estimated test and can answer the more interesting question is the Radioimmunotherapy Therapy superior for both groups, this is done stratifying or blocking (by block) with respect to tumor grading (the HSAUR book has a defunct function surv_test(Surv(time, event) ~ group | histology, data = glioma, distribution = approximate(B = 10000)) ). This is now done by `logrank_test` function, the function estimates the probability with exact distribution and approximation: 
@@ -66,6 +67,7 @@ It is possible to run a nonparametric log-rank test in the Coin package based in
 ```{r}
 logrank_test(Surv(time, event) ~ group, data = g3, distribution = "exact")
 logrank_test(Surv(time, event) ~ group, data = g4, distribution = "exact")
+
 # To answer the question whether the survival times differ for grade III patients 
 logrank_test(Surv(time, event) ~ group | histology, data = glioma, distribution = approximate(nresample = 10000L))
 # ggplot
@@ -109,10 +111,23 @@ ggtheme = theme_bw()         # Change ggplot2 theme
 
 # The German Breast Cancer Study  
 
-To study the efects of hormonal treatment with Tamoxifen in women suffering from node-positive breast cancer in a randomized clinical trial. Data from this trial and additional non-randomized patients from the German Breast Cancer Study Group 2, (GBSG2).  The complete data of seven prognostic factors of 686 women are used for prognostic modeling.  The hypothetical prognostic factors are `age`, `menopausal status`, `tumor size`, `tumor grade`, `number of positive lymph nodes`, `progesterone receptor`, `estrogen receptor`, and if `hormonal therapy` was applied. We will use the GBSG2 data from the TH.data package.  
+To study the effects of hormonal treatment with Tamoxifen in women suffering from node-positive breast cancer in a randomized clinical trial.  We will use the GBSG2 data from the TH data package. Data from this trial, non-randomized patients from the German Breast Cancer Study Group 2 (GBSG2).  The complete data of seven prognostic factors of 686 women are used for prognostic modeling.  The hypothetical prognostic factors are age, menopausal status, tumor size, tumor grade, number of positive lymph nodes, progesterone receptor, estrogen receptor, and if hormonal therapy was applied.    
+The German Breast Cancer Study Group (GBSG2) dataset studies the effects of hormone treatment on recurrence-free survival time. The event of interest is the recurrence of cancer time:    
+horTh: hormonal therapy, a factor at two levels (yes and no).  
+age: age of the patients in years.  
+menostat: menopausal status, a factor at two levels pre (premenopausal) and post (postmenopausal).  
+tsize: tumor size (in mm).  
+tgrade: tumor grade, a ordered factor at levels I < II < III.  
+pnodes: number of positive nodes.  
+progrec: progesterone receptor (in fmol).  
+estrec: estrogen receptor (in fmol).  
+time: recurrence free survival time (in days).  
+cens: censoring indicator (0- censored, 1- event).  
 
 ```{r}
 data("GBSG2", package = "TH.data")
+
+head(GBSG2)
 
 ggsurvplot(
   survfit(Surv(time, cens) ~ horTh, data = GBSG2), 
@@ -136,7 +151,7 @@ ggsurvplot(
 
 GBSG2_coxph <- coxph(Surv(time, cens) ~ ., data = GBSG2)
 summary(GBSG2_coxph)
-
+ggforest(GBSG2_coxph, data = GBSG2, main = "Hazard Ratios for GBSG2 data Cox Model")
 #
 ci <- confint(GBSG2_coxph)
 exp(cbind(coef(GBSG2_coxph), ci))["horThyes",]
@@ -148,11 +163,13 @@ The exponentiation of the Cox regression coefficient for hormonal therapy
 ```{r}
 (GBSG2_zph <- cox.zph(GBSG2_coxph))
 
+# layout(matrix(1:4, ncol=2))
 plot(GBSG2_zph, var = "age")
 plot(GBSG2_zph, var = "tsize")
-plot(GBSG2_zph, var = "pnodes")
+plot(GBSG2_zph, var = "horTh")
+plot(GBSG2_zph, var = "tgrade")
 
-# Martingale residuas are estimated by the residuals function
+# Martingale residuals are estimated by the residuals function
 layout(matrix(1:3, ncol = 3))
 res <- residuals(GBSG2_coxph)
 plot(res ~ age, data = GBSG2, ylim = c(-2.5, 1.5), pch = ".", ylab = "Martingale Residuals")
