@@ -256,6 +256,12 @@ The exponential coefficients (second column) are the multiplicative effect in th
 
 The likelihood-ratio, Wald and score chi-square statistics, at the bottom are asymptotically equivalent tests of the omnibus null hypothesis the all the $\beta$s are zero. In this case the omnibus null hypothesis is rejected.  
 
+```{r}
+ggforest(mod.Recidivism, data= Rossi, main = "Hazard Ratios for Recidivism Cox Model")
+```
+
+the forest plot helps to interpret the Hazard Ratios comparing to the reference (1) and the significance of the coefficient for that predictor.  
+
 ### The Anova function (car)  
 
 The Anova function of car package has a method for "coxph" objects, by default estimates Type-II likelihood-ratio test for the terms of the Cox model  
