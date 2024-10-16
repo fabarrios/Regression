@@ -156,7 +156,7 @@ leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
                  show_col_types = FALSE)
 names(leuk)
 
-plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2), 
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", mark.time = TRUE, lty = c(1,2), 
      legend.text = c("Placebo", "6-MP"), legend.bty = "s", ylab = "Probability", xlab = "Time weeks")
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
@@ -271,9 +271,9 @@ Anova(mod.Recidivism)
 S(mod.Recidivism)
 
 # Plots of the Cox model
-plot(survfit(mod.Recidivism), xlab="Weeks", ylab="Proportion Not Rearrested")
+plot(survfit(mod.Recidivism), mark.time = TRUE, xlab="Weeks", ylab="Proportion Not Rearrested")
 # now with better scale
-plot(survfit(mod.Recidivism), ylim = c(0.4, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
+plot(survfit(mod.Recidivism), mark.time = TRUE, ylim = c(0.4, 1), xlab="Weeks", ylab="Proportion Not Rearrested")
 
 # With ggplot using ggsurvplot
 #
