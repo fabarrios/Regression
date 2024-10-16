@@ -1,5 +1,5 @@
 ---
-title: "MLE_Intro"
+title: "Maximum Likelihood Estimation Introduction"
 author: "F.A. Barrios"
 date: '2022-05-13'
 output:
@@ -8,10 +8,21 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+library(knitr)
+library(rmdformats)
+# knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE,
+               fig_width=8,
+               fig_height=6)
 ```
 
-```{r}
+```{r, echo= FALSE}
 library(vcd)
 library(tidyverse)
 ```
@@ -21,7 +32,7 @@ The Poisson distribution with a rate parameter $\lambda = np$ is defined as :
 $$
 P(X=k) = \frac{\lambda^k e^{-\lambda}}{k!}
 $$
-and in R we can estimate it by using `dpois()`.  
+and in R we can estimate it by using `dpois()`, with $\lambda$ the average.  
 
 ## A generative model for epitope detection[^1]
 
@@ -38,44 +49,44 @@ We’re going to study the data for all 50 patients tallied at each of the 100 p
 [^1]: Notes taken from the Holmes S. & Huber W, Modern Statistics for Modern Biology, Cambridge, 2019.
 
 ```{r}
-load("DataMSforMB/e100.Rdata")
+load("~/Dropbox/GitHub/Regression/DataMSforMB/e100.Rdata")
 
 e100
-barplot(table(e100), space = 0.4, col = "chartreuse4")
+barplot(table(e100), space = 0.05, col = "chartreuse3")
 ```
 
 ## Estimating the parameter of the Poisson distribution  
 
-Can we try out different values of the parameter $\lambda$ and see which gives the best fit to our data?
+Can we try out different values of the parameter $\lambda$ and see which gives the best fit to our data, as a "manual" guessing process.
 
 ```{r}
 table(e100)
 # A Poisson distribution for parameter 3, to generate a 100 numbers
 table(rpois(100, 3))
-table(rpois(100, 4))
+table(rpois(100, 2))
 table(rpois(100, .8))
 table(rpois(100, .3))
 ```
+**Maximum Likelihood Estimation (MLE)** is a statistical method used to estimate the parameters of a probability distribution model from observed data. The key idea is to find the parameter values that maximize the likelihood of obtaining the observed data under the assumed probability model.
 
-We can estimate which parameter value maximizes our data. The parameter that maximizes our data can be estimated calculating the probability of seeing the data if the value of the Poisson parameter is `m`. Since de data comes from independent draws, the probability is the product of individual probabilities:  
+We can estimate which parameter value maximizes our data. The parameter that maximizes our data can be estimated calculating the probability of seeing the data if the value of the Poisson parameter is *m*. Since de data comes from independent draws, the probability is the product of individual probabilities:  
 $$
-P({\verb+ 58 zeroe, 34 ones, 7 twos, 1 seven+}\space |\space {\verb+data are Poisson(m)+}) \\
+P({\verb+ 58 zeroe, 34 ones, 7 twos, 1 seven+} \space | \space {\verb+data are Poisson(m)+}) \\
 = P(0)^{58} \times P(1)^{34} \times P(2)^7 \times P(7)^1
 $$
 ```{r}
 prod(dpois(c(0, 1, 2, 7), lambda = 3)^(c(58, 34, 7, 1)))
-prod(dpois(c(0, 1, 2, 7), lambda = 4)^(c(58, 34, 7, 1)))
+prod(dpois(c(0, 1, 2, 7), lambda = 1.5)^(c(58, 34, 7, 1)))
 prod(dpois(c(0, 1, 2, 7), lambda = .8)^(c(58, 34, 7, 1)))
 ```
 
-This probability as a function of the parameter `m` is the **likelihood function** of the parameter $\lambda$ and the value that maximizes it, is the maximum likelihood value.
-This likelihood function can be written as:
+This probability as a function of the parameter *m* is the *likelihood function* of the parameter $\lambda$ and the value that maximizes it, is the maximum likelihood value. This likelihood function can be written as:
 $$
-L(\lambda, x=(k_1, k_2,k_3, \dots)) = \prod_{i=1}^{100}f(k_i)
+L(\lambda, x=(k_1, k_2, k_3, \dots)) = \prod_{i=1}^{100}f(k_i)
 $$
 is mush easier work with logarithms, and avoid use multiplication of very small numbers therefore we work with the log of the likelihood function. Since the logarithm is strictly an increasing function, if there is a point where it reaches a maximum the probability will be maximum in that point.
 
-We can estimate the likelihood for different poissont parameters.
+We can estimate the likelihood for different poisson parameters.
 
 ```{r}
 loglikelihood <- function(lambda, data = e100) {
@@ -88,8 +99,8 @@ And we can compute the likelihood for any series of parameters lambda needed
 ```{r}
 lambdas <- seq(0.05, 0.95, length = 100)
 
-loglik <- vapply(lambdas, loglikelihood, numeric(1))
-plot(lambdas, loglik, type = "l", col = "red", ylab = "", lwd = 2,
+loglike <- vapply(lambdas, loglikelihood, numeric(1))
+plot(lambdas, loglike, type = "l", col = "red", ylab = "", lwd = 2,
      xlab = expression(lambda))
 
 m0 <- mean(e100)
@@ -109,7 +120,7 @@ names(gf)
 gf$par
 ```
 
-The list produced by `goodfit` have the result of the data fitted to the type of distribution selected.  In particular the `par` variable has the adjusted frequency distribution parameter $\lambda\ for the Poisson case.  
+The list produced by `goodfit` have the result of the data fitted to the type of distribution selected.  In particular the `par` variable has the adjusted frequency distribution parameter $\lambda$ for the Poisson case.  
 
 There is a formal estimation for finding that the mean maximizes the (log-)likelihood  
 
@@ -117,7 +128,7 @@ $$
 log L(\lambda, x) = \sum_{i=1}^{100} (-\lambda + k_i log\lambda - log(k_i!) )\\
                   = -100\lambda + log\lambda(\sum_{i=1}^{100}k_i) + const.
 $$
-The `*const*` term is a constant that does not depend on $\lambda$. To find the parameter $\lambda$ that maximizes this, we compute the derivative in $\lambda$ and set it to zero:
+The *const* term is a constant that does not depend on $\lambda$. To find the parameter $\lambda$ that maximizes this, we compute the derivative in $\lambda$ and set it to zero:
 $$
 \frac{d}{d\lambda}log L = -100 + \frac{1}{\lambda}\sum_{i=1}^{100} k_i = 0 \\
                      \lambda = \frac{1}{100}\sum_{i=1}^{100}k_i \\
