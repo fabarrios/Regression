@@ -25,7 +25,7 @@ opts_chunk$set(echo=TRUE,
 opts_knit$set(width=75)
 ```
 
-```{r}
+```{r, echo=FALSE}
 # All the needed libraries
 library(tidyverse)
 library(effects)
@@ -36,7 +36,7 @@ Que es la Estimación por Máxima Probabilidad --Maximum Likelihood Estimation (
 
 [^1]: Entrada en el blog the Jorge Cimentada (https://cimentadaj.github.io/blog/2020-11-26-maximum-likelihood-distilled/maximum-likelihood-distilled/)
 
-Como muchas ideas padres, esta la copié del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el "Maximum Likelihood Estimation", como lo dije al inicio vamos a llamar a "likelihood" la posibilidad, y la idea es calcular valores "posibles" de una funcion y correr un optimizador en varias iterasiones para obtener el valor más probable de dicha función. 
+Como muchas ideas padres, esta la copié, en este caso del blog de Jorge Cimentada, y es una explicación muy fácil de seguir para entender que el "Maximum Likelihood Estimation", como lo dije al inicio vamos a llamar a "likelihood" la posibilidad, y la idea es calcular valores "posibles" de una funcion y correr un optimizador en varias iterasiones para obtener el valor más probable de dicha función. 
 
 Primero se define una función llamada loglikelihood (la posibilidad logarítmica), dicha funciona tiene el valor inicial de los parámetros a optimizar, y estima un valor probable de el predictor haciendo una llamada a la distribución normal de densidad probable (`dnorm` de R, regresa la "altura" de la campana en el valor x).
 

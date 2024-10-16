@@ -1,4 +1,3 @@
-base
 knitr
 rmdformats
 tidyverse
@@ -14,3 +13,4 @@ emmeans
 carData
 car
 effects
+lubridate
