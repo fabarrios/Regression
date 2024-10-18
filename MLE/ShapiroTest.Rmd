@@ -1,0 +1,65 @@
+---
+title: "ShapiroTest"
+author: "F.A.Barrios"
+date: "2024-10-17"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, echo=FALSE}
+library(tidyverse)
+library(car)
+```
+
+## Normal distributed data
+The Shapiro-Wilk test is a statistical test used to determine whether a sample of data comes from a normally distributed population.
+
+Interpreting the Shapiro-Wilk test results involves examining the test statistic (W) and the associated p-value. A p-value less than the significance level (commonly set at 0.05) indicates a rejection of the null hypothesis, suggesting that the data *do not follow a normal distribution*. This interpretation is critical for researchers, as it guides the choice between parametric and non-parametric statistical methods. The Shapiro-Wilk test checks whether your data follows a normal distribution. Shapiro-Wilk test is often complemented by graphical methods such as Q-Q plots, which are essential for visually assessing the normality of data in R. and histograms, providing visual insights into the data distribution. These visual tools, alongside the Shapiro-Wilk test, enhance the robustness of normality assessments, allowing researchers to make more informed decisions regarding their data analysis strategies.  
+$$
+W = \frac{(\sum_{i=1}^{n}{a_i x_i})^2}{\sum_{i=1}^{n}{(x_i - \bar{x})^2}}
+$$
+
+Where:  
+  $x_{(i)}$ are the ordered sample values.  
+  $a_i$ are constants generated from the means, variances, and covariances of the order statistics of a sample from a normal distribution.  
+  $\bar{x}$ is the sample mean.  
+
+The Shapiro-Wilk estimates the W statistic that ranges from 0 to 1. Values closer to 1 indicate that the sample is more likely to be normally distributed. The test also produces a p-value, which is used to make the final decision:  
+  If p-value > α (significance level, typically 0.05), we fail to reject the null hypothesis. This suggests the data is likely normally distributed.  
+  If p-value ≤ α, we reject the null hypothesis, indicating the data significantly deviates from a normal distribution.  
+
+###Null and Alternative Hypotheses
+Shapiro-Wilk test is based on two hypotheses.  
+
+Null hypothesis: The null hypothesis states that the data is normally distributed, meaning it has no significant differences from a normal curve.  
+Alternate Hypothesis: the alternative hypothesis states that the data is not normally distributed.  
+
+Shapiro-Wilk Test Parametric	< 5000 High Accurate for small datasets Sensitive to large sample sizes Numeric	Testing if data is normally distributed
+Kolmogorov-Smirnov Test	Non-parametric	Large	Medium	Works for any distribution	Less powerful for small datasets	Numeric	Comparing data to any theoretical distribution
+Anderson-Darling Test	Non-parametric	Small to Medium	High	More weight in the tails	More complex calculation	Numeric	Testing normality, focus on tails
+Lilliefors Test	Non-parametric	Medium	Medium	Extension of KS test	Assumes mean and variance unknown	Numeric	Testing normality for unknown parameters
+Jarque-Bera Test	Parametric	Large	Low	Easy to use	Not suitable for small datasets	Numeric	Testing skewness and kurtosis for normality
+
+## Including Plots
+
+Graphical aid can be used to determine the normal distribution of the data, like Q-Q plots.
+
+```{r}
+# Load the mtcars dataset
+mtcars_data <- mtcars
+# Select the mpg variable
+mpg_data <- mtcars_data$mpg
+
+# Perform the Shapiro-Wilk test
+shapiro_test_result <- shapiro.test(mpg_data)
+# Display the results
+print(shapiro_test_result)
+
+# Q-Q plot of mpg
+qqnorm(mpg_data)
+qqline(mpg_data, col="red")
+```
+
