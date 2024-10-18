@@ -1578,6 +1578,11 @@ Using the expression for all the lines <span class="math inline">\(y_i =
 addition of all the differences with the ideal line we estimate the
 expression for the “best” slope <span class="math inline">\(\hat{\beta_{1}}\)</span> and the independent term
 <span class="math inline">\(\hat{\beta_{0}}\)</span>:</p>
+<p><span class="math display">\[\hat{\beta_{1}} = \frac{\sum_{i=1}^{n}
+(x_i - \bar{x})(y_i -\bar{y} )}{\sum_{i=1}^{n}(x_i - \bar{x})^2}
+\]</span><br />
+<span class="math display">\[\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}}
+\bar x \]</span></p>
 <p>The basic properties we know about one variable linear regression
 are:<br />
 The correlation measures the strength of the relationship between x and
@@ -1589,11 +1594,6 @@ The slope of the line is defined as the change in <span class="math inline">\(y\
 \frac{\Delta y}{\Delta x}\)</span>.<br />
 For regression use the ratio of the standard deviations such that the
 correlation is defined as <span class="math inline">\(m=r\frac{s_y}{s_x}\)</span> where <span class="math inline">\(m\)</span> is the slope, <span class="math inline">\(r\)</span> is the correlation and <span class="math inline">\(\bar{x}\)</span> and <span class="math inline">\(\bar{y}\)</span> the mean, and <span class="math inline">\(s\)</span> is the sample standard deviation.</p>
-<p><span class="math display">\[\hat{\beta_{1}} = \frac{\sum_{i=1}^{n}
-(x_i - \bar{x})(y_i -\bar{y} )}{\sum_{i=1}^{n}(x_i - \bar{x})^2}
-\]</span></p>
-<p><span class="math display">\[\hat{\beta_{0}} = \bar{y} -
-\hat{\beta_{1}} \bar x \]</span></p>
 </div>
 <div id="example-of-linear-regression" class="section level2">
 <h2>Example of linear regression</h2>

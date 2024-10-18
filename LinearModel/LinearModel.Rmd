@@ -43,7 +43,10 @@ The term "regression" was introduced by Francis Galton (Darwin's nephew) during 
 
 The general equation for the straight line is $y = mx + b_0$, this form is the "slope, intersection form". The slope is the rate of change the gives the change in $y$ for a unit change in $x$. Remember that the slope formula for two pair of points $(x_1, y_1)$ and $(x_2, y_2)$ is:  
 $$ m = \frac{(y_2 - y_1)}{(x_2 - x_1)} $$  
-Using the expression for all the lines $y_i = \beta_{0_i} + \beta_{1_i}x_i$ for a set of points $(x_i, y_i)$, finding the minimum of the addition of all the differences with the ideal line we estimate the expression for the "best" slope $\hat{\beta_{1}}$ and the independent term $\hat{\beta_{0}}$:
+Using the expression for all the lines $y_i = \beta_{0_i} + \beta_{1_i}x_i$ for a set of points $(x_i, y_i)$, finding the minimum of the addition of all the differences with the ideal line we estimate the expression for the "best" slope $\hat{\beta_{1}}$ and the independent term $\hat{\beta_{0}}$:  
+
+$$\hat{\beta_{1}} = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i -\bar{y} )}{\sum_{i=1}^{n}(x_i - \bar{x})^2} $$  
+$$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}} \bar x $$  
 
 The basic properties we know about one variable linear regression are:  
   The correlation measures the strength of the relationship between x and y (see this shiny app for an excellent visual overview of correlations).  
@@ -52,9 +55,6 @@ The basic properties we know about one variable linear regression are:
   The slope of the line is defined as the change in $y$ over the change in $x$; $m= \frac{\Delta y}{\Delta x}$.  
 For regression use the ratio of the standard deviations such that the correlation is defined as $m=r\frac{s_y}{s_x}$ where $m$ is the slope, $r$ is the correlation and $\bar{x}$ and $\bar{y}$ the mean, and $s$ is the sample standard deviation.  
 
-$$\hat{\beta_{1}} = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i -\bar{y} )}{\sum_{i=1}^{n}(x_i - \bar{x})^2} $$
-
-$$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}} \bar x $$  
 
 ## Example of linear regression  
 
