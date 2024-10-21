@@ -136,6 +136,8 @@ $$
 $$
 
 This is a statistical approach, starting from the data to infer the model parameter(s): this is statistical estimation of a parameter from data.  
+There is a very good page by J. Bryer with a visual explanation to understand further MLE [here](https://htmlpreview.github.io/?https://github.com/jbryer/visualMLE/blob/master/doc/mle.html)
+
 
 ## Binomial distribution and maximum likelihood  
 
