@@ -1,5 +1,8 @@
 # New example for factor analysis
 # first attempt
+library(tidyverse)
+library(psych)
+library(psychTools)
 
 # using the Wisconsin Breast Cancer dataset from the UCI Machine learning repository
 wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
@@ -20,9 +23,15 @@ wdbc %>%
   plot()
 
 # Now for selectin only the data without the ID and group
-wdbc_pca <- wdbc %>%
-  select(-1, -2) %>%
-  prcomp(center = TRUE, scale = TRUE)
+wdbc_all <- wdbc %>% select(-1, -2)
+
+wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
 
 # starting with latent variable exploratory factor analysis (EFA)
-iclust(wdbc_pca, nclusters=3)
+principal(wdbc_all, 2, rotate = "varimax", cor = "cor", method = "regression")
+fa(wdbc_all, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+# fa(wdbc_all, 2, rotate = "varimax", fm= "ml")
+iclust(wdbc_all, nclusters=2)
+
+fa(wdbc_mean, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+iclust(wdbc_mean, nclusters=2)
