@@ -1,11 +1,46 @@
-# New example for factor analysis
-# first attempt
+---
+title: "Factor Analysis"
+author: "F.A. Barrios, Ph.D."
+date: "2024-10-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Factor analysis introduction. 
+
+Factor analysis operates on the principle that observed variables are influenced by unobserved, latent factors. The main objectives of this technique include:  
+	1.	Identifying the number of underlying factors.  
+	2.	Determining the relationship between variables and factors.  
+	3.	Interpreting the meaning of these factors.  
+	4.	Quantifying how well each variable represents a factor.  
+
+There are two primary types of factor analysis:  
+Exploratory Factor Analysis (EFA): Used to uncover the underlying structure of a large set of variables without preconceived notions about the relationships.  
+Confirmatory Factor Analysis (CFA): Used to test specific hypotheses about the relationship between observed variables and underlying factors.  
+
+```{r echo = FALSE}
+# Example for factor analysis
+# loading libraries
+
 library(tidyverse)
 library(psych)
 library(psychTools)
 library(factoextra)
+```
 
-# using the Wisconsin Breast Cancer dataset from the UCI Machine learning repository
+## How to do a Factor Analysis. 
+
+The factor analysis process typically involves the following steps:  
+	1.	Data Collection: Gather a large dataset with multiple variables.  
+	2.	Factor Extraction: Use methods like Maximum Likelihood (ML) or Principal Axis Factoring (PAF) to extract factors.  
+	3.	Determining Factor Numbers: Use techniques like scree plots to decide how many factors to retain.  
+	4.	Factor Rotation: Apply rotation methods (e.g., Varimax) to improve interpretability of factors.  
+	5.	Factor Loading Analysis: Examine the strength of relationships between variables and factors.  
+
+```{r}
 wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
                  col_names = FALSE, show_col_types = FALSE)
 
@@ -23,9 +58,6 @@ wdbc_all <- wdbc %>% select(-1, -2)
 wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
 
 # First look at the variables in a correlation matrix
-# wdbc_mean %>%
-#  select(radius_mean:fractal_dimension_mean) %>%
-#  plot()
 pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
 
 # starting with latent variable exploratory factor analysis (EFA)
@@ -44,15 +76,6 @@ biplot(pca_wdbc_4c)
 fa_wdbc_4c <- fa(wdbc_all, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
 biplot(fa_wdbc_4c)
 
-# pca_wdbc_4c_loadings_df <- as_tibble(pca_wdbc_4c$loadings[])
-# pca_wdbc_4c_loadings_df$variable <- rownames(pca_wdbc_4c_loadings_df)
-# pca_wdbc_4c_loadings_long <- pivot_longer(pca_wdbc_4c_loadings_df, -variable, names_to = "component", values_to = "loading")
-
-# ggplot(pca_wdbc_4c_loadings_long, aes(x = variable, y = loading, fill = component)) +
-#  geom_bar(stat = "identity", position = "dodge") +
-#  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
-#  labs(title = "Principal Component Loadings", x = "Variables", y = "Loading")
-
 pca_wdbc_2c <- principal(wdbc_all, 2, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
 biplot(pca_wdbc_2c)
 
@@ -67,3 +90,7 @@ ggplot(pca_wdbc_2c_loadings_long, aes(x = variable, y = loading, fill = componen
 
 fa(wdbc_mean, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
 iclust(wdbc_mean, nclusters=2)
+
+
+```
+
