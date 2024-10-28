@@ -34,7 +34,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 2. [Survival Analysis HSAUR example](https://fabarrios.github.io/Regression/Survival/Survival.html)
 
 ### VI Clustering (Jeziorski)  
-1. [Principal Component Analysis](https://fabarrios.github.io/Regression/Cluster/pca.html)  
+1. [Principal Component Analysis](https://fabarrios.github.io/Regression/Cluster/pcaNew.html)  
 2. [Clustering](https://fabarrios.github.io/Regression/Cluster/clustering.html)  
 
 ### VII Maximum Likelihood Estimation (Barrios)  
