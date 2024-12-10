@@ -8,8 +8,9 @@ output: html_document
 ```{r setup, include=FALSE, echo=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(psych)
+library(psychTools)
 library(factoextra)
-library(ggfortify)
 ```
 
 Principal component analysis (PCA) applies a mathematical transformation to a dataset with the intention of accounting for as much of the variation in the data as possible using a reduced number of dimensions, or principal components.  The first principal component is a dimension that accounts for a maximal portion of the total variation in the dataset, and each successive principal component accounts for a maximal part of the remaining variation while being uncorrelated with (orthogonal to) previous components.  
@@ -19,25 +20,40 @@ The goal of PCA is to take variables that are likely correlated with each other 
 The source of the data we will use is the Wisconsin Breast Cancer dataset from the UCI Machine Learning repository.  The following code chunk will read in the data and assign the correct column names.  
 
 ```{r, message=FALSE}
-wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data", col_names = FALSE)
-features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+# using the Wisconsin Breast Cancer dataset from the UCI Machine learning repository
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
+                 col_names = FALSE, show_col_types = FALSE)
+
+# The file comes without colume names, we will use features and qualifications.
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity", 
               "concave_points", "symmetry", "fractal_dimension")
 names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
                  paste0(features,"_worst"))
+
 ```
 
 We can use one of the overview functions like the tidyverse function `glimpse()` to view the structure of the data.  
 
 ```{r}
-glimpse(wdbc)
+# The data is used at Mike's PCA example.
+# We will try the factor analysis subroutines with psych package
+
+# Now for selection only the data without the ID and group
+wdbc_all <- wdbc %>% select(-1, -2)
+wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
 ```
 
 The dataset contains the mean, standard error (se), and maximum value (worst) for each of ten separate measures of breast tumor morphology.  Although we appear to have 30 independent variables, in fact many of the variables are going to be highly correlated.  We can get an overall idea using the `plot()` function in base R.  
 
 ```{r}
-wdbc %>%
-  select(radius_mean:fractal_dimension_mean) %>%
-  plot()
+wdbc_scale <- scale(wdbc_all)
+
+# First look at the variables in a correlation matrix
+# wdbc_mean %>%
+#  select(radius_mean:fractal_dimension_mean) %>%
+#  plot()
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+
 ```
 
 It is no surprise that some of the variables are nearly perfectly correlated, like radius, perimeter, and area, all measures of size.  To see how PCA works, we will perform a PCA on only two variables, choosing two that are not as strongly correlated, `perimeter_mean` and `symmetry_mean`.  
@@ -47,124 +63,41 @@ wdbc %>%
   ggplot(aes(x = perimeter_mean, y = symmetry_mean)) +
   geom_point(pch = 1) +
   geom_smooth(method = "lm", color = "blue", se = FALSE)
+# starting with latent variable exploratory factor analysis (EFA)
+# the PCS for all
+# principal(wdbc_all, 30, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
+
+pca_wdbc <- principal(wdbc_scale, 30, rotate = "varimax", scores = TRUE, use ="pairwise", cor = "cor", covar = TRUE, method = "regression")
+plot(pca_wdbc$values, type = "b", ylab = "Eigenvalues", xlab = "Component Number")
+
+scores_pca_wdbc <- pca_wdbc$scores
+text(scores_pca_wdbc[,1], scores_pca_wdbc[,2], labels=rownames(scores_pca_wdbc), cex=0.7)
 ```
 
-Both `prcomp()` and `princomp()` are functions that generate a principal component analysis; we will use `prcomp()` with the subset of the dataframe.  Because the points are defined by only two variables, only two principal components are needed to explain all of the variation.  A summary of the results can be viewed using `summary()`.  
+Both `principal()` and `fa()` are functions from the `psych` package that generate a principal component analysis and a factor analisis on the data; we will use `principal()` with the subset of the dataframe. We will choose four factors.  A summary of the results can be viewed using `summary()`.  
 
 ```{r}
-wdbc_pca_2 <- wdbc %>%
-      select(perimeter_mean, symmetry_mean) %>%
-      prcomp(center = TRUE, scale = TRUE)
-summary(wdbc_pca_2)
+pca_wdbc_4c <- principal(wdbc_scale, 4, rotate = "varimax", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_4c)
+pca_wdbc_4c
+summary(pca_wdbc_4c)
+
+iclust(wdbc_scale, nclusters = 4)
+# 
+fa_wdbc_4c <- fa(wdbc_scale, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
+fa_wdbc_4c
+
+pca_wdbc_4c_loadings_df <- as_tibble(pca_wdbc_4c$loadings[])
+pca_wdbc_4c_loadings_df$variable <- rownames(pca_wdbc_4c_loadings_df)
+pca_wdbc_4c_loadings_long <- pivot_longer(pca_wdbc_4c_loadings_df, -variable, names_to = "component", values_to = "loading")
+# boxplot(loading~component, data=pca_wdbc_4c_loadings_long)
+
+ggplot(pca_wdbc_4c_loadings_long, aes(x = component, y = loading)) +
+  geom_boxplot() + 
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+
+
+
 ```
-The object created by `prcomp()` is a list containing vectors and matrices.  The principal components generated can be extracted by subsetting the `x` element.  These are the same data points as before, but now centered, scaled, and rotated.  
-
-```{r}
-wdbc_pca_2$x %>% 
-      as_tibble() %>%
-      ggplot(aes(x = PC1, y = PC2)) +
-      geom_point(pch = 1, alpha = 0.5) +
-      xlim(-5, 5) +
-      ylim(-5, 5)
-```
-
-`autoplot` from the `ggfortify` package allows the scaled principal components (eigenvectors) to be visualized.  
-```{r, warning=FALSE}
-autoplot(prcomp(select(wdbc, perimeter_mean, symmetry_mean)), data = wdbc, loadings = TRUE)
-```
-
-Executing PCA on a two-variable dataset offers only trivial information.  However, when a large number of variables are to be analyzed, PCA simplifies the analysis by reducing the number of dimensions to be considered.  The full `wdbc` dataset with 30 variables can be used to illustrate this principle.
-
-First, the data will be divided into training and testing sets with an approximate split of 75/25.
-
-```{r}
-set.seed(123)
-index <- sample(c(TRUE, FALSE), nrow(wdbc), replace = TRUE, prob = c(0.75, 0.25))
-wdbc_train <- wdbc[index, ]
-wdbc_test <- wdbc[!index, ]
-```
-
-
-PCA is executed on a matrix containing only numeric data, so the first two columns `id` and `diagnosis` are excluded.  
-
-```{r}
-wdbc_pca_train <- wdbc_train %>%
-      select(-1, -2) %>%
-      prcomp(center = TRUE, scale = TRUE)
-summary(wdbc_pca_train)
-```
-
-For 30 variables, 30 principal components are generated.  Nevertheless, as is evident from the cumulative proportion of variance, the first two components account for 63% of the variance and the first five account for nearly 85%.  The importance of each successive principal component can be viewed using a scree plot.  
-
-```{r}
-fviz_eig(wdbc_pca_train)
-```
-
-As before, the first two principal components can be graphed on a standard x-y plot.  
-
-```{r}
-wdbc_pca_train$x %>% 
-      as_tibble() %>%
-      ggplot(aes(x = PC1, y = PC2)) +
-      geom_point(pch = 1, alpha = 0.5)
-```
-
-Diagnostic information about the tumors is also provided and can be mapped on the graph to see if PCA has been useful in distinguishing patterns in the data.  The `factoextra` package offers some attractive visualization options.  B = benign, M = malignant  
-
-```{r}
-fviz_pca_ind(wdbc_pca_train, geom.ind = "point", pointshape = 21, 
-             pointsize = 2, 
-             fill.ind = wdbc_train$diagnosis, 
-             col.ind = "black", 
-             palette = "jco", 
-             addEllipses = TRUE,
-             label = "var",
-             col.var = "black",
-             repel = TRUE,
-             legend.title = "Diagnosis") +
-  ggtitle("2D PCA-plot from 30 feature dataset") +
-  theme(plot.title = element_text(hjust = 0.5))
-```
-
-This graph shows the power of PCA.  Patterns in the dataset become evident when only two dimensions are viewed.
-
-We can see how much each variable contributes to the two principal components.
-
-```{r}
-# Contributions of variables to PC1
-fviz_contrib(wdbc_pca_train, choice = "var", axes = 1, top = 10)
-
-# Contributions of variables to PC2
-fviz_contrib(wdbc_pca_train, choice = "var", axes = 2, top = 10)
-```
-
-To determine whether the components identified have predictive power, we can use them to examine the test data.
-
-```{r}
-wdbc_pca_test <- predict(wdbc_pca_train, newdata = wdbc_test)[, 1:2]
-wdbc_pca_test_df <- wdbc_pca_test %>% bind_cols(select(wdbc_test, diagnosis))
-wdbc_pca_test_M <- wdbc_pca_test_df %>%
-      filter(diagnosis == "M") %>%
-      select(PC1, PC2) %>%
-      as.matrix()
-wdbc_pca_test_B <- wdbc_pca_test_df %>%
-      filter(diagnosis == "B") %>%
-      select(PC1, PC2) %>%
-      as.matrix()
-
-p <- fviz_pca_ind(wdbc_pca_train, geom.ind = "point", pointshape = 1, 
-             pointsize = 2, 
-             col.ind = wdbc_train$diagnosis, 
-             palette = "grey", 
-             addEllipses = TRUE,
-             label = "var",
-             col.var = "black",
-             repel = TRUE,
-             legend.title = "Diagnosis") +
-  ggtitle("2D PCA-plot from 30 feature dataset") +
-  theme(plot.title = element_text(hjust = 0.5))
-
-fviz_add(p, wdbc_pca_test_M, color = "orange", addlabel = FALSE) %>%
-      fviz_add(wdbc_pca_test_B, color = "blue", addlabel = FALSE)
-```
-
+The object created by `fa()` is a list containing vectors and matrices.  The main factos components generated can be extracted by subsetting the `x` element.  These are the same data points as before, but now centered, scaled, and rotated.
