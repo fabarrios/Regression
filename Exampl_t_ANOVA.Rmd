@@ -26,7 +26,11 @@ opts_knit$set(width=80)
 
 Examples of problems taken from chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD). Also we will present some exercises from Daniel's book too, and this will cover a refresher for t-test and ANOVA (assuming parametric distributions).
 
-## Introduction
+## Introduction. 
+To execute two sample comparisons the simplest is the best, as always we must apply Occam's razor. So the classical tests to estimate comparisons between tow samples are some of the most frequently-used kinds of analysis and we have the R functions:  
+Comparing two variables Fisher's F test (var.test)  
+Comparing two sample menas with normal errors; Student's t test (t.test)  
+
 We will cover some basic tools for assessing the statistical significance of differences between the average values of a continuous outcome across two or more samples following parametric statistics are the t-Test and ANOVA.
 The example presented in (chapter 3 Table 3) of the t-Test of differences in glucose average combined with exercise for the women that are not diabetic in the HERS data set. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a **boxplot** gives a good amount of information about a numerical variable:  
 **Centering** described by the median.  
