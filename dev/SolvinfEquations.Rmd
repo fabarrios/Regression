@@ -1,0 +1,47 @@
+---
+title: "SistemasEquaciones"
+author: "F.A. Barrios, Ph.D."
+date: "2025-09-02"
+output:
+  rmdformats::robobook:
+    highlight: kate
+  pdf_document:
+description: "to prepare Class2025 presentations"
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+
+## Global options
+options(max.print="80")
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE)
+opts_knit$set(width=80)
+```
+
+# Solving systems of linear equations
+
+In R there is a function to solve sistems of linear  equations: `solve()`. It is used to solve linear algebraic equations of 
+the form `a %*% x = b`, with *a* the coefficient matrix, *x* the vector or matrix of unknown variables and *b* is the vector or 
+matrix of constant terms, `solve()` takes two arguments *a* and *b*.
+
+$$ 
+
+```{r}
+
+a <- matrix(c(2, 3, 4, -2), nrow = 2, byrow = "TRUE")
+b <- c(10, 6)
+
+solution <- solve(a, b)
+fractional(solution)
+```
+
+## Other examples
+
+You can also embed plots, for example:
