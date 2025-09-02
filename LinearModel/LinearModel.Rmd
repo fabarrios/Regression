@@ -6,7 +6,7 @@ output:
   rmdformats::robobook:
     highlight: kate
   pdf_document: default
-description: "to prepare Class2020 presentations"
+description: "to prepare Class2025 presentations"
 ---
 
 
@@ -48,11 +48,13 @@ Using the expression for all the lines $y_i = \beta_{0_i} + \beta_{1_i}x_i$ for 
 $$\hat{\beta_{1}} = \frac{\sum_{i=1}^{n} (x_i - \bar{x})(y_i -\bar{y} )}{\sum_{i=1}^{n}(x_i - \bar{x})^2} $$  
 $$\hat{\beta_{0}} = \bar{y} - \hat{\beta_{1}} \bar x $$  
 
-The basic properties we know about one variable linear regression are:  
-  The correlation measures the strength of the relationship between x and y (see this shiny app for an excellent visual overview of correlations).  
-  The correlation ranges between -1 and 1.  
-  The mean of x and y must fall on the line.  
-  The slope of the line is defined as the change in $y$ over the change in $x$; $m= \frac{\Delta y}{\Delta x}$.  
+The basic properties we know about one variable linear regression are:   
+
+- The correlation measures the strength of the relationship between x and y (see this shiny app for an excellent visual overview of correlations).  
+- The correlation ranges between -1 and 1.  
+- The mean of x and y must fall on the line.  
+- The slope of the line is defined as the change in $y$ over the change in $x$; $m= \frac{\Delta y}{\Delta x}$.   
+
 For regression use the ratio of the standard deviations such that the correlation is defined as $m=r\frac{s_y}{s_x}$ where $m$ is the slope, $r$ is the correlation and $\bar{x}$ and $\bar{y}$ the mean, and $s$ is the sample standard deviation.  
 
 
