@@ -28,8 +28,9 @@ Examples of problems taken from chapter 3 (Vittinghoff's book http://www.biostat
 
 ## Introduction. 
 To execute two sample comparisons the simplest is the best, as always we must apply Occam's razor. So the classical tests to estimate comparisons between tow samples are some of the most frequently-used kinds of analysis and we have the R functions:  
-Comparing two variables Fisher's F test (var.test)  
-Comparing two sample menas with normal errors; Student's t test (t.test)  
+- Comparing two variables Fisher's F test (`var.test`)  
+- Comparing two sample means with normal errors; Student's t test (`t.test`)  
+- Comparing two sample means with non-normal errors; Wilcoxon's test (`wilcoxon.test`)
 
 We will cover some basic tools for assessing the statistical significance of differences between the average values of a continuous outcome across two or more samples following parametric statistics are the t-Test and ANOVA.
 The example presented in (chapter 3 Table 3) of the t-Test of differences in glucose average combined with exercise for the women that are not diabetic in the HERS data set. These examples are to revisit some t-test R estimations and t-test function in R. And to remember that a **boxplot** gives a good amount of information about a numerical variable:  
@@ -54,18 +55,21 @@ HERS <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/
 names(HERS)
 summary(HERS)
 boxplot(glucose ~ diabetes, data=HERS)
+``` 
 
+Before we can compare two sample means we need to test whether the sample variances are significantly different. The test statistic to compare two variances, you divide the larger variance by the smaller varinace, this test is called the FIsher's F test, id the variances are similar the ratio will be close to 1.  How do we know if the F value is low or large? We look for the critical value of the Fisher's F.  The test null hypothesis is build is assuming 
+
+```{r, echo= TRUE}
 var.test(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], 
        data=HERS, 
        alternative="two.sided")
+```
+The variance ratio, F, is close to oneand the p value is  and we do not reject the null hypothesis, this variances are very close to each other.
 
+```{r, echo= TRUE}
 # Some graphical description of the glucose state
 boxplot(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], data=HERS)
-
-t.test(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], 
-       data=HERS, alternative="two.sided", mu=0, 
-       paired=FALSE, 
-       var.equal=TRUE)
+t.test(glucose[HERS$diabetes == "no"] ~ exercise[HERS$diabetes == "no"], data=HERS, alternative="two.sided", mu=0, var.equal=TRUE)
 ```
 
 ## t-test examles
