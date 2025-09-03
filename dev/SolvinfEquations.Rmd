@@ -1,5 +1,5 @@
 ---
-title: "SistemasEquaciones"
+title: "Linear equations"
 author: "F.A. Barrios, Ph.D."
 date: "2025-09-02"
 output:
@@ -12,7 +12,7 @@ description: "to prepare Class2025 presentations"
 ```{r setup, include=FALSE}
 library(knitr)
 library(rmdformats)
-
+library(fractional)
 ## Global options
 options(max.print="80")
 opts_chunk$set(echo=TRUE,
@@ -31,7 +31,12 @@ In R there is a function to solve sistems of linear  equations: `solve()`. It is
 the form `a %*% x = b`, with *a* the coefficient matrix, *x* the vector or matrix of unknown variables and *b* is the vector or 
 matrix of constant terms, `solve()` takes two arguments *a* and *b*.
 
-$$ 
+$$  \left \{ \begin{array}{ll}
+            2x + 3y  = 10 \\
+            4x - 2y  = 6
+            \end{array}
+    \right .
+$$
 
 ```{r}
 
