@@ -12,7 +12,6 @@ description: "to prepare Class2025 presentations"
 ```{r setup, include=FALSE}
 library(knitr)
 library(rmdformats)
-library(fractional)
 ## Global options
 options(max.print="80")
 opts_chunk$set(echo=TRUE,
@@ -25,11 +24,9 @@ opts_chunk$set(echo=TRUE,
 opts_knit$set(width=80)
 ```
 
-# Solving systems of linear equations
+## Solving systems of linear equations
 
-In R there is a function to solve sistems of linear  equations: `solve()`. It is used to solve linear algebraic equations of 
-the form `a %*% x = b`, with *a* the coefficient matrix, *x* the vector or matrix of unknown variables and *b* is the vector or 
-matrix of constant terms, `solve()` takes two arguments *a* and *b*.
+In R there is a function to solve sistems of linear equations: `solve()`. It is used to solve linear algebraic equations of the form `a %*% x = b`, with *a* the coefficient matrix, *x* the vector or matrix of unknown variables and *b* is the vector or matrix of constant terms, `solve()` takes two arguments *a* and *b*.
 
 $$  \left \{ \begin{array}{ll}
             2x + 3y  = 10 \\
@@ -39,6 +36,8 @@ $$  \left \{ \begin{array}{ll}
 $$
 
 ```{r}
+# We want to write the resuts as fractions or integer numbers.
+library(fractional)
 
 a <- matrix(c(2, 3, 4, -2), nrow = 2, byrow = "TRUE")
 b <- c(10, 6)
@@ -49,4 +48,37 @@ fractional(solution)
 
 ## Other examples
 
-You can also embed plots, for example:
+We will solve other systems of equations with the same process.  
+Example 2:  
+$$  \left \{ \begin{array}{ll}
+            3x + 2y - z = 7 \\
+             x - y + 2z = -1 \\
+            2x + 3y + 4z = 12
+            \end{array}
+    \right .
+$$
+```{r}
+# First define the matrix for the equation
+a2 <- matrix( c(3, 2, -1, 1, -1, 2, 2, 3, 4), nrow = 3, byrow = TRUE)
+b2 <- c(7, -1, 12)
+sol_exa2 <- solve(a2, b2)
+sol_exa2
+fractional(sol_exa2)
+```
+
+Example 3:  
+$$  \left \{ \begin{array}{ll}
+            x + y + z = 6 \\
+            x - y + 2z = 5 \\
+            x - y - 3z = 10
+            \end{array}
+    \right .
+$$
+
+```{r}
+# for exmple 3 define the matrix for the equation
+a3 <- matrix( c(1, 1, 1, 1, -1, 2, 1, -1, -3), nrow = 3, byrow = TRUE)
+b3 <- c(6, 5, 10)
+sol_exa3 <- solve(a3, b3)
+sol_exa3
+```

@@ -12,59 +12,70 @@ output:
 knitr::opts_chunk$set(cache = TRUE)
 ```
 
-```{r}
-library(tidyverse)
-library(multcomp)
-library(HSAUR2)
-library(wordcloud)
-```
-
 # More examples Multiple linear model with interactions  
 
-In general in R we can write the interaction term as the product of the regresors that we are studying the interaction: $variable_1:varible_2$ for a multiple linear model with two regressors and interaction the equation looks like:  
+A simple linear model is where $Y_i$ represents the value of what is generally known as the *response variable* on the $ith$ individual and that $x_i$ represents the individual's values on what is most often called an *explanatory variable* (or regressors). In general in R we can write the interaction term as the product of the regressors that we are studying and that we are interested in their interaction: $x_i:x_j$. For a multiple linear model with two regressors and interactions for one individual, the equation looks like:  
 
 $$ \tt Y=\beta_0 + \beta_1 x_1 + \beta_2 x_2 + \beta_3 x_1 x_2 $$  
 
-## HSAUR2 example  
+## HSAUR2 example of multiple linear regression   
 
-This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the clouds data clouds from HSAUR books.  
+Weather modification, of cloud seeding, is the treatment of individual clouds of storm systems with various organic or inorganic materials in the hope of achieving an increase in rainfall.  For the following example these variables were measured:  
+
+**seeding** a factor indicating whether seeding action occurred (yes or no)  
+**time** number of days after the first day of the experiment  
+**sne** measured suitability criterion, denoted *S-Ne*  
+**cloudcover** the percentage of the cloud cover in the experimental area, measured using radar  
+**prewetness** the total rainfall in the target area one hour before seeding (in cubic meters $\times 10^7$). 
+**echomotion** a factor showing wether the the radar echo was moving or stationary  
+**rainfall** the amount of rain in the taget area in cubic meters $\times10^7$ 
+
+
+This are only additive linear terms to explain a random response variable $Y$ and the adjusted parameters are the $\beta_i$ of the independent variables or predictors. These variables are random too. They can be numbers and factors. Example of multiple linear regression using the *clouds data* in the database clouds from HSAUR books.  
 
 ```{r}
-data(clouds)
+data("clouds", package = "HSAUR2")
 head(clouds)
 
 # looking the data for rainfall
-boxplot(rainfall ~ seeding, data = clouds)
-# boxplot(rainfall ~ echomotion, data=clouds)
 layout(matrix(1:2, ncol = 2))
-boxplot(rainfall ~ seeding, data = clouds, ylab = "Rainfall", xlab = "Seeding")
-boxplot(rainfall ~ echomotion, data = clouds, ylab = "Rainfall", xlab = "Echo Motion")
+boxplot(rainfall ~ seeding, ylab = "Rainfall", xlab = "Seeding", data = clouds)
+boxplot(rainfall ~ echomotion, ylab = "Rainfall", xlab = "Echo Motion", data = clouds)
+
 # 
 layout(matrix(1:4, nrow = 2))
 plot(rainfall ~ time, data = clouds)
 plot(rainfall ~ cloudcover, data = clouds)
 plot(rainfall ~ sne, data = clouds, xlab="S-Ne criterion")
 plot(rainfall ~ prewetness, data = clouds)
+```
 
-#
+To estimate a multiple linear model with interactions is estimated by defining the variable `clouds_formula` and passing it to the `lm` function. the results of the model fitting is an object of class `lm` for which we use `summary()` to list the resulting model parameters.
+```{r}
 clouds_formula <- rainfall ~ seeding + seeding:(sne+cloudcover+prewetness+echomotion) + time
-Xstar <- model.matrix(clouds_formula, data = clouds)
-attr(Xstar, "contrasts")
 clouds_lm <- lm(clouds_formula, data = clouds)
 summary(clouds_lm)
 
+Xstar <- model.matrix(clouds_formula, data = clouds)
+attr(Xstar, "contrasts")
 layout(matrix(1:1, nrow = 1))
 # to list the betas* with the:
 betaStar <- coef(clouds_lm)
 betaStar
+```
 
-# to understand the relation of seeding and sne
+An important plot that will help understand the interaction of *seeding* with *S-Ne criterion* and if its interaction affects rainfall is the following. 
+
+```{r}
 psymb <- as.numeric(clouds$seeding)
-plot(rainfall ~ sne, data = clouds, pch = psymb, xlab = "S-Ne criterion")
-abline(lm(rainfall ~ sne, data = clouds, subset = seeding == "no"))
-abline(lm(rainfall ~ sne, data = clouds, subset = seeding == "yes"), lty = 2)
+# because seeding in yes, no
+
+plot(rainfall ~ sne, pch = psymb, xlab = "S-Ne criterion", data = clouds)
+abline(lm(rainfall ~ sne, subset = seeding == "no", data = clouds))
+abline(lm(rainfall ~ sne, subset = seeding == "yes", data = clouds), lty = 2)
 legend("topright", legend = c("No seeding", "Seeding"), pch = 1:2, lty = 1:2, bty = "n")
 #
+
 # and the Covariant matrix Cov(beta*) with:
 VbetaStar <- vcov(clouds_lm)
 
@@ -80,3 +91,15 @@ textplot(clouds_fitted, clouds_resid, words = rownames(clouds), new = FALSE)
 qqnorm(clouds_resid, ylab = "Residuals")
 qqline(clouds_resid)
 ```
+These plots are estimated in R directly by applying the `plot` command to the fitted model, in this case `plot(clouds_lm)`. 
+
+```{r}
+plot(clouds_lm)
+```
+
+An important diagnostic for a linear model is the Cook's distance $D_k$ This statistic is defined as. 
+$$
+D_k = \frac{1}{(q-1)\hat{\sigma}^2}\sum_{i=1}^n(\hat{y}_{i(k)} - y_i)^2 
+$$
+where observations that have an undue influence on the estimated regression coefficients have a relative large Cook's distance.
+
