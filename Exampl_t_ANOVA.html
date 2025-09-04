@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios Instituto de Neurobiología UNAM " />
     
-        <meta name="date" content="2025-09-01" />
+        <meta name="date" content="2025-09-04" />
     
     <title>t-Test and Anova</title>
 
@@ -1533,7 +1533,7 @@ margin-left: 0 !important;
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios<br><small>Instituto de Neurobiología
 UNAM<br></small></span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> <small>2025-09-01</small></span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> <small>2025-09-04</small></span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -1567,7 +1567,7 @@ distributions).</p>
 <h2>Introduction.</h2>
 <p>To execute two sample comparisons the simplest is the best, as always
 we must apply Occam’s razor. So the classical tests to estimate
-comparisons between tow samples are some of the most frequently-used
+comparisons between two samples are some of the most frequently-used
 kinds of analysis and we have the R functions:</p>
 <ul>
 <li>Comparing two variables Fisher’s F test
@@ -1618,11 +1618,10 @@ that between the median and the 25th percentile. Likewise,
 right-skewness will be indicated if the upper whisker is longer than the
 lower whisker or if there are more outliers in the upper range.</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># To load the CRAN libraries used</span></span>
-<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a></span>
-<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
-<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
-<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(car)</span>
-<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(multcomp)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="fu">library</span>(car)</span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">library</span>(emmeans)</span></code></pre></div>
 <div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a>HERS <span class="ot">&lt;-</span> <span class="fu">read_csv</span>(<span class="st">&quot;https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap3/hersdata.csv&quot;</span>, <span class="at">show_col_types =</span> <span class="cn">FALSE</span>)</span>
 <span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a><span class="co"># Loading the HERS database in HERS variable</span></span>
 <span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="fu">names</span>(HERS)</span></code></pre></div>

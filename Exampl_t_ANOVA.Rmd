@@ -27,7 +27,7 @@ opts_knit$set(width=80)
 Examples of problems taken from chapter 3 (Vittinghoff's book http://www.biostat.ucsf.edu/vgsm) using data from the heart and estrogen/progestin study (HERS), a clinical trial of hormone therapy (HT) for prevention of recurrent heart attacks and death among 2,763 post-menopausal women with existing coronary heart disease (CHD). Also we will present some exercises from Daniel's book too, and this will cover a refresher for t-test and ANOVA (assuming parametric distributions).
 
 ## Introduction. 
-To execute two sample comparisons the simplest is the best, as always we must apply Occam's razor. So the classical tests to estimate comparisons between tow samples are some of the most frequently-used kinds of analysis and we have the R functions:  
+To execute two sample comparisons the simplest is the best, as always we must apply Occam's razor. So the classical tests to estimate comparisons between two samples are some of the most frequently-used kinds of analysis and we have the R functions:  
 
 - Comparing two variables Fisher's F test (`var.test`)  
 - Comparing two sample means with normal errors Student's t test (`t.test`)   
@@ -49,7 +49,6 @@ If the median (the bold line) is located toward the bottom of the box, then the 
 
 ```{r}
 # To load the CRAN libraries used
-
 library(multcomp)
 library(tidyverse)
 library(car)
