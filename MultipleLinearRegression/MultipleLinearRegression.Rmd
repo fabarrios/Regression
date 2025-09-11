@@ -21,15 +21,29 @@ library(tidyverse)
 library(multcomp)
 library(emmeans)
 ```
+# The HERS database
+
+The **Heart and Estrogen/progestin Replacement Study (HERS)** is a randomized, double-blind, placebo-controlled trial designed to test the efficacy and safety of estrogen plus progestin therapy for prevention of recurrent **coronary heart disease (CHD)** events in women. The participants are postmenopausal women with a uterus and with CHD as evidenced by prior myocardial infarction, coronary artery bypass graft surgery, percutaneous transluminal coronary angioplasty, or other mechanical revascularization or at least 50% occlusion of a major coronary artery. Between February 1993 and September 1994, 20 HERS centers recruited and randomized 2763 women.  The main measured variables in the HERS database, among women with established heart disease, include age, diabetes, smoking status, alcohol consumption (drinkany), exercise, weight, BMI, HDL, and LDL levels, as well as race/ethnicity (nonwhite).  
+
+-  age, weight, BMI, HDL, LDL and other lab or exam values are typically continuous variables measured at baseline or during follow-up .
+-  nonwhite and diabetes are coded as indicator (dummy/binary) variables .
+-  smoking, drinkany, and exercise refer to lifestyle-related factors and are binary (yes/no) .
+-  medcond is the primary outcome variable, representing the occurrence of a medical condition in CHD .
+
+In the HERS database, when 10 is added as a suffix to a variable name, it signifies that the variable represents data measured or recorded at Year 10 of the study, or the 10-year follow-up visit.  
+
+The “10” suffix designates that the variable is a repeated measure collected specifically at the decade mark in longitudinal follow-up.3.  For example, “weight10” is body weight measured at the 10-year follow-up, as opposed to “weight” measured at baseline.  And the “1” suffix designates measurements taken at the 1-year follow-up period within the longitudinal study framework.  
 
 ```{r}
 
 # Loading data
-# ~/Dropbox/GitHub/Regression
-hers <- read_csv("DataRegressBook/Chap3/hersdata.csv", show_col_types = FALSE)
+hers <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/hersdata.csv", show_col_types = FALSE)
 
+names(hers)
+  
 # hers data structure
 hers_nodi <- filter(hers, diabetes == "no")
+names(hers_nodi)
 ```
 
 # The multiple regression model (4.2)  
