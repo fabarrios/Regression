@@ -24,6 +24,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 1. [Multiple Linear Regression](https://fabarrios.github.io/Regression/MultipleLinearRegression/MultipleLinearRegression.html)
 2. [Multiple Linear Models Comparisons](https://fabarrios.github.io/Regression/LinModTests/LinModTests.html)
 3. [Multiple Linear Regression and Interactions](https://fabarrios.github.io/Regression/MultipredictorInter/MultipredictorInter.html)
+4. [Extra Examples of Multiple Linear Regression with Interactions](https://fabarrios.github.io/Regression/moreLinMod_Inter/moreLinMod_Inter.html)
 
 ### IV Logistic Regression (Barrios)  
 1. [Introduction to logistic regression](https://fabarrios.github.io/Regression/LogisticReg/LogisticReg.html)  
