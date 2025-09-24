@@ -1,0 +1,512 @@
+quality %in% c(5, 6) ~ "good",
+quality %in% c(7, 8) ~ "great"
+)) %>%
+select(-quality)
+wine_data$quality_fct <- factor(wine_data$quality_fct, levels = c("bad", "good", "great"))
+wine_data %>%
+group_by(quality_fct) %>%
+count()
+set.seed(42)
+split <- initial_split(wine_data, prop = 0.8, strata = quality_fct)
+train_data <- training(split)
+test_data <- testing(split)
+dim(train_data)
+dim(test_data)
+wine_recipe <-
+recipe(quality_fct ~ ., data = train_data) %>%
+step_normalize(all_numeric_predictors())
+wine_recipe
+wine_model <-
+decision_tree(mode = "classification") %>%
+set_engine("rpart")
+wine_workflow <-
+workflow() %>%
+add_model(wine_model) %>%
+add_recipe(wine_recipe)
+wine_workflow
+wine_fit <-
+wine_workflow %>%
+fit(data = train_data)
+wine_fit
+wine_fit %>%
+extract_fit_engine() %>%
+rpart.plot()
+wine_fit %>%
+extract_fit_parsnip() %>%
+vip()
+wine_preds <-
+augment(wine_fit, test_data) %>%
+select(quality_fct, .pred_class, .pred_bad, .pred_good, .pred_great) %>%
+rename(
+actual = quality_fct,
+predicted = .pred_class
+)
+wine_preds
+wine_preds %>% accuracy(truth = actual, predicted)
+wine_preds %>% precision(truth = actual, predicted)
+wine_preds %>% recall(truth = actual, predicted)
+wine_preds %>%
+conf_mat(truth = actual, predicted)
+wine_preds %>%
+roc_curve(truth = actual, .pred_bad:.pred_great) %>%
+autoplot()
+wine_preds %>%
+pr_curve(truth = actual, .pred_bad:.pred_great) %>%
+autoplot()
+install.packages(c("bayestestR", "bslib", "checkmate", "colorspace", "corrplot", "curl", "datawizard", "DescTools", "digest", "emmeans", "Exact", "expm", "future", "gert", "gmp", "htmlTable", "httr2", "insight", "minqa", "mlr3", "mlr3measures", "mvtnorm", "nlme", "openssl", "parallelly", "parameters", "RcppEigen", "rjson", "rmarkdown", "rms", "shiny", "usethis", "uuid", "waldo", "withr", "xfun", "yaml"))
+install.packages("wesanderson")
+install.packages("here")
+library(tidyverse)
+library(multcomp)
+hers <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/hersdata.csv",
+show_col_types = FALSE)
+hers <- mutate(hers, HT = factor(HT))
+hers <- hers %>% mutate(HT = relevel(HT, ref = "placebo"))
+LDL1_model <- lm(LDL1 ~ HT * statins, data = hers)
+LDL1_model$coefficients
+coefeq <- matrix(data = 0, nrow = 1, ncol = length(LDL1_model$coefficients))
+colnames(coefeq) <- names(LDL1_model$coefficients)
+coefeq[1, "HThormone therapy"] <- 1
+coefeq[1, "statinsyes"] <- 1
+coefeq[1, "HThormone therapy:statinsyes"] <- 1
+coefeq %*% LDL1_model$coefficients
+coeftestAll <- glht(model = LDL1_model, linfct = coefeq, rhs = 0)
+summary(coeftestAll)
+coefeq[1, "HThormone therapy"] <- 0
+coeftestAll <- glht(model = LDL1_model, linfct = coefeq, rhs = 0)
+summary(coeftestAll)
+coefeq[1, "statinsyes"] <- 0
+coeftestAll <- glht(model = LDL1_model, linfct = coefeq, rhs = 0)
+summary(coeftestAll)
+coefeq
+f_logistic <- function(x) {
+return (1/(1 + exp(-x)))
+}
+curve(f_logistic,
+from = -4,
+to = 4,
+ylab = "P",
+xlab = "X",
+main = "Logistic Function")
+curve(f_logistic,
+from = -6,
+to = 6,
+ylab = "P",
+xlab = "X",
+main = "Logistic Function")
+curve(f_logistic,
+from = -10,
+to = 10,
+ylab = "P",
+xlab = "X",
+main = "Logistic Function")
+curve(f_logistic,
+from = -12,
+to = 12,
+ylab = "P",
+xlab = "X",
+main = "Logistic Function")
+library(tidyverse)
+library(car)
+library(effects)
+unlink("LogisticReg/LogisticReg_cache", recursive = TRUE)
+devtools::install_github('ANTsX/ANTsR')
+install.packages("NBR")
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+show_col_types = FALSE)
+library(tidyverse)
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+show_col_types = FALSE)
+names(wcgs)
+wcgs_n <- mutate(wcgs, arcus = factor(arcus))
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("1", "0"))
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("0", "1"))
+chol_arcus_mod1 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod1)
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("1", "0"))
+chol_arcus_mod1 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod1)
+chol_arcus_mod1 <- lm(chol ~ arcus, data = wcgs_n)
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+summary(chol_mult_mod)
+wcgs_n <- wcgs_n %>%
++     mutate(arcus = arcus %>% fct_relevel("1", "0"))
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+wcgs_n <- wcgs_n %>%
++     mutate(arcus = arcus %>% fct_relevel("0", "1"))
+wcgs_n <- wcgs_n %>% mutate(arcus = arcus %>% fct_relevel("0", "1"))
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+s(chol_mult_mod)
+summary(chol_mult_mod)
+library(tidyverse)
+library(car)
+wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/DataRegressBook/Chap2/wcgs.csv",
+show_col_types = FALSE)
+names(wcgs)
+wcgs_n <- mutate(wcgs, arcus = factor(arcus))
+wcgs_n <- wcgs_n %>%
+mutate(smoke = smoke %>% fct_relevel("No", "Yes"))
+chol_arcus_mod1 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod1)
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("1", "0"))
+chol_arcus_mod2 <- lm(chol ~ arcus, data = wcgs_n)
+summary(chol_arcus_mod2)
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+summary(chol_mult_mod)
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("0", "1"))
+chol_mult_mod <- lm(chol ~ arcus + bmi + smoke + age, data = wcgs_n)
+summary(chol_mult_mod)
+mutate(arcus = arcus %>% fct_relevel("0", "1"))
+wcgs_n <- wcgs_n %>%
+mutate(arcus = arcus %>% fct_relevel("0", "1"))
+t.test(chol ~ arcus, data = wcgs_n)
+library(survival)
+library(survminer)
+library(car)
+library(tidyverse)
+leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
+show_col_types = FALSE)
+head(leuk)
+tail(leuk)
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2),
+legend.text = c("Placebo", "6-MP"), legend.bty = "y", ylab = "Probability", xlab = "Time weeks")
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", lty = c(1,2),
+legend.text = c("Placebo", "6-MP"), legend.bty = "o", ylab = "Probability", xlab = "Time weeks")
+library(survival)
+library(survminer)
+library(car)
+library(tidyverse)
+data("Rossi", package = "carData")
+mod.Recidivism <- coxph(Surv(week, arrest) ~ fin + age + race + wexp + mar + paro + prio, data = Rossi)
+ggforest(mod.Recidivism, main = "Hazard Ratios for Recidivism Cox Model")
+ggforest(mod.Recidivism, data= Rossi, main = "Hazard Ratios for Recidivism Cox Model")
+library(coin)
+library(partykit)
+head(glioma)
+g3 <- subset(glioma, histology == "Grade3")
+g4 <- subset(glioma, histology == "GBM")
+layout(matrix(1:2, ncol=2))
+plot(survfit(Surv(time, event) ~ group, data = g3), main = "Grade III Glioma", lty = c(2,1), mark.time = TRUE, ylab = "Probability", xlab = "Survival Months")
+plot(survfit(Surv(time, event) ~ group, data = g4), main = "Grade IV Glioma", lty = c(2,1), mark.time = TRUE, ylab = "Probability", xlab = "Survival Months")
+survdiff(Surv(time, event) ~ group, data = g3)
+survdiff(Surv(time, event) ~ group, data = g4)
+logrank_test(Surv(time, event) ~ group | histology, data = glioma, distribution = approximate(nresample = 10000L))
+logrank_test(Surv(time, event) ~ group, data = g3, distribution = "exact")
+logrank_test(Surv(time, event) ~ group, data = g4, distribution = "exact")
+data("GBSG2", package = "TH.data")
+ggsurvplot(
+survfit(Surv(time, cens) ~ horTh, data = GBSG2),
+data = GBSG2,
+size = 0.5,                     # change line size
+linetype = c("solid","dashed"), # different line type
+palette = "lancet",             # color palette
+title   = "Hormonal Therapy",   # plot main title
+xlab = "Survival Time in Days", # customize X axis label.
+ylab = "Probability",           # customize Y axis label
+ylim = c(0.0, 1.0),             # customize Y limits
+conf.int = FALSE,            # Add confidence interval
+pval = FALSE,               # Add p-value from log-rank test
+risk.table = FALSE,         # Add risk table
+risk.table.col = "strata",  # Risk table color by groups
+surv.median.line = "none",
+legend.labs = c("No","Yes"),
+risk.table.height = 0.25,   # Useful to change when you have multiple groups
+ggtheme = theme_bw()        # Change ggplot2 theme
+)
+head(GBSG2)
+GBSG2_coxph <- coxph(Surv(time, cens) ~ ., data = GBSG2)
+summary(GBSG2_coxph)
+ggforest(GBSG2_coxph, data = GBSG2, main = "Hazard Ratios for GBSG2 data Cox Model")
+ci <- confint(GBSG2_coxph)
+exp(cbind(coef(GBSG2_coxph), ci))["horThyes",]
+(GBSG2_zph <- cox.zph(GBSG2_coxph))
+plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "horTh")
+layout(matrix(1:4, ncol=2))
+plot(GBSG2_zph, var = "age")
+plot(GBSG2_zph, var = "horTh")
+plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "tgrade")
+plot(GBSG2_zph, var = "age")
+plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "horTh")
+plot(GBSG2_zph, var = "tgrade.L")
+plot(GBSG2_zph, var = "age")
+plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "horTh")
+plot(GBSG2_zph, var = "tgrade")
+layout(matrix(1:4, ncol=2))
+plot(GBSG2_zph, var = "age")
+> plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "age")
+plot(GBSG2_zph, var = "tsize")
+plot(GBSG2_zph, var = "horTh")
+plot(GBSG2_zph, var = "tgrade")
+prod(dpois(c(0, 1, 2, 7), lambda = .8)^(c(58, 34, 7, 1)))
+dpois(0, lambda = 0.8)^58
+loglikelihood <- function(lambda, data = e100) {
+sum(log(dpois(data, lambda)))
+}
+load("~/Dropbox/GitHub/Regression/DataMSforMB/e100.Rdata")
+lambdas <- seq(0.05, 0.95, length = 100)
+loglike <- vapply(lambdas, loglikelihood, numeric(1))
+plot(lambdas, loglike, type = "l", col = "red", ylab = "", lwd = 2,
+xlab = expression(lambda))
+loglikelihood(0.05)
+loglikelihood(0.5)
+loglikelihood(0.55)
+loglikelihood(0.6)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data", col_names = FALSE, show_col_types = FALSE)
+library(tidyverse)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data", col_names = FALSE, show_col_types = FALSE)
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+"concave_points", "symmetry", "fractal_dimension")
+names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
+paste0(features,"_worst"))
+install.packages(c("ggfortify", "factoextra"))
+library(tidyverse)
+library(psych)
+library(psychTools)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
+col_names = FALSE, show_col_types = FALSE)
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+"concave_points", "symmetry", "fractal_dimension")
+names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
+paste0(features,"_worst"))
+wdbc %>%
+select(radius_mean:fractal_dimension_mean) %>%
+plot()
+wdbc_iclust <- wdbc %>% select(-1, -2)
+iclust(wdbc_iclust, nclusters=3)
+iclust(wdbc_iclust, nclusters=2)
+pc_wdbc <- fa(wdbc_fa, 2, rotate="varimax")
+wdbc_fa <- wdbc_iclust %>% select(radius_mean:fractal_dimension_mean)
+pc_wdbc <- fa(wdbc_fa, 2, rotate="varimax")
+summary(pc_wdbc)
+pc_wdbc <- fa(wdbc_fa, 2, rotate="varimax", fm="ml")
+summary(pc_wdbc)
+iclust(wdbc_fa, nclusters=2)
+wdbc_all <- wdbc %>% select(-1, -2)
+wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
+pc_wdbc_mean <- fa(wdbc_mean, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+plot(pc_wdbc_mean)
+pc_wdbc_mean <- fa(wdbc_mean, , rotate="varimax", fm="ml", oblique.scores=TRUE)
+pc_wdbc_mean <- fa(wdbc_mean, 3, rotate="varimax", fm="ml", oblique.scores=TRUE)
+summary(pc_wdbc_mean)
+iclust(wdbc_mean, nclusters=3)
+iclust(wdbc_mean, nclusters=2)
+pc_wdbc_mean <- fa(wdbc_mean, 2, rotate="varimax", fm="ml")
+summary(pc_wdbc_mean)
+pc_wdbc_all <- fa(wdbc_all, 2, rotate="varimax", fm="ml")
+summary(pc_wdbc_all)
+iclust(wdbc_all, nclusters=2)
+iclust(wdbc_all, nclusters=3)
+iclust(wdbc_all, nclusters=5)
+iclust(wdbc_all, nclusters=6)
+fa(wdbc_all, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+principal(wdbc_all, 2, rotate = "varimax", cor = "cor", method = "regression")
+fa(wdbc_all, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+library(tidyverse)
+library(psych)
+library(psychTools)
+library(tidyverse)
+library(psych)
+library(psychTools)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
+col_names = FALSE, show_col_types = FALSE)
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+"concave_points", "symmetry", "fractal_dimension")
+names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
+paste0(features,"_worst"))
+wdbc_all <- wdbc %>% select(-1, -2)
+principal(wdbc_all, 2, rotate = "varimax", cor = "cor", method = "regression")
+install.packages("factoextra")
+fa_wdbc_4c <- fa(wdbc_all, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
+fa_wdbc_4c
+pca_wdbc_2c <- principal(wdbc_all, 2, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
+fa_wdbc_2c
+fa_wdbc_2c <- fa(wdbc_all, 2, rotate = "none", scores = "regression", fm = "minres", cor = "cor")
+fa_wdbc_2c
+fa_wdbc_2c <- fa(wdbc_all, 2, rotate = "varimax", scores = "regression", fm = "minres", cor = "cor")
+fa_wdbc_2c
+fa_wdbc_2c <- fa(wdbc_all, 2, rotate = "varimax", scores = "tenBerge", fm = "minres", cor = "cor")
+fa_wdbc_2c
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
+col_names = FALSE, show_col_types = FALSE)
+library(tidyverse)
+library(psych)
+library(psychTools)
+library(factoextra)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
+col_names = FALSE, show_col_types = FALSE)
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+"concave_points", "symmetry", "fractal_dimension")
+names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
+paste0(features,"_worst"))
+wdbc_all <- wdbc %>% select(-1, -2)
+wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
+wdbc_scale <- scale(wdbc_all)
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+pca_wdbc <- principal(wdbc_scale, 30, rotate = "none", scores = TRUE, use ="pairwise", cor = "cor", covar = TRUE, method = "regression")
+plot(pca_wdbc$values, type = "b", ylab = "Eigenvalues", xlab = "Component Number")
+scores_pca_wdbc <- pca_wdbc$scores
+scores_pca_wdbc <- pca_wdbc$scores
+text(scores_pca_wdbc[,1], scores_pca_wdbc[,2], labels=rownames(scores_pca_wdbc), cex=0.7)
+pca_wdbc_4c <- principal(wdbc_scale, 4, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_4c)
+fa_wdbc_4c <- fa(wdbc_scale, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
+biplot(fa_wdbc_4c)
+summary(pca_wdbc_4c)
+summary(fa_wdbc_4c)
+pca_wdbc_4c_loadings_df <- as_tibble(pca_wdbc_4c$loadings[])
+pca_wdbc_4c_loadings_df
+summary(pca_wdbc_4c_loadings_df)
+pca_wdbc_4c_loadings_df$variable <- rownames(pca_wdbc_4c_loadings_df)
+summary(pca_wdbc_4c_loadings_df)
+pca_wdbc_4c_loadings_long <- pivot_longer(pca_wdbc_4c_loadings_df, -variable, names_to = "component", values_to = "loading")
+boxplot(component~loading, data=pca_wdbc_4c_loadings_long)
+boxplot(variable~loading, data=pca_wdbc_4c_loadings_long)
+boxplot(loading~component, data=pca_wdbc_4c_loadings_long)
+boxplot(loading~variable, data=pca_wdbc_4c_loadings_long)
+boxplot(loading~component, data=pca_wdbc_4c_loadings_long)
+pca_wdbc <- principal(wdbc_scale, 30, rotate = "varimax", scores = TRUE, use ="pairwise", cor = "cor", covar = TRUE, method = "regression")
+plot(pca_wdbc$values, type = "b", ylab = "Eigenvalues", xlab = "Component Number")
+pca_wdbc_4c <- principal(wdbc_scale, 4, rotate = "varimax", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_4c)
+fa_wdbc_4c <- fa(wdbc_scale, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
+biplot(fa_wdbc_4c)
+fa_wdbc_2c <- fa(wdbc_scale, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+biplot(fa_wdbc_2c)
+pca_wdbc_2c <- principal(wdbc_scale, 2, rotate = "varimax", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_2c)
+pca_wdbc_2c_loadings_df <- as_tibble(pca_wdbc_2c$loadings[])
+pca_wdbc_2c_loadings_df$variable <- rownames(pca_wdbc_2c_loadings_df)
+pca_wdbc_2c_loadings_long <- pivot_longer(pca_wdbc_2c_loadings_df, -variable, names_to = "component", values_to = "loading")
+boxplot(loading~component, data=pca_wdbc_2c_loadings_long)
+boxplot(loading~variale, data=pca_wdbc_2c_loadings_long)
+boxplot(loading~variable, data=pca_wdbc_2c_loadings_long)
+ggplot(pca_wdbc_2c_loadings_long, aes(x = component, y = loading, fill = variable)) +
+geom_bar(stat = "identity", position = "dodge") +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+ggplot(pca_wdbc_2c_loadings_long, aes(x = component, y = loading)) +
+geom_bar(stat = "identity", position = "dodge") +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+ggplot(pca_wdbc_2c_loadings_long, aes(x = component, y = loading)) +
+geom_boxplot() +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+ggplot(pca_wdbc_4c_loadings_long, aes(x = component, y = loading)) +
+geom_boxplot() +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+ggplot(pca_wdbc_4c_loadings_long, aes(x = component, y = loading)) +
+geom_boxplot() +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Component", y = "Loading")
+fa_wdbc_4c
+fa_wdbc_2c
+pca_wdbc_4c
+iclust(wdbc_mean, nclusters=2)
+iclust(wdbc_scale, nclusters=2)
+iclust(wdbc_scale, nclusters=4)
+iclust(wdbc_scale, nclusters = 4)
+iclust(wdbc_scale, nclusters = 3)
+iclust(wdbc_scale, nclusters = 5)
+iclust(wdbc_scale, nclusters = 2)
+iclust(wdbc_scale, nclusters = 6)
+iclust(wdbc_scale, nclusters = 3)
+iclust(wdbc_scale, nclusters = 2)
+iclust(wdbc_scale, nclusters = 3)
+pca_wdbc_3c <- principal(wdbc_scale, 3, rotate = "varimax", scores = TRUE, cor = "cor", method = "regression")
+pca_wdbc_3c
+iclust(wdbc_scale, nclusters = 3)
+install.packages(c("bayestestR", "bit", "bit64", "bookdown", "class", "clock", "cluster", "cpp11", "curl", "data.table", "datawizard", "dendextend", "DescTools", "effectsize", "emmeans", "evaluate", "fastmatch", "fontawesome", "foreign", "fs", "ggstatsplot", "gld", "gower", "Hmisc", "httr2", "igraph", "insight", "KernSmooth", "knitr", "later", "lava", "lme4", "lubridate", "MASS", "matrixStats", "mlbench", "mlr3", "mlr3misc", "mvtnorm", "network", "nnet", "openssl", "parallelly", "parameters", "ParamHelpers", "partykit", "performance", "pillar", "pkgbuild", "processx", "progressr", "promises", "ps", "psych", "quantreg", "R.oo", "Rcpp", "RcppArmadillo", "rlang", "rmarkdown", "Rmpfr", "rms", "rpart", "shiny", "spatial", "statnet.common", "statsExpressions", "survival", "survminer", "systemfonts", "testthat", "textshaping", "TH.data", "tinytex", "usethis", "waldo", "xfun", "XML", "yardstick"))
+install.packages(c("bayestestR", "bit64", "bslib", "cli", "clock", "curl", "DescTools", "dials", "doBy", "emmeans", "gld", "hardhat", "httr2", "igraph", "insight", "Matrix", "multcomp", "nlme", "openssl", "parallelly", "parameters", "parsnip", "performance", "pkgbuild", "purrr", "quantreg", "R6", "rcompanion", "RcppArmadillo", "RcppParallel", "recipes", "rlang", "rms", "sessioninfo", "systemfonts", "textshaping", "TH.data", "yardstick", "zip"))
+install.packages("learnr")
+a <- matraix( c(3,2,-1,1,-1,2,2,3,4), nrow = 3, byrow = T)
+a <- matrix( c(3,2,-1,1,-1,2,2,3,4), nrow = 3, byrow = T)
+b <- c(7, -1, 12)
+sol_eq <- solve(a, b)
+sol_eq
+install.packages("fractional")
+library(fractional)
+fractional(sol_eq)
+a_1 <- matrix(c(-5,0,3,5,-3,0,0,3,-5), nrow = 3, byrow = T)
+b_1 <- c(10,-7,-13)
+sol_eq_1 <- solve(a_1, b_1)
+fractional(sol_eq_1)
+install.packages(c("bayestestR", "bit", "bslib", "cli", "clock", "cluster", "commonmark", "correlation", "cpp11", "curl", "data.table", "datawizard", "DescTools", "dials", "doBy", "doFuture", "emmeans", "gld", "hardhat", "Hmisc", "httr2", "igraph", "insight", "jsonlite", "knitr", "MASS", "Matrix", "mime", "mlr3", "multcomp", "nloptr", "openssl", "parallelly", "parameters", "parsnip", "processx", "PRROC", "ps", "purrr", "quantreg", "R6", "rcompanion", "RcppArmadillo", "RcppParallel", "Rdpack", "readxl", "recipes", "rlang", "rms", "sessioninfo", "systemfonts", "textshaping", "TH.data", "tidymodels", "tinytex", "tune", "tzdb", "workflows", "xfun", "xml2", "yardstick", "zip", "zoo"))
+install.packages("BrainCon")
+install.packages("brainGraph")
+install.packages("ggbrain")
+install.packages(c("tidyverse", "psych", "psychTools", "factoextra", "rmarkdown", "knitr"))
+install.packages(c("car", "gmodels", "survivial", "survminer", "emmeans", "multcomp", "modeest", "rcompanion", "rms", "Hmisc"))
+install.packages(c("remotes", "mice", "HSAUR", "DT", "UsingR", "Rmisc", "plyr", "boot", "effects", "scales", "broom", "devtools"))
+install.packages(c("ggstatsplot", "ggnetwork", "ggbrain", "rstatix", "mlr", "mlr3", "WRS2", "RcppArmadillo", "fdth", "lme4", "gapminder"))
+install.packages("HSAUR3")
+install.packages("learnr")
+install.packages(c("bayestestR", "cli", "diffobj", "globals", "httpuv", "insight", "miniUI", "pbkrtest", "pkgdown", "RcppArmadillo", "scales", "tinytex"))
+install.packages(c("bayestestR", "cli", "diffobj", "globals", "httpuv", "insight", "miniUI", "pbkrtest", "pkgdown", "RcppArmadillo", "scales", "tinytex"))
+devtools::install_github('ANTsX/ANTsR')
+devtools::install_github('ANTsX/ANTsR')
+devtools::install_github('ANTsX/ANTsR')
+install.packages(c("bayestestR", "bigassertr", "bigstatsr", "broom", "commonmark", "correlation", "cowplot", "curl", "data.table", "datawizard", "Deriv", "doBy", "effects", "effectsize", "emmeans", "evaluate", "future", "future.apply", "gapminder", "generics", "ggnewscale", "ggpubr", "ggstatsplot", "gh", "glmnet", "globals", "haven", "HSAUR", "httr2", "imager", "insight", "KMsurv", "lgr", "maxstat", "mice", "mlr3", "mlr3misc", "modeltools", "openssl", "parallelly", "parameters", "patchwork", "pbapply", "pbkrtest", "performance", "pillar", "pkgbuild", "pkgdown", "promises", "purrr", "Rcpp", "RcppArmadillo", "reformulas", "reshape", "Rmpfr", "rprojroot", "shiny", "statnet.common", "statsExpressions", "systemfonts", "textshaping", "tibble", "utf8", "waldo", "WRS2", "zeallot", "zip"))
+install.packages(c("afex", "checkmate", "crosstalk", "curl", "ggbrain", "ggside", "insight", "kSamples", "later", "mlr", "parameters", "patchwork", "RcppArmadillo", "rprojroot", "xfun", "XML", "xml2"))
+install.packages(c("tidyverse", "rmdformats"))
+install.packages(c("bayestestR", "boot", "crosstalk", "emmeans", "evaluate", "insight", "kSamples", "later", "Matrix", "parameters", "performance", "RcppArmadillo", "RcppParallel", "rstantools", "rvest", "survey", "textshaping", "usethis"))
+library(gitcreds)
+gitcreds_set()
+gitcreds_set()
+gitcreds_set()
+install.packages(c("DT", "gargle", "googlesheets4", "insight", "mlr3measures", "ragg", "RcppArmadillo", "roxygen2", "rstantools", "stringr", "survminer", "textshaping", "TH.data", "usethis"))
+install.packages("rmdformats")
+install.packages("here")
+install.packages(c("wesanderson", "here"))
+install.packages(c("broom", "credentials", "dbplyr", "dtplyr", "ggnetwork", "ggplot2", "ggside", "ggstatsplot", "gld", "googledrive", "here", "magrittr", "mlr3", "mlr3misc", "parameters", "RcppArmadillo", "stringr"))
+clear
+install.packages(c("afex", "bayestestR", "boot", "broom", "credentials", "crosstalk", "dbplyr", "DT", "dtplyr", "emmeans", "evaluate", "gargle", "ggbrain", "ggnetwork", "ggplot2", "ggside", "ggstatsplot", "gld", "googledrive", "googlesheets4", "here", "insight", "kSamples", "later", "magrittr", "Matrix", "mlr", "mlr3", "mlr3measures", "mlr3misc", "parameters", "patchwork", "performance", "pillar", "ragg", "RcppArmadillo", "RcppParallel", "roxygen2", "rprojroot", "rstantools", "rvest", "stringr", "survey", "survminer", "textshaping", "TH.data", "usethis", "XML"))
+install.packages("HSAUR2")
+install.packages("wordcloud")
+library(tidyverse)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data", col_names = FALSE, show_col_types = FALSE)
+features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity",
+"concave_points", "symmetry", "fractal_dimension")
+names(wdbc) <- c("id", "diagnosis", paste0(features,"_mean"), paste0(features,"_se"),
+paste0(features,"_worst"))
+wdbc_all <- wdbc %>% select(-1, -2)
+wdbc_mean <- wdbc_all %>% select(radius_mean:fractal_dimension_mean)
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+library(psych)
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+pca_wdbc_all <- principal(wdbc_all, 30, rotate = "none", scores = TRUE, use ="pairwise", cor = "cor", covar = TRUE, method = "regression")
+View(pca_wdbc_all)
+View(pca_wdbc_all)
+plot(pca_wdbc_all$values, type = "b", ylab = "Eigenvalues", xlab = "Component Number")
+scores_pca_wdbc <- pca_wdbc_all$scores
+plot(scores_pca_wdbc[,1], scores_pca_wdbc[,2], xlab="PC1", ylab="PC2", main="Principal Components")
+pca_wdbc_4c <- principal(wdbc_all, 4, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_4c)
+fa_wdbc_4c <- fa(wdbc_all, 4, rotate="varimax", fm="ml", oblique.scores=TRUE)
+biplot(fa_wdbc_4c)
+pca_wdbc_2c <- principal(wdbc_all, 2, rotate = "none", scores = TRUE, cor = "cor", method = "regression")
+biplot(pca_wdbc_2c)
+pca_wdbc_2c_loadings_df <- as_tibble(pca_wdbc_2c$loadings[])
+pca_wdbc_2c_loadings_df$variable <- rownames(pca_wdbc_2c_loadings_df)
+pca_wdbc_2c_loadings_long <- pivot_longer(pca_wdbc_2c_loadings_df, -variable, names_to = "component", values_to = "loading")
+ggplot(pca_wdbc_2c_loadings_long, aes(x = variable, y = loading, fill = component)) +
+geom_bar(stat = "identity", position = "dodge") +
+theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+labs(title = "Principal Component Loadings", x = "Variables", y = "Loading")
+fa(wdbc_mean, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
+iclust(wdbc_mean, nclusters=2)
+View(pca_wdbc_all)
+pairs.panels(wdbc_mean, pch = 21, stars = TRUE,  smoother = TRUE)
+write_csv(wdbc_mean, "wdbc_mean.cvs", na= "NA")

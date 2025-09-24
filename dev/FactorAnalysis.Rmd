@@ -41,8 +41,7 @@ The factor analysis process typically involves the following steps:
 	5.	Factor Loading Analysis: Examine the strength of relationships between variables and factors.  
 
 ```{r}
-wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data",
-                 col_names = FALSE, show_col_types = FALSE)
+wdbc <- read_csv("https://archive.ics.uci.edu/ml/machine-learning-databases/breast-cancer-wisconsin/wdbc.data", col_names = FALSE, show_col_types = FALSE)
 
 # The file comes without colume names, we will use features and qualifications.
 features <- c("radius", "texture", "perimeter", "area", "smoothness", "compactness", "concavity", 
@@ -90,7 +89,6 @@ ggplot(pca_wdbc_2c_loadings_long, aes(x = variable, y = loading, fill = componen
 
 fa(wdbc_mean, 2, rotate="varimax", fm="ml", oblique.scores=TRUE)
 iclust(wdbc_mean, nclusters=2)
-
 
 ```
 
