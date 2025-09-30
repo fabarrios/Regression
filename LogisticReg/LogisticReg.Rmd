@@ -52,13 +52,18 @@ curve(f_logistic,
 Logistic regression uses log-odds to model probabilities because it allows for predictions to be made on an unbounded scale, which can then be transformed back into probabilities using the logistic function:
 $$ p = \frac{e^{Log \space Odds}}{1 + e^{Log \space Odds}} $$
 This transformation ensures that predicted probabilities remain within the bounds of 0 and 1.  
+\
+\
 For example lets assume you have a model predicting whether a student passes an exam based on hours studied. If the estimated log-odds for a student studying 5 hours is 1.5, you can calculate the probability as follows:  
 First convert log-odds to odds:  
 $$ Odds = e^{1.5} \approx 4.48 $$
 Then Convert odds to probability:
-$$ p = \frac{4.48}{1+4.48} \approx 0.817 $$
+$$ p = \frac{4.48}{1+4.48} \approx 0.817 . $$
+\
+\
 
-Using $1 - p = \exp(-x)/[1 + \exp(-x)]$ we can solve the equation for the Log Odds function:  
+### Logit function  
+Using $1 - p = 1-(\frac{1}{1+exp(-x)}) = \exp(-x)/[1 + \exp(-x)]$ we can write the equation for the Log Odds function:  
 $$ x = \ln(\frac{p}{1-p}) = \log(odds \space that \space Y=1 \space occurs) = logit\{Y=1\}$$  
   
 The **binary logistic regression model** studies how a set of predictor variables $X$ is related to a dichotomous response variable $Y$.  We will define the response to be $Y = 0$ or $1$, with $Y = 1$ denoting the occurrence of the event of interest.  
@@ -75,7 +80,7 @@ $$ \tt logit\{Y=1 | X\} = logit(P) = \log[\frac{P}{1-P}] = X \beta$$
 
 where *P = Prob{Y = 1 | X}* the model is a linear regression model in the log odds that *Y = 1* since *logit(P)* is a weighted sum of the *Xs*,  
 
-$$ \tt logit\{Y=1|X\} = \beta_0 + \beta_1 X_1 + \dots + \beta_j X_j + \dots + \beta_k X_k$$
+$$ \tt logit\{Y=1|X\} = \mit \beta_0 + \beta_1 X_1 + \dots + \beta_j X_j + \dots + \beta_k X_k$$
 $$ = \beta_j X_j + C$$
 where all other factors are held constant, $C$ is a constant given by  
 
@@ -85,9 +90,9 @@ Therefore the parameter $\beta_j$ is the change in the *log odds* per unit chang
 $$ \tt Odds\{Y=1 | X\} = exp(X\beta) $$
 and if all factors other than $X_j$ are held constant,
 
-$$ \tt Odds\{Y=1 | X\} = \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
+$$ \tt Odds\{Y=1 | X\} = \mit \exp(B_j X_j + C) = \exp(\beta_j X_j) \exp(C) $$
 The regression parameters can also be written in terms of *odds ratios*. The odds that $Y = 1$ when $X_j$ is increased by $d$, divided by the odds at $X_j$ is:  
-$$ \frac{ odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
+$$ \frac{ Odds\{Y=1 | X_1, \dots, X_j+d, \dots, X_k\}}{Odds\{Y=1 | X_1, \dots, X_j,\dots, X_k \}} $$  
 $$ = \frac{\exp[\beta_j(X_j+d)]\exp(C)}{\exp[\beta_j X_j]\exp(C)} $$  
 $$ = \exp[\beta_j X_j + \beta_j d - \beta_j X_j] = \exp(\beta_j d)$$
 The effect of increasing $X_j$ by $d$ is to increase the odds that $Y = 1$ by a factor of $\exp(\beta_j d)$, or to increase the *log odds* that *Y = 1* by an increment of $\beta_j d$.  
@@ -100,15 +105,15 @@ wcgs <- read_csv("https://raw.githubusercontent.com/fabarrios/Regression/master/
 
 To estimate a logistic regression model the general formula in the predictor variables is given by :    
 
-$$log[\frac{\hat\mu(X)}{1-\hat\mu(X)}] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k$$
+$$log[\frac{\hat \mu (X)}{1 -\hat \mu (X)}] = \beta_0 + \beta_1 X_1 + \beta_2 X_2 + \cdots + \beta_k X_k$$
 
 If we exponentiate both sides of the equation, we get  
 
-$$\frac{\hat\mu(X)}{1-\hat\mu(X)} = exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times \cdots \times exp(\beta_k X_k)$$  
+$$\frac{\hat \mu (X)}{1-\hat \mu (X)} = exp(\beta_0) \times exp(\beta_1 X_1) \times exp(\beta_2 X_2) \times \cdots \times exp(\beta_k X_k)$$  
 
 where the left hand of the equation, $\frac{\hat\mu(x)}{1-\hat\mu(x)}$, gives the *fitted odds* of success, **the fitted probability of success divided by the fitted probability of failure**. Exponentiating the model removes the logarithms and changes the model in the log-odds scale to one that is multiplicative, in this log odds scale.  
 
-## Example of Cotollary Heart Disease  
+## Example of Corollary Heart Disease  
 
 For the WCGS data and the variable Corollary Heart Disease (CHD) and age, the $\beta_1$ is the age slope of the fitted logistic model. The outcome of the model is the log odds of Corollary Heart Disease risk and the relationship with age, the slope coefficient $\beta_1$ gives the change in the log odds of chd69 associated with the model, chd69 is the presence of a cardio-vascular event (1).  
 
@@ -130,7 +135,7 @@ Wich is identical to the last line in the `summary (S)` table, the exponential t
 
 $$ \exp(0.074 \times 10) = 2.105 $$
 
-where we used the "link transformation" that is the exponentiation, to obtain the odds of *Y* (logit). In the `effects` library there is a general plotting function for plotting all the predictor effect plots used in a model.  
+where we used the "link transformation" that is the exponentiation, to obtain the odds of *Y* (logit). In the `effects` library there is a general plotting function for plotting all the *predictor effect plots* used in a model.  
 
 ```{r}
 plot(predictorEffects(CHD_glm01))
@@ -212,6 +217,6 @@ With the `linearHypothesis` function we can test if the coefficients of `k5` and
 Anova(mroz.mod)
 # To test if the coefficients are zero
 linearHypothesis(mroz.mod, c("k5", "k618"))
-# To test if the coefficientes are equal
+# To test if the coefficients are equal
 linearHypothesis(mroz.mod, "k5 = k618")
 ```
