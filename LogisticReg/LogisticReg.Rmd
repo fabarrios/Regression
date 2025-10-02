@@ -215,8 +215,25 @@ With the `linearHypothesis` function we can test if the coefficients of `k5` and
 
 ```{r}
 Anova(mroz.mod)
+
+```
+
+- A small p-value for a predictor means adding that variable significantly improves model fit (it is associated with the outcome, adjusting for other model terms).  
+- The overall table allows for sequential assessment of each term’s contribution as predictors are entered into the model in order.  
+  
+This helps identify which variables have meaningful effects and if any can be omitted from the model without significant loss of predictive power.
+
+```{r}
 # To test if the coefficients are zero
 linearHypothesis(mroz.mod, c("k5", "k618"))
+```
+
+This estimate checks whether both coefficients are simultaneously equal to zero, that is, tests the null hypothesis: $H_0: \beta_{k5} = 0 \space \& \space \beta_{k618}=0$.  If the test result is significant (p << 0), it suggests that at least one of these variables contributes meaningfully to the model outcome. If the result is not significant, it implies that removing both predictors may not worsen the model fit significantly.  
+
+```{r}
 # To test if the coefficients are equal
 linearHypothesis(mroz.mod, "k5 = k618")
 ```
+
+This estimate checks whether both coefficients are simultaneously equal, it tests the null hypothesis $H_0 : \beta_{k5} = \beta_{k618}$.  If the test yields a significant result (low p-value), there is evidence that the coefficients are different from each other. If the result is not significant (high p-value), there is not enough evidence to say the two coefficients differ—the data are consistent with their effects being the same.
+

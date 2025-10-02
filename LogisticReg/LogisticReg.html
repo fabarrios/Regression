@@ -7,7 +7,7 @@
 
         <meta name="author" content="F.A. Barrios UNAM " />
     
-        <meta name="date" content="2025-09-29" />
+        <meta name="date" content="2025-10-02" />
     
     <title>Logistic Regression</title>
 
@@ -1534,7 +1534,7 @@ margin-left: 0 !important;
           <li class="divider"></li>
                                 <li><span><i class="glyphicon glyphicon-user"></i> F.A.
 Barrios<br><small>UNAM<br></small></span></li>
-                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2025-09-29</span></li>
+                                         <li><span><i class="glyphicon glyphicon-calendar"></i> 2025-10-02</span></li>
                   </ul>     
       </div>
       <div class="book-body fixed">
@@ -2041,6 +2041,17 @@ the coefficients <code>k5</code> and <code>k618</code> are equal.</p>
 ## inc    19.504  1  1.004e-05 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<ul>
+<li>A small p-value for a predictor means adding that variable
+significantly improves model fit (it is associated with the outcome,
+adjusting for other model terms).<br />
+</li>
+<li>The overall table allows for sequential assessment of each term’s
+contribution as predictors are entered into the model in order.</li>
+</ul>
+<p>This helps identify which variables have meaningful effects and if
+any can be omitted from the model without significant loss of predictive
+power.</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a><span class="co"># To test if the coefficients are zero</span></span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a><span class="fu">linearHypothesis</span>(mroz.mod, <span class="fu">c</span>(<span class="st">&quot;k5&quot;</span>, <span class="st">&quot;k618&quot;</span>))</span></code></pre></div>
 <pre><code>## 
@@ -2056,6 +2067,13 @@ the coefficients <code>k5</code> and <code>k618</code> are equal.</p>
 ## 2    745  2 55.163  1.051e-12 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>This estimate checks whether both coefficients are simultaneously
+equal to zero, that is, tests the null hypothesis: <span class="math inline">\(H_0: \beta_{k5} = 0 \space \&amp; \space
+\beta_{k618}=0\)</span>. If the test result is significant (p &lt;&lt;
+0), it suggests that at least one of these variables contributes
+meaningfully to the model outcome. If the result is not significant, it
+implies that removing both predictors may not worsen the model fit
+significantly.</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a><span class="co"># To test if the coefficients are equal</span></span>
 <span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a><span class="fu">linearHypothesis</span>(mroz.mod, <span class="st">&quot;k5 = k618&quot;</span>)</span></code></pre></div>
 <pre><code>## 
@@ -2070,6 +2088,13 @@ the coefficients <code>k5</code> and <code>k618</code> are equal.</p>
 ## 2    745  1 49.479  2.005e-12 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
+<p>This estimate checks whether both coefficients are simultaneously
+equal, it tests the null hypothesis <span class="math inline">\(H_0 :
+\beta_{k5} = \beta_{k618}\)</span>. If the test yields a significant
+result (low p-value), there is evidence that the coefficients are
+different from each other. If the result is not significant (high
+p-value), there is not enough evidence to say the two coefficients
+differ—the data are consistent with their effects being the same.</p>
 </div>
 </div>
 
