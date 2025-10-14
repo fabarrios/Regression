@@ -30,14 +30,15 @@ library(car)
 library(tidyverse)
 ```
 
-## Introduction to Survival Analysis (notes taken from Harrel RMS)  
+## Introduction to Survival Analysis    
 
 Survival analysis is used to analyze data in which the time until the event is of interest. The response variable is the time until that event and is often called a *failure time*, *survival time*, or *event time*. It is particularly useful in fields like medicine, engineering, and social sciences, where understanding the timing of events is crucial. The response, event time, is usually continuous, but survival analysis allows the response to be incompletely determined for some subjects then we say that the survival time is *censored*.  When the real survival time is not known is classified as *type I censoring* in the case of loss to follow-up the *terminating event* is classified as *right censored*, when the end of the experiment mark the terminating event it is clasified as *type II censoring*.  
-
+\
 There are several reasons for studying survival time using the specialized methods of survival analysis.  
 1. Time to event can have an unusual distribution. Survival time is restricted to be positive so it has a skewed distribution and will never be normally distributed.  
 2. The probability of surviving past a certain time is often more relevant than the expected survival time (and expected survival time may be difficult to estimate if the amount of censoring is large).  
-3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of the event.    
+3. A function used in survival analysis, the hazard function, helps one to understand the mechanism of the event.  
+\
 
 ### The Kaplan–Meier Procedure (intro from Daniel)   
 
@@ -156,8 +157,10 @@ leuk <- read_csv("~/Dropbox/GitHub/Regression/DataRegressBook/Chap3/leuk.csv",
                  show_col_types = FALSE)
 names(leuk)
 
-plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", mark.time = TRUE, lty = c(1,2), 
-     legend.text = c("Placebo", "6-MP"), legend.bty = "s", ylab = "Probability", xlab = "Time weeks")
+plot(survfit(Surv(time, cens) ~ group, data = leuk), main = "Acute Lymphoblastic Leukemia", 
+     mark.time = TRUE,  lty = c(1,2), legend.text = c("Placebo", "6-MP"), legend.bty = "s", 
+     ylab = "Probability", xlab = "Time weeks")
+
 survdiff(Surv(time, cens) ~ group, data=leuk)
 ```
 
@@ -214,14 +217,17 @@ where:
 $h_0(t)$ is the baseline hazard function, representing the hazard when all covariates are zero.  
 $\beta_i$ are the coefficients corresponding to each covariate $x_i$.  
 The term $\exp({\beta_i})$ represents the **hazard ratio (HR)**, indicating how each covariate affects the hazard.  
-
+\
 Interpretation of Hazard Ratios   
 HR = 1: No effect on the hazard.  
 HR < 1: Indicates a reduction in hazard (better survival).  
 HR > 1: Indicates an increase in hazard (worse survival).  
+\
 For example, if a covariate has an HR of 1.5, it suggests that for each unit increase in that covariate, the risk of the event occurring increases by 50%.  
 The baseline hazard $h_0(t)$ is crucial for interpreting results from a Cox regression analysis. It helps in understanding how individual covariate affect the risk of an event relative to this baseline. For instance, if a covariate has a significant positive coefficient, it indicates that individuals with higher values of that covariate have a higher hazard compared to those at the baseline level.  
-The baseline hazard in the Cox proportional hazards model is significant because it provides a reference point for understanding how various predictors influence survival times. Its flexibility and lack of strict parametric assumptions make it a powerful tool in survival analysis, allowing researchers to derive meaningful insights from complex datasets without imposing unnecessary constraints on the underlying hazard function.
+\
+The baseline hazard in the Cox proportional hazards model is significant because it provides a reference point for understanding how various predictors influence survival times. Its flexibility and lack of strict parametric assumptions make it a powerful tool in survival analysis, allowing researchers to derive meaningful insights from complex datasets without imposing unnecessary constraints on the underlying hazard function.  
+
 
 ### Recidivism (the tendency of a convicted criminal to reoffend)  
 
