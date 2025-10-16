@@ -1,25 +1,24 @@
 ---
-title: "t-Test and Anova"
+title: "t-Test and Anova, refresh"
 author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
-output:
-  rmdformats::robobook:
-    highlight: kate  
+output: html_document
 ---
 ```{r setup, include=FALSE}
 library(knitr)
 library(rmdformats)
-
 ## Global options
-options(max.print="80")
+options(max.print="85")
 opts_chunk$set(echo=TRUE,
 	             cache=TRUE,
                prompt=FALSE,
-               tidy=FALSE,
+               tidy=TRUE,
                comment=NA,
                message=FALSE,
-               warning=FALSE)
-opts_knit$set(width=80)
+               warning=FALSE,
+               fig_width=8,
+               fig_height=6)
+opts_knit$set(width=85)
 ```
   
 # Examples for t-test and ANOVA
