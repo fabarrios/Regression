@@ -4,6 +4,7 @@ author: "F.A. Barrios<br><small>Instituto de Neurobiología UNAM<br></small>"
 date: "<small>`r Sys.Date()`</small>"
 output: html_document
 ---
+
 ```{r setup, include=FALSE}
 library(knitr)
 library(rmdformats)
