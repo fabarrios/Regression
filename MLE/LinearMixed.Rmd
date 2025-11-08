@@ -1,0 +1,128 @@
+---
+title: "Analyzing Longitudinal Data"
+author: "F.A.Barrios"
+date: "2025-11-07"
+output:
+  rmdformats::robobook:
+    highlight: kate
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+library(rmdformats)
+# knitr::opts_chunk$set(echo = TRUE)
+opts_chunk$set(echo=TRUE,
+	             cache=TRUE,
+               prompt=FALSE,
+               tidy=TRUE,
+               comment=NA,
+               message=FALSE,
+               warning=FALSE,
+               fig_width=8,
+               fig_height=6)
+```
+
+```{r}
+# Loading libraries
+library(tidyverse)
+library(HSAUR3)
+library(lme4)
+library(multcomp)
+
+```
+
+These notes are taken from the Handbook of Statistical Analyses Using R, Third edition (HSAUR3 package)
+
+## Beat the Blues example
+
+Data of a longitudinal study distinguishes itself because the response variable of interest and the predictor variables are measured several times on each individual in the study. The principal objective of such study is to characterize change in the repeated values of the response variable and to determine the predictors most associated with any change.
+
+BtheB data from the HSAUR3 package has the Beat the Blues study designed to deliver cognitive behavioral therapy (CBT) by computer terminal and compare how effective are the regular treatment: Treatment as Usual (TAU) with the cognitive behavioral therapy by computer: Beat the Blues (BtheB) in depressed patients evaluated with the Beck Depression Inventory II (BID), prior to treatment. Two months after treatment began, and following them at three, five, and eight months after treatment.
+
+
+## Linear Mixed Effects Models
+
+The distinguishing feature of a longitudinal study is that the responce function and the set of predictors are measured several times on each individual in the study. Therefore the objective in these models is to characterize the change in the response function and the predictor variables most associated with any change.
+Linear mixed effects models for repeated measures data formalize the important analysis with the idea that the responses pattern of a given individual in time, depend in the individual's characteristics, including some that are not observed. These unobserved variables than are included as random variables in the model (i.e., random effects). There are two common linear mixed effects models, the *random intercept* and the *random intercept and slope* models.
+
+## Linear Mixed Effects Models in R
+
+We will start making a plot of the data
+
+```{r}
+data("BtheB", package = "HSAUR3")
+
+layout(matrix(1:2, nrow = 1))
+ylim <- range(BtheB[, grep("bdi", names(BtheB))], na.rm = TRUE)
+
+tau <- subset(BtheB, treatment == "TAU")[, grep("bdi", names(BtheB))]
+boxplot(tau, main = "Treated as Usual", ylab = "BDI", xlab = "Time (in months)", names = c(0, 2, 3, 5, 8), ylim = ylim)
+
+btheb <- subset(BtheB, treatment == "BtheB")[, grep("bdi", names(BtheB))]
+boxplot(btheb, main = "Beat the Blues", ylab = "BDI", xlab = "Time (in months)", names = c(0, 2, 3, 5, 8), ylim = ylim)
+
+```
+## Data wrangling
+
+`BtheB` data is loaded in a table format (wide form) and requires to be reshaped in long format leaving some of the predictors untouched like the initial Beck Depression Inventory II (bdi.pre) score and the predictors that remain unchanged: drug, length, and treatment which should be paired with each of the follow-up BDI results at two, three, five, and eight months. 
+
+```{r}
+nobs <- nrow(BtheB)
+
+BtheB <- as_tibble(BtheB)
+BtheB <- BtheB %>% mutate(subject = factor(rownames(BtheB)), before = 1)
+
+BtheB_long <- BtheB %>%
+  pivot_longer(cols = c(bdi.2m, bdi.3m, bdi.5m, bdi.8m), names_to = "bdi", values_to = "BDI_score")
+
+BtheB_long <- BtheB_long %>% 
+  mutate(follow_up = rep(c(2, 3, 5, 8), each = 1, times = nobs) )
+
+head(BtheB_long, 16)
+
+```
+
+## Model fitting with lme4 package
+
+We will fit both random intercept and random intercept and slope models, we will include the baseline BDI score, treatment group, drug, and length as *fixed effect covariables*. We will fit linear mixed effects models with the `lmer` function from the **lme4** package. We have transformed the `BtheB` data frame in the long format. Since there are a number of missing values we will apply the `lmer` function with the NA drop option. The random term identified as subject.  
+
+
+```{r}
+BtheB_lmer1 <- lmer(BDI_score ~ bdi.pre + drug + length + treatment +
+                    follow_up + (1 | subject), data = BtheB_long,
+                    REML = FALSE, na.action = na.omit)
+
+BtheB_lmer2 <- lmer(BDI_score ~ bdi.pre + drug + length + treatment +
+                    follow_up + (follow_up | subject), data = BtheB_long,
+                    REML = FALSE, na.action = na.omit)
+
+anova(BtheB_lmer1, BtheB_lmer2)
+```
+
+The log-likelihood test `anova()` indicates that the simpler random intercept model is adequate for these data. More information about the random model intercept is listed using the `summary(BtheB_lmer1)`. The `lmer()` function does not list the the p-values for Gaussian mixed models because the degrees of freedom of the *t* reference distribution are not obvious. The `cftest` from the `multicomp` package estimates the asymptotic normal distribution for computing univariate p-values for the fixed effects.  
+
+```{r}
+summary(BtheB_lmer1)
+
+cftest(BtheB_lmer1)
+```
+
+To estimate the assumptions of the final model fitted to the `BtheB`data. i.e. the normality of the random effect terms and the residuals, the former can be estimated by using the `ranef` method to *predict* their values and the `residuals` to calculate the differences between the observed data values and the fitted values, and then using normal provability plots for both.  
+
+```{r}
+layout(matrix(1:2, ncol = 2))
+qint <- ranef(BtheB_lmer1)$subject[["(Intercept)"]]
+qres <- residuals(BtheB_lmer1)
+
+qqnorm(qint, ylab = "Estimated ramdom intercepts",
+       xlim = c(-3, 3), ylim = c(-20, 20),
+       main = "Random intercepts")
+qqline(qint)
+qqnorm(qres, ylab = "Estimated residuals",
+       xlim = c(-3, 3), ylim = c(-20, 20),
+       main = "Residuals")
+qqline(qres)
+
+```
+
+There appear to be no large departure from linearity in either plot.
