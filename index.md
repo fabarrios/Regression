@@ -42,6 +42,7 @@ We will cover some examples of t-Test problem solving with R, using some of the 
 1. [Introduction to MLE](https://fabarrios.github.io/Regression/MLE/MLE_Intro.html)   
 2. [MLE an example](https://fabarrios.github.io/Regression/MLE/MLE.html)  
 3. [Introduction to Factor Analysis](https://fabarrios.github.io/Regression/MLE/FactorAnalysis.html)   
+4. [Introduction to Linear Mixed Effects Models](https://fabarrios.github.io/Regression/MLE/LinearMixed.html)  
 
 ### Homework  
 1. Regression and linear model Refresher homework [HW_SimpLM](https://fabarrios.github.io/Regression/HW/HW_SimpLM)  
