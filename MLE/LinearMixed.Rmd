@@ -70,7 +70,7 @@ boxplot(btheb, main = "Beat the Blues", ylab = "BDI", xlab = "Time (in months)",
 nobs <- nrow(BtheB)
 
 BtheB <- as_tibble(BtheB)
-BtheB <- BtheB %>% mutate(subject = factor(rownames(BtheB)), before = 1)
+BtheB <- BtheB %>% mutate(subject = factor(rownames(BtheB)))
 
 BtheB_long <- BtheB %>%
   pivot_longer(cols = c(bdi.2m, bdi.3m, bdi.5m, bdi.8m), names_to = "bdi", values_to = "BDI_score")
@@ -125,4 +125,69 @@ qqline(qres)
 
 ```
 
-There appear to be no large departure from linearity in either plot.
+There appear to be no large departure from linearity in either plot.  
+
+## More examples
+
+Ex 13.4 HSAUR3. The phosphate data in `phosphate` database include the plasma inorganic phosphate levels for 33 subjects, 20 of whom are control, and 13 of whom are have been classified as obese. Fit a sensible linear mixed effects model to the data.  
+
+Plotting the two groups data in time.  
+```{r}
+data("phosphate")
+
+nobs <- nrow(phosphate)
+ylim <- range(phosphate[, grep("t", names(phosphate))], na.rm = TRUE)
+layout(matrix(1:2, ncol = 2))
+
+contr <- subset(phosphate, group == "control")[, grep("t", names(phosphate))]
+obese <- subset(phosphate, group == "obese")[, grep("t", names(phosphate))]
+
+boxplot(contr , main = "Controls", ylab = "Phosphate levels", xlab = "Time points", ylim = ylim)
+boxplot(obese , main = "Obese", ylab = "Phosphate levels", xlab = "Time points", ylim = ylim)
+
+```
+
+To estimate the linear mixed effects models the data must have the adequate format to fit the `lmer` function.  
+
+```{r}
+phosphate <- phosphate %>% mutate(subject = factor(rownames(phosphate)))
+
+phosphate_long <- phosphate %>% 
+  pivot_longer(cols = c(t0.5, t1, t1.5, t2, t3, t4, t5), names_to = "time", values_to = "phosphate")
+
+phosphate_long <- phosphate_long %>% 
+  mutate(follow_up = rep(c(1, 2, 3, 4, 5, 6, 7), each = 1, times = nobs) )
+
+head(phosphate_long, 14)
+```
+
+## Model fitting with lme4 package.  
+
+We will fit both random intercept and random intercept and slope models, we will include the baseline `t0` of the plasma phosphate level, the group (control or obese), and the seven follow-up times.  We will compare the two models with the `anova` function. 
+
+```{r}
+phosphate_lmer1 <- lmer(phosphate ~ group + t0 +
+                    follow_up + (1 | subject), data = phosphate_long,
+                    REML = FALSE, na.action = na.omit,
+                    control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 20000)))
+
+phosphate_lmer2 <- lmer(phosphate ~ group + t0 +
+                        follow_up + (follow_up | subject), data = phosphate_long, 
+                        REML = FALSE, na.action = na.omit, 
+                        control = lmerControl(optimizer = "bobyqa", optCtrl = list(maxfun = 20000)))
+
+anova(phosphate_lmer1, phosphate_lmer2)
+```
+
+The log-likelihood test `anova()` indicates that the simpler random intercept model and the more complex random intercept and slope model are different. More information about the random model intercept is listed using the summary of the estimated models. To estimate the p-values for Gaussian mixed models `cftest` estimates the asymptotic normal distribution for computing univariate p-values for the fixed effects.  
+
+```{r}
+# For the random intercept model
+summary(phosphate_lmer1)
+cftest(phosphate_lmer1)
+
+# For the more complex model
+summary(phosphate_lmer2)
+cftest(phosphate_lmer2)
+
+```
