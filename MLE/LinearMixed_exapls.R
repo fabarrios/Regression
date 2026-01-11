@@ -1,13 +1,16 @@
 library(tidyverse)
+library(lme4)
+library(multcomp)
 
 # read data
 BPRS <- read_csv("~/Dropbox/GitHub/Regression/DataDavis/Woolson1.csv", 
                  show_col_types = FALSE)
 
-# Convert ot factor the Treatment and Subjerct col
+# Convert ot factor the Treatment and Subject col
 BPRS <- BPRS %>% mutate(Subject = factor(Subject))
-BPRS <- BPRS %>% mutate(Group = factor(Group))
+BPRS <- BPRS %>% mutate(Treatment = factor(Treatment))
 
+# Long version of BPRS to estimate the models leaving the initial week out.
 BPRS_long <- BPRS %>% pivot_longer(cols = c("Week1", "Week2", "Week3", "Week4", "Week5", "Week6", "Week7", "Week8"), 
                                    names_to = "Week", values_to = "bprs")
 
@@ -27,4 +30,15 @@ BPRSL_graph %>% ggplot(aes(x= Week, y= bprs, fill = Treatment)) +
           theme(panel.grid.major = element_blank(), panel.grid.minor = element_blank()) +
           theme_bw() + theme(legend.position = c(0.9, 0.9)) +
           labs(title = "Brief Psychiatric Rating Scale (BPRSL) data")
-                     
+
+#Estimate the Linear Mixed Effects models with lme4 library                     
+BPRSL_lmer1 <- lmer(bprs ~ Week0 + Treatment +
+                    Week + (1 | Subject), data = BPRS_long,
+                    REML = FALSE, na.action = na.omit)
+
+BPRSL_lmer2 <- lmer(bprs ~ Week0 + Treatment +
+                    Week + (Week | Subject), data = BPRS_long,
+                    REML = FALSE, na.action = na.omit)
+
+# to compare the models
+anova(BPRSL_lmer1, BPRSL_lmer2)
